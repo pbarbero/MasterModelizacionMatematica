@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage{amsmath, amssymb}
-
+\usepackage{dsfont}
+\usepackage{tikz} 
 \usepackage[utf8]{inputenc}
 %\usepackage[spanish]{babel}
 \usepackage{amsmath}
@@ -20,6 +21,8 @@
 {% end code
   \end{itshape}\ignorespacesafterend
 }
+
+
 
 
 \begin{document}
@@ -102,8 +105,8 @@ Modelamos de la siguiente forma:
 
 \item[\textbf{Variables}]
 	\begin{itemize}
-		\item[] $x_1 \geq 5$
-		\item[] $x_2 \geq 12$
+		\item[] $0 \leq x_1 \leq 5 \text{ con } x_1\in \mathds{Z}$
+		\item[] $0 \leq x_2 \leq 12 \text{ con } x_2\in \mathds{Z}$
 	\end{itemize}
 	
 \item[\textbf{Restricciones}]
@@ -126,6 +129,49 @@ Modelamos de la siguiente forma:
 	\end{itemize}
 \end{itemize}
 
+\pagebreak
 
+\section{Interpretaci\'on}
+Se ha utilizado Microsoft Solver Foundation con el fin de resolver el problema anteriormente modelizado. 
+
+El modelo consta de dos variables $x_1$ y $x_2$ que introducimos en el apartado de \textit{Decisions} definidas en el rango previamente descrito y asign\'andoles la cualidad de \textit{Integer}.
+
+Las $5$ restricciones previamente definidas se han an\~adido al MSF en el apartado de \textit{Constraints}.
+
+\begin{itemize}
+\item[c1:] $3*x1 + 2*x2 <= 36$
+\item[c2:] $0.5x1 + 0.25x2 <= 8$
+\item[c3:] $0.2*x1 + 0.2*x2 <= 4$
+\item[c4:] $x1 + 5*x2 <= 72$
+\item[c5:] $x1 + 3*x2 >= 33$
+\end{itemize}
+
+Si las dibujamos en el eje cartesiano, podemos empezar a intuir la regi\'on en la que va a estar nuestra soluci\'on,
+
+\begin{figure}[h!]
+  \centering
+	\includegraphics[scale=0.4]{constraints.png}
+	  \caption{Constraints}
+\end{figure}
+
+Todas las inecuaciones, excepto la representada en azul con trazos m\'as gruesos definen la parte del plano por debajo de su funci\'on correspondiente. La funci\'on representada en azul con trazos m\'as gruesos se corresponde a la inecuaci\'on \textit{c1} y est\'a define la parte superior del plano. A trav\'es de este dibujo podemos empezar a intuir una soluci\'on a nuestro problema.\\
+
+Posteriormente se ha an\~adido la funci\'on objetivo a minimizar en el apartado \textit{Goals}: $$33 - x_1 -3*x_2$$
+
+Se ha \textit{checkeado} la sintaxis del modelo y se ha resuelto el problema. Se obtiene la siguiente tabla:
+
+\begin{figure}[h!]
+  \centering
+	\includegraphics[scale=0.8]{msf.png}
+	  \caption{Resultado MSF}
+\end{figure}
+
+Es f\'acil ver que los datos de la salida cumplen la funci\'on objetivo,
+
+$$ -7 = \text{min }z = 33 - x_1 - 3x_2 = 33 - 4 - 3 \cdot 12$$
+
+Ahora bien, ¿c\'omo interpretamos esta salida? Los resultados de las decisiones $x_1$ y $x_2$ son claros, $x_1$ debe valer $4$ y $x_2$ debe valer $12$. Utilizando esto en la ecuaci\'on que nos genera el beneficio nos encontrar\'iamos con el beneficio siguiente,
+
+$$ x_1 + 3x_2 = 4 + 3 \cdot 12 = 40 \text{ unidades de beneficio}$$ 
 
 \end{document}
