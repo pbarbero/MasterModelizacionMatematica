@@ -87,4 +87,44 @@ En caso de ruptura del stock, las unidades retrasadas se dejan sin entregar y se
 \end{itemize}
 
 \end{exercise}
+
+\begin{itemize}
+\item[] \textbf{Coste por pedido:} $a = 500$ euros.
+\item[] \textbf{Coste por unidad:} $c = 10$ euros.
+\item[] \textbf{Coste de almacenamiento por unidad y semana:} $1.5$ euros.
+
+\item[] \textbf{Precio al que se vende el producto en temporada:} $s $
+\item[] \textbf{Precio al que se vende el producto fuera de temporada:} $v (< c) $
+\item[] \textbf{Coste por unidad no satisfecha:} $p = 0$
+
+
+\item[] \textbf{N\'umero de unidades vendidas:} $x$
+\item[] \textbf{Demanda que se nos presenta:} $q$
+
+\item[] $D$ es la variable aleatoria que representa la demanda.
+\item[] $B(q,x)$ es la variable aleatoria que representa el beneficio.
+\end{itemize}
+
+El beneficio vendr\'a dado por:
+
+$$ B(q,x) = \text{ si }$$
+
+	\begin{equation*}
+	B(q,x) = \left\lbrace \begin{array}{l}
+		sx + v(q - x) - a - cq \text{ si } x\leq q \\
+		sq - p(x - q) - a - cq \text{ si } x > q
+	\end{array}
+	\right. 
+	\end{equation*}
+	
+El \'unico momento en el que se puede producir la posibilidad de ruptura del stock es durante el lead-time.
+
+\begin{itemize}
+\item[] \textbf{Cantidad media de demanda:} $100,1025641026$
+\item[] \textbf{Lead-time medio:} $6,9655172414$
+
+\end{itemize}
+
+
+
 \end{document}
