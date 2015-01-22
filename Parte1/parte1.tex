@@ -114,12 +114,10 @@ Modelamos de la siguiente forma:
 \begin{itemize}
 
 		\item[] $3x_1 + 2x_2 \leq 36$
-		\item[] $0.5x_1 + 0.25x_1 \leq 8$
+		\item[] $0.5x_1 + 0.25x_2 \leq 8$
 		\item[] $0.2x_1 + 0.2x_2 \leq 4$
 		\item[] $x_1 + 5x_2 \leq 72$
 		\item[] $x_1 + 3x_2 \geq 33$
-
-
 \end{itemize}
 	
 	
@@ -148,21 +146,29 @@ Las $5$ restricciones previamente definidas se han an\~adido al MSF en el aparta
 
 Si las dibujamos en el eje cartesiano, podemos empezar a intuir la regi\'on en la que va a estar nuestra soluci\'on,
 
-\begin{figure}[h!]
+\begin{figure}[h]
   \centering
 	\includegraphics[scale=0.4]{constraints.png}
 	  \caption{Constraints}
 \end{figure}
 
-Todas las inecuaciones, excepto la representada en azul con trazos m\'as gruesos definen la parte del plano por debajo de su funci\'on correspondiente. La funci\'on representada en azul con trazos m\'as gruesos se corresponde a la inecuaci\'on \textit{c1} y est\'a define la parte superior del plano. A trav\'es de este dibujo podemos empezar a intuir una soluci\'on a nuestro problema.\\
+Todas las inecuaciones, excepto la representada en azul con trazos m\'as gruesos definen la parte del plano por debajo de su funci\'on correspondiente. La funci\'on representada en azul con trazos m\'as gruesos se corresponde a la inecuaci\'on \textit{c1} y est\'a define la parte superior del plano.\\
+
+El \'area del primer cuadrante resaltada es el \'area que nos define nuestras restricciones.
+\begin{figure}[h]
+  \centering
+	\includegraphics[scale=0.5]{constraints_area.png}
+	  \caption{Constraints}
+\end{figure}
+
 
 Posteriormente se ha an\~adido la funci\'on objetivo a minimizar en el apartado \textit{Goals}: $$33 - x_1 -3*x_2$$
 
-Se ha \textit{checkeado} la sintaxis del modelo y se ha resuelto el problema. Se obtiene la siguiente tabla:
+Se ha \textit{checkeado} la sintaxis del modelo y se ha resuelto el problema. Se obtiene la siguiente tabla:\\
 
-\begin{figure}[h!]
+\begin{figure}[h]
   \centering
-	\includegraphics[scale=0.8]{msf.png}
+	\includegraphics[scale=0.7]{msf.png}
 	  \caption{Resultado MSF}
 \end{figure}
 

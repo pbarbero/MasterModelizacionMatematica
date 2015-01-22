@@ -1,0 +1,22 @@
+Model[
+  Decisions[
+    Integers[0, 5],
+    Annotation[x1, "description", "masa de m\u00F3dulo de celda"]
+  ],
+  Decisions[
+    Integers[0, 12],
+    Annotation[x2, "description", "m\u00F3dulo de celda de astilla"]
+  ],
+  Constraints[
+    c1 -> 3*x1 + 2*x2 <= 36,
+    c2 -> 0.5*x1 + 0.25 * x2 <= 8,
+    c3 -> 0.2*x1 + 0.2*x2 <= 4,
+    c4 -> x1 + 5*x2 <= 72,
+    c5 -> x1  + 3*x2 >= 33
+  ],
+  Goals[
+    Minimize[
+      objetivo -> Annotation[33 - x1 - 3*x2, "order", 0]
+    ]
+  ]
+]
