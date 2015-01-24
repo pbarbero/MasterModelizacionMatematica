@@ -90,7 +90,9 @@ Durante todo el año hay 11 trabajadores con trabajo asignado. Por tanto deber\'
 \end{itemize}
 
 Escribir TODAS las ecuaciones necesarias para esta asignaci\'on igualitaria, no s\'olo correspondientes a las tres condiciones anteriores.\\
+
 \end{exercise}
+
 
 Sea $n\in N = \{ 1,\dots,16 \}$ el n\'umero de trabajadores y $l \in L = \{1,\dots,52\}$ el n\'umero de semanas. Vamos a definir las \textbf{variables} de forma binaria,
 
@@ -159,7 +161,9 @@ $$ \text{min } z = \sum_{n=1}^{17}{ \sum_{\substack{l=1,\dots 49\\ v_{n,l+3}=1\\
 Escribir las ecuaciones para diseñar un cuadro rotativo semanal de 11 patrones para cubrir la siguiente carga de trabajo:\\
 
 \textbf{Lunes, Martes, Mi\'ercoles, Jueves y Viernes:} 4 turnos de mañana y 5 de tarde.\\
+
 \textbf{S\'abado:} 2 turnos de mañana, 2 turnos de tarde y 2 turnos de noche\\
+
 \textbf{Domingo:} 2 turnos de mañana y 2 turnos de tarde\\
 
 \textbf{Condiciones:}
@@ -214,6 +218,10 @@ Definimos las variables para representar el cuadro rotativo de la siguiente mane
 
 donde $i\in I={1,\dots, 12}$ indica el patr\'on correspondiente, $j\in J={1,\dots, 7}$ el d\'ia de la semana y $k\in K={1,2,3}$ indica si es turno de mañana, tarde o noche.\\
 
+Obviamente un patr\'on no tiene dos turnos (ni 3) en el mismo d\'ia,
+
+$$ \sum_{k=1}^{3} x_{i,j,k} \leq 1 \text{ para } i\in I, j\in J$$
+
 \textbf{Restricci\'on 1:} Los turnos de cada d\'ia est\'an contenidos en alguno de los 11 patrones semanales,
 
 $$ \sum_{i=1}^{11} x_{i,j,k} = c_{k,j} \text{ para } j\in J, k\in K$$
@@ -222,7 +230,7 @@ donde $c_{k,j}$ es el n\'umero de turnos de tipo $k$ que hay que hacer el d\'ia 
 
 \textbf{Restricci\'on 2:} Un patr\'on semanal tiene al menos $1$ d\'ia de descanso,
 
-$$ \sum_{j=1}^{7}{(x_{i,j,1} + x_{i,j,2} + x_{i,j,3})} \leq 6 $$
+$$ \sum_{j=1}^{7}{(x_{i,j,1} + x_{i,j,2} + x_{i,j,3})} \leq 6  \text{ para } i\in I$$
 
 Para garantizar que la rotaci\'on del patr\'on $12$ al patr\'on $1$ no crea conflictos a la hora de garantizar un d\'ia de descanos semanal, se fija el primer d\'ia de descanso semanal para el primer patr\'on y el \'ultimo para el patr\'on $12$.
 
@@ -268,13 +276,6 @@ $$ 0 \leq x_{i,j,k} + x_{i,j+2,k} - x_{i,j+1,k} \text{ para } i\in I, j=1,\dots,
 $$ \sum_{j=1}^{7} x_{i,j,1} + \sum_{j=1}^{7} x_{i+1,j,1} \geq 1 \text{ para } i=1,\dots,9$$
 
 $$ \sum_{j=1}^{7} x_{i,j,2} + \sum_{j=1}^{7} x_{i+1,j,2} \geq 1 \text{ para } i=1,\dots,9$$
-
-
-\textbf{Otras restricciones:} 
-
-Obviamente un patr\'on no tiene dos turnos (ni 3) en el mismo d\'ia,
-
-$$ \sum_{i=12}^{12} x_{i,j,k} \leq 1 \text{ para } i\in I, j\in J$$
 
 
 

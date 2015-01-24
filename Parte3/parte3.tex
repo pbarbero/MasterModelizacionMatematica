@@ -94,7 +94,7 @@ En caso de ruptura del stock, las unidades retrasadas se dejan sin entregar y se
 \item[] \textbf{Coste de almacenamiento por unidad y semana:} $1.5$ euros.
 
 \item[] \textbf{Precio al que se vende el producto en temporada:} $s $
-\item[] \textbf{Precio al que se vende el producto fuera de temporada:} $v (< c) $
+\item[] \textbf{Precio al que se vende el producto fuera de temporada:} $v\text{ }(< c) $
 \item[] \textbf{Coste por unidad no satisfecha:} $p = 0$
 
 
@@ -117,13 +117,33 @@ $$ B(q,x) = \text{ si }$$
 	\right. 
 	\end{equation*}
 	
-El \'unico momento en el que se puede producir la posibilidad de ruptura del stock es durante el lead-time.
 
 \begin{itemize}
 \item[] \textbf{Cantidad media de demanda:} $100,1025641026$
 \item[] \textbf{Lead-time medio:} $6,9655172414$
 
 \end{itemize}
+
+
+Vamos a modelizar nuestro problema utilizando un modelo de revisi\'on continua, dado que podemos controlar el stock y realizar los pedidos cuando queramos. La pol\'itica con la que se trabaja es la $(r, q)$.
+
+Estudiaremos la posibilidad de ruptura del stock. El \'unico momento en el que se puede producir la posibilidad de ruptura del stock es durante el lead-time. Cuando veamos que el stock baja de una cantidad $r$, haremos el siguiente pedido, pero puede ser que la demanda durante el lead-time sea mayor que $r$, en cuyo caso no podremos satisfacerla. 
+
+Definiremos la variable $X$, que ser\'a la demanda durante el lead-time. Estimaremos sus caracter\'isticas a partir de los datos proporcionados, es decir, estimaremos su media $\mu_X$ y $\sigma_X^2$. Podemos suponer en este caso, que nuestra variable $X$ sigue una distribuci\'on normal $N(\mu_X, \sigma_X^2)$. 
+
+La cantidad media de demanda que esperamos durante el lead-time es $\mu_X$. Si realizamos el pedido cuando tenemos un nivel de stock de $r$, en media esperamos tener $r - \mu_X$ en stock cuando nos llegue el pedido; esta cantidad se llama \textit{stock de seguridad}. 
+
+Ponemos el stock de seguridad como un factor de la desviaci\'on t\'ipica de $X: r - \mu_X = k\mu_X$ ($k$ es el factor de seguridad). Nos queda,
+
+\begin{equation*}
+\begin{array}{l l}
+ P(\text{ruptura del stock}) & =  P(X > r) = P\left(\dfrac{X - \mu_X}{\sigma_X} > \dfrac{r-\mu_X}{\sigma_X}\right) \\[0.3cm]
+ \, &	= P(Z < k) \text{ para } Z \sim N(0,1)
+\end{array}
+\end{equation*}
+
+En nuestro caso, tomando $k = 2$, porque nuestra posibilidad de ruptura es $2 \%$.
+
 
 
 
