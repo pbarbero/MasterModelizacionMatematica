@@ -123,6 +123,7 @@ Vamos a definir nuestra demanda como una variable aleatoria $D$ cuya esperanza y
 \begin{itemize}
 \item[] \textbf{$\mu_D$} $= 97.6$
 \item[] \textbf{$\sigma_D^2$} $= 227.24$
+\item[] \textbf{$\sigma_D$} $= 15.07$
 \end{itemize}
 
 En nuestro caso, el lead-time tambi\'en es aleatorio, pero contamos con algunos datos anteriores, as\'i que tambi\'en podemos calcular su media y su varianza,
@@ -130,9 +131,8 @@ En nuestro caso, el lead-time tambi\'en es aleatorio, pero contamos con algunos 
 \begin{itemize}
 \item[] \textbf{$\mu_L$} $= 6.73$
 \item[] \textbf{$\sigma_L^2$} $= 1.93$
+\item[] \textbf{$\sigma_L$} $= 1.39$
 \end{itemize}
-
-
 
 Queremos estudiar la demanda de $X$ que vamos a tener para $L$ unidades de tiempo marcadas por el lead-time, por lo que,
 
@@ -143,7 +143,7 @@ As\'i la demanda por unidades de tiempo queda de la siguiente manera,
 
 	\begin{equation*}
 	X:  \left\lbrace \begin{array}{l}
-		\mu_X = \mu_L \mu_D = 657.173\\
+		\mu_X = \mu_L \mu_D = 657.17\\
 		\sigma_X^2 = \mu_L \sigma_D^2 + \sigma_L^2 \mu_D^2 = 1718.34\\
 		\sigma_X = 41.45
 	\end{array}
@@ -168,12 +168,33 @@ Con respecto a la probabilidad de ruptura del stock, nuestra variable $X$ tiene 
 \end{array}
 \end{equation*}
 
-Para nuestro problema en concreto se pide que no m\'as del 2\% de unidades se entreguen con retraso, es decir, que nuestra probabilidad de ruptura del stock sea un 2\%. Si tomamos $k = 2$, la probabilidad de ruptura del stock ser\'a algo mayor que el 2\%, as\' nuestro stock de seguridad ser\'a $41.45 \cdot 2 = \textbf{82.9}$
+Para nuestro problema en concreto se pide que no m\'as del 2\% de unidades se entreguen con retraso, es decir, que nuestra probabilidad de ruptura del stock sea un 2\%. Si tomamos $k = 2$, la probabilidad de ruptura del stock ser\'a algo mayor que el 2\%, as\'i nuestro stock de seguridad ser\'a $41.45 \cdot 2 = \textbf{82.9}$
 
+Se calcula \textbf{$r$} a trav\'es de la $k$ que hemos utilizado, sustituyendo en el factor de seguridad,
 
-Con respecto a la \textbf{probabilidad de ruptura del stock en cada ciclo}, vamos a estudiar el nivel de servicio, que estudiar el n\'umero medio de ciclos por unidad de tiempo en los que hay ruptura del stock. Si los pedidos son de tama\~no $q$ y la demanda media es $\mu_D$, en una unidad de tiempo habr\'a un promedio de $d\frac{\mu_D}{q}$ ciclos, y por tanto, el n\'umero medio de ciclos con ruptura del stock ser\'a,
+$$ r - \mu_X = k\sigma_X \Rightarrow r = k\sigma_X + \mu_X = 2\cdot 41.45 + 657.173 = 740.073$$
 
-$$ \text{\textbf{p. de ruptura del stock cada ciclo}} = \frac{\mu_D P(Z > 2)}{q} = \frac{97.6\cdot P(Z > 2)}{q}  $$
+La cantidad, $$ \sigma_X G(k)$$ es el n\'umero de unidades no satisfechas a tiempo. Por lo que $c_s\sigma_X G(k)$ ser\'a la cantidad de unidades monetarias estimada que perderemos en caso de ruptura del stock, es decir, $1000$ euros.
+
+Calculamos tambi\'en $q$ utilizando la f\'ormula obtenida al final de la teor\'ia,
+
+$q$ vendr\'a dado por,
+
+\begin{equation*}
+\begin{array}{l l}
+q & =  \sqrt{\dfrac{2\mu_D (a + c_s \sigma_X G(k))}{h}} \\[.3cm]
+\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 1000)}{1.5}} = 426.83
+\end{array}
+\end{equation*}
+
+Con respecto a la \textbf{probabilidad de ruptura del stock en cada ciclo}, vamos a estudiar el nivel de servicio, que estudiar el n\'umero medio de ciclos por unidad de tiempo en los que hay ruptura del stock. Si los pedidos son de tama\~no $q$ y la demanda media es $\mu_D$, en una unidad de tiempo habr\'a un promedio de $\dfrac{\mu_D}{q}$ ciclos, y por tanto, el n\'umero medio de ciclos con ruptura del stock ser\'a,
+
+\begin{equation*}
+\begin{array}{l l}
+\text{prob} & = \dfrac{\mu_D P(Z > 2)}{q} = \dfrac{97.6\cdot P(Z > 2)}{q}\\[.5cm]
+\, & = \dfrac{97.6\cdot 2}{426.83} = 0.45
+\end{array}
+\end{equation*}
 
 Realizamos ahora el \textbf{an\'alisis del coste}. Sabemos que,
 
@@ -182,37 +203,44 @@ Realizamos ahora el \textbf{an\'alisis del coste}. Sabemos que,
 \item[] \textbf{Coste por unidad:} $c = 10$ euros.
 \item[] \textbf{Coste de almacenamiento por unidad y semana:} $h = 1.5$ euros.
 
-\item[] \textbf{Coste por unidad no satisfecha:} $c_s = 1000 / unidades no entregadas$
-\item[] \textbf{Coste cada vez que se rompe el stock:} $1000$ euros.
+\item[] \textbf{Cantidad estimada en caso de ruptura del stock:} \\$c_s \sigma_X G(k) = 1000$ euros.
 \end{itemize}
 
-Para calcular de forma aproximada el \textbf{coste de almacenamiento}, notemos que si pedimos cuando nuestro nivel de almacenamiento llegue a $r$ y hasta que nos llega el pedido, esperamos una demanda de $\mu_X$, el valor m\'inimo de nuestro stock es $r - \mu_X$ y el m\'aximo es de $r - \mu_X + q$ con $q$ la cantidad fija que pedimos cuando llegamos al punto $r$ de stock. \\
+El \textbf{coste de almacenamiento} por ciclo ser\'a, en media, $k\sigma_X + \dfrac{q}{2}$, multiplicado por la longitud del ciclo, es decir, $\dfrac{q}{\mu_D}$ y por el coste de almacenamiento $h$.
 
-El valor medio del stock ser\'a de $r - \mu_X + \frac{q}{2} = k\sigma_X + \frac{q}{2} = 2\cdot 41.45 + \frac{q}{2} $
-
-As\'i, el coste de almacenamiento por semana ser\'a en media, el valor medio del stock, multiplicado por la longitud del ciclo $\dfrac{\mu_D}{q}$ y por el coste de almacenamiento por unidad y semana $h$.
-
-$$ \left[ k\sigma_X + \frac{q}{2} \right] \frac{\mu_D}{q}\cdot h = \left[ 2\cdot 41.45 + \frac{q}{2} \right] \frac{97.6}{q} \cdot 1.5$$
-
-Expresado anualmente,
-
-$$ \left[ 2\cdot 41.45 + \frac{q}{2} \right] \frac{97.6}{q} \cdot 1.5 \cdot 52 \text{ semanas}$$
+$$\left[k\sigma_X + \dfrac{q}{2}\right] \dfrac{q}{\mu_D} h = \left[2\cdot 41.45 + \dfrac{426.83}{2} \right] \dfrac{426.83}{97.6} \cdot 1.5 = 1943.79 \text{ euros}$$
 
 
-El \textbf{coste total} por unidad de tiempo ser\'a,
+Para el \textbf{coste total} por unidad de tiempo debemos sumar la cantidad fija, el coste de todas las unidades y el coste por ruptura del material,
 
 \begin{equation*}
 \begin{array}{l l}
-\text{coste} = & \dfrac{a\mu_D}{q} + \mu_D c + (k\sigma_X + \dfrac{q}{2}) h + \dfrac{c_s\sigma_X \mu_D G(k)}{1.5} \\[.3cm]
-\, & \dfrac{400\cdot 97.6}{q} + 97.6\cdot 10 + (2\cdot 41.45 + \frac{q}{2})\cdot 1.5 + \dfrac{c_s\cdot 41.45 \cdot 97.6\cdot G(2)}{q}\\[.3cm]
-\, & \dfrac{39040}{q} + 1100.35 + 0.75\cdot q + \dfrac{4045.52\cdot c_s}{q}\cdot G(2)
+\text{coste} & =  \dfrac{a\mu_D}{q} + \mu_D c + (k\sigma_X + \dfrac{q}{2}) h + \dfrac{c_s\sigma_X \mu_D G(k)}{1.5} \\[.5cm]
+\, & = \dfrac{400\cdot 97.6}{426.83} + 97.6\cdot 10 + (2\cdot 41.45 + \dfrac{426.83}{2})\cdot 1.5 + \dfrac{1000\cdot 97.6}{426.83} \\[.5cm]
+\, & = 1740.6
 \end{array}
 \end{equation*}
 
+El \textbf{coste del material} podremos calcularlo gracias al coste total y al coste de almacenamiento. 
 
-$q$ vendr\'a dado por,
 
-$$ q = \sqrt{\frac{2\mu_D (a + c_s \sigma_X G(k))}{h}} = \sqrt{\frac{2\cdot 45.32(500 + c_s\sigma_X G(k))}{h}}$$
+
+
+\item[\textbf{Apartado B}]
+En este caso, si nos olvidamos del 2\% de unidades entregadas con retraso, los resultados quedar\'ian:
+
+Suponiendo que $k$ es el valor que hace que $P(Z > k) = $
+%\begin{itemize}
+%\item[Stock de seguridad] $41.45k$$
+%%\item[Prob. ruptura de stock / ciclo] $\dfrac{97.6\cdot P(Z > k)}{q}$
+%\item[Coste almacenamiento]
+%\item[Coste pedido]
+%\item[Coste material]
+%\end{itemize}
+
+
+\item[\textbf{Apartado C}]
+
      
 \end{itemize}
 
