@@ -132,19 +132,19 @@ Vamos a definir nuestra demanda como una variable aleatoria $D$ cuya esperanza y
 	\right. 
 	\end{equation*}
 
-En nuestro caso, el lead-time tambi\'en es aleatorio, pero contamos con algunos datos anteriores, as\'i que tambi\'en podemos calcular su media y su varianza,
+En nuestro caso, el lead-time tambi\'en es aleatorio, pero contamos con algunos datos anteriores, as\'i que tambi\'en podemos calcular su media y su varianza, y posteriormente dividir para 6 porque nuestra unidad de tiempo ser\'a en semanas (6 d\'ias laborables por semana)
 
 %\begin{itemize}
-%\item[] \textbf{$\mu_L$} $= 6.73$
-%\item[] \textbf{$\sigma_L^2$} $= 1.93$
-%\item[] \textbf{$\sigma_L$} $= 1.39$
+%\item[] \textbf{$\mu_L$} $= 1.12$
+%\item[] \textbf{$\sigma_L^2$} $= 0.33$
+%\item[] \textbf{$\sigma_L$} $= $
 %\end{itemize}
 
 	\begin{equation*}
 	L:  \left\lbrace \begin{array}{l}
-		\mu_L = 6.73\\
-		\sigma_L^2 = 1.93\\
-		\sigma_L = 1.39
+		\mu_L = 6.73 / 6 = 1.12\\
+		\sigma_L^2 = 1.93 / 6 = 0.33\\
+		\sigma_L = 0.56
 	\end{array}
 	\right. 
 	\end{equation*}
@@ -158,9 +158,9 @@ As\'i la demanda por unidades de tiempo queda de la siguiente manera,
 
 	\begin{equation*}
 	X:  \left\lbrace \begin{array}{l}
-		\mu_X = \mu_L \mu_D = 656.85\\
-		\sigma_X^2 = \mu_L \sigma_D^2 + \sigma_L^2 \mu_D^2 = 1717.69\\
-		\sigma_X = 41.45
+		\mu_X = \mu_L \mu_D = 109.31\\
+		\sigma_X^2 = \mu_L \sigma_D^2 + \sigma_L^2 \mu_D^2 = 438.36\\
+		\sigma_X = 20.94
 	\end{array}
 	\right. 
 	\end{equation*}
@@ -169,49 +169,108 @@ Vamos a modelizar nuestro problema utilizando un modelo de revisi\'on continua, 
 
 El \'unico momento en el que se puede producir la posibilidad de ruptura del stock es durante el lead-time. Cuando veamos que el stock baja de una cantidad $r$, haremos el siguiente pedido, pero puede ser que la demanda durante el lead-time sea mayor que $r$, en cuyo caso no podremos satisfacerla. Por esta raz\'on, contamos con nuestra variable $X$, demanda durante el lead-time. Estimaremos que nuestra variable $X$ se comporta como una variable normal de media y desviaci\'on t\'ipica conocidas gracias a los c\'alculos anteriores.\\
 
-La cantidad media de demanda que esperamos durante el lead-time es $\mu_X$, si realizamos el pedido cuando tenemos un nivel de stock de $r$, en media esperamos tener un $r - \mu_X = r - 41.45$, es decir, nuestro \textit{stock de seguridad}. Podemos escribir el stock de seguridad como un factor de la desviaci\'on t\'ipica de X: $r - \mu_X = k\sigma_X =  41.42 k$. La constante $k$ es nuestro factor de seguridad. A mayor $k$, menor probabilidad de ruptura del stock pero mayor gasto de almacenamiento. \\
+El stock de seguridad es $r - \mu_X$, y suele ser habitual ponerlo en funci\'on de la desviaci\'on t\'ipica, es decir, $r - \mu_X = k\sigma_X = 20.94k$
 
-$ \text{stock de seguridad} = 41.45 k$\\
+Vamos a minimizar el coste de todos los gastos (gastos fijos, gastos en material, gastos de almacenamiento, gastos según la probabilidad de pérdidas), as\'i que plantearemos nuestra funci\'on objetivo,
 
-Con respecto a la probabilidad de ruptura del stock, nuestra variable $X$ tiene una distribuci\'n $ X\sim N(657.173, 41.45)$,
+\begin{itemize}
+\item[] \textbf{Coste fijo por pedido:} $a = 400$ euros.
+\item[] \textbf{Coste por material:} $cq = 10q$ euros.
+\item[] \textbf{Coste por almacenamiento:} cada pedido lo hacemos llegado el punto de $r$ unidades en stock, la demanda esperada en ese momento es de $\mu_X$ por lo que el valor m\'inimo del stock es $r - \mu_X$, el m \'aximo es $r - \mu_X + q$ por lo que el valor medio ser\'a $r - \mu_X + q/2$. La longitud del ciclo es $q/\mu_D$, as\'i el coste de almacenamiento ser\'a todo esto multiplicado por $h = 1.5$ euros por unidad y por semana.
+$$ (k\sigma_X + \dfrac{q}{2})\dfrac{q}{\mu_D} h = (20.94k + \dfrac{q}{2})\dfrac{q}{97.6} 1.5$$
 
-\begin{equation*}
-\begin{array}{l l}
- P(\text{ruptura del stock}) & =  P(X > r) = P\left(\dfrac{X - \mu_X}{\sigma_X} > \dfrac{r-\mu_X}{\sigma_X}\right) \\[0.5cm]
- \, &   = P\left(\dfrac{X - 657.173}{41.45} > k\right) = P\left(\dfrac{X - 657.173}{41.45} > k\right) \\[0.5cm]
- \, &   = P(Z > k)
-\end{array}
-\end{equation*}
+\item[] \textbf{Coste por gastos en la ruptura del stock:} en cada ciclo no queremos que m\'as del 2\% de unidades se dejen sin entregar, y supondr\'a un coste de $1000$ euros cada vez que ocurra, multiplicado por la probabilidad de que esto ocurra,
 
-Para nuestro problema en concreto se pide que no m\'as del 2\% de unidades se entreguen con retraso, es decir, que nuestra probabilidad de ruptura del stock sea un 2\%. Si tomamos $k = 2$, la probabilidad de ruptura del stock ser\'a algo mayor que el 2\%, as\'i nuestro stock de seguridad ser\'a $41.45 \cdot 2 = \textbf{82.9}$
+$$ 1000\cdot P(Z > k)\text{donde Z sigue una distribuci\'on normal}$$
+\end{itemize}
 
-Se calcula \textbf{$r$} a trav\'es de la $k$ que hemos utilizado, sustituyendo en el factor de seguridad,
-
-$$ r - \mu_X = k\sigma_X \Rightarrow r = k\sigma_X + \mu_X = 2\cdot 41.45 + 657.173 = 740.073$$
-
-%La cantidad, $$ \sigma_X G(k)$$ es el n\'umero de unidades no satisfechas a tiempo. Por lo que $c_s\sigma_X G(k)$ ser\'a la cantidad de unidades monetarias estimada que perderemos en caso de ruptura del stock, es decir, $1000$ euros.\\
-
-Calculamos tambi\'en $q$ utilizando la f\'ormula obtenida al final de la teor\'ia,
-
-$q$ vendr\'a dado por,
+La funci\'on objetivo es el coste por unidad de tiempo, que en nuestro caso es,
 
 \begin{equation*}
 \begin{array}{l l}
-q & =  \sqrt{\dfrac{2\mu_D (a + c_s \sigma_X G(k))}{h}} \\[.3cm]
-%\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 1000)}{1.5}} = 426.83\text{ unidades.}
-\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 0)}{1.5}} = 228.15\text{ unidades.}
+coste & = \dfrac{4000\cdot 97.6}{q} + 10\cdot 97.6 + (20.94k + \dfrac{q}{2}) 1.5 + \dfrac{1000\cdot 97.6 P(Z > k)}{q}\\[.5cm]
+\, & = \dfrac{39040 + 9760\cdot P(Z > k)}{q} + 31.41k + 0.75q + 976
+
 \end{array}
 \end{equation*}
 
-Con respecto a la \textbf{probabilidad de ruptura del stock en cada ciclo}, vamos a estudiar el nivel de servicio, lo que implica estudiar el n\'umero medio de ciclos por unidad de tiempo en los que hay ruptura del stock. Si los pedidos son de tama\~no $q$ y la demanda media es $\mu_D$, en una unidad de tiempo habr\'a un promedio de $\dfrac{\mu_D}{q}$ ciclos, y por tanto, el n\'umero medio de ciclos con ruptura del stock ser\'a,
+%\begin{equation*}
+%\begin{array}{l l}
+% P(\text{ruptura del stock}) & =  P(X > r) = P\left(\dfrac{X - \mu_X}{\sigma_X} > \dfrac{r-\mu_X}{\sigma_X}\right) \\[0.5cm]
+% \, &   = P\left(\dfrac{X - 657.173}{20.94} > k\right) = P\left(\dfrac{X - 657.173}{20.94} > k\right) \\[0.5cm]
+% \, &   = P(Z > k)
+%\end{array}
+%\end{equation*}
 
-\begin{equation*}
+Por otro lado, la restricci\'on que nos plantean de que no m\'as del 2\% de unidades entregadas con retraso nos aporta la siguiente ecuaci\'on,
+
+\begin{equation}
+\dfrac{\sigma_X \cdot G(k)}{q} = 0.02
+\end{equation}
+
+donde $G(k) = \int_k^\infty (z - k) f_Z(z)\, \mathrm{d}z $ con $f_Z(z)$ la funci\'on de densidad de la normal est\'andar. 
+
+%Calculamos tambi\'en $q$ utilizando la f\'ormula obtenida al final de la teor\'ia,
+%
+%$q$ vendr\'a dado por,
+%
+%\begin{equation*}
+%\begin{array}{l l}
+%q & =  \sqrt{\dfrac{2\mu_D (a + c_s \sigma_X G(k))}{h}} \\[.3cm]
+%%\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 1000)}{1.5}} = 426.83\text{ unidades.}
+%\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 0)}{1.5}} = 228.15\text{ unidades.}
+%\end{array}
+%\end{equation*}
+
+Derivamos nuestra funci\'on de coste en funci\'on de $q$ e igualamos a $0$ para hallar el m\'inimo,
+
+\begin{equation}\label{ecq}
 \begin{array}{l l}
-\text{prob} & = \dfrac{\mu_D P(Z > 2)}{q} = \dfrac{97.6\cdot P(Z > 2)}{q}\\[.5cm]
-%\, & = \dfrac{97.6\cdot 0.02}{426.83} = 0.0045 \sim 0.45\%
-\, & = \dfrac{97.6\cdot 0.02}{228.15} = 0.0085 \sim 0.45\%
+
+\dfrac{d\text{\,}coste}{dq} & = \dfrac{-39040 - 9760\cdot P(Z > k)}{q^2} + 0.75 = 0\\[.5cm]
+
+& \, \Rightarrow q = \sqrt{\dfrac{39040 + 9760\cdot P(Z > k)}{0.75}} 
+
 \end{array}
-\end{equation*}
+\end{equation}
+
+
+Derivamos de nuevo en funci\'on de $k$,
+
+\begin{equation}\label{eck}
+\begin{array}{l l}
+\dfrac{d\text{\,}coste}{dk} & = 31.41 - \dfrac{9760\cdot f_Z(k)}{q} = 0 \\[.5cm]
+& \, \Rightarrow f_Z(k) = \dfrac{31.41q}{9760}
+\end{array}
+\end{equation}
+
+Sustituimos (3) en (2), 
+
+$$ q = \sqrt{\dfrac{39040}{075}} = 228.15 \text{ unidades}$$
+
+Ahora, hallamos la $k$ sustituyendo con el valor de $q$ en (3),
+
+$$ f_Z(k) = \dfrac{31.41\cdot 228.15}{9760} = 0.73 \Rightarrow k = 0.78$$
+
+Ahora que tenemos ambos datos relevantes, podemos hallar el resto.
+
+$$r - \mu_X = r - 109.31 = k\sigma_X = 0.78\cdot 20.94 \Rightarrow r = 125.64\text{ unidades}$$ 
+
+La probabilidad de ruptura del stock es,
+
+$$ P(Z > 0.78) = 0.2177$$
+
+El stock de seguridad es,
+
+$$ $$
+
+
+%Utilizando la ecuaci\'on (1),
+%
+%$$ 50\cdot 20.94\cdot G(k) = \sqrt{\dfrac{39040 + 9760\cdot P(Z > k)}{0.75}}$$
+
+
+
 
 \smallskip
 
@@ -227,8 +286,8 @@ Realizamos ahora el \textbf{an\'alisis del coste}.
 
 El \textbf{coste de almacenamiento} por unidad de tiempo (semana) ser\'a, en media, $k\sigma_X + \dfrac{q}{2}$, multiplicado por el coste de almacenamiento $h$,
 
-%$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[2\cdot 41.45 + \dfrac{426.83}{2} \right]\cdot 1.5 = 444.47\text{ euros.}$$
-$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[2\cdot 41.45 + \dfrac{228.15}{2} \right]\cdot 1.5 = 295.46\text{ euros.}$$
+%$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[2\cdot 20.94 + \dfrac{426.83}{2} \right]\cdot 1.5 = 444.47\text{ euros.}$$
+$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[2\cdot 20.94 + \dfrac{228.15}{2} \right]\cdot 1.5 = 295.46\text{ euros.}$$
 
 El \textbf{coste del material} por unidad de tiempo (semana) es, en promedio,
 
@@ -266,7 +325,7 @@ Si quitamos la resricci\'on del 2\% de unidades entregadas con retraso, podemos 
 \subsubsection{Soluci\'on 1}
 Desde el enunciado nos dicen, que no se las unidades retrasadas se dejan sin entregar, as\'i que podemos abordar el problema imponiendo la imposibilidad en la ruptura del stock. Al no haber ruptura del stock, la cantidad de $1000$ euros cada vez que se rompe ya no nos interesa. Apoy\'andonos en el punto 2.1 de la teor\'ia y modific\'andolo para adaptarnos a nuestro modelo aleatorio, se deduce que vamos a realizar el pedido de nuevas unidades cuando el stock alcance un punto $Ld$. No conocemos el lead-time, pero s\'i podemos obtener su media, lo mismo con $d$, utilizaremos nuestra variable $D$ y su esperanza $\mu_D$,
 
-$$ r = Ld = \mu_L \mu_D = 6.73 \cdot 97.6 = 656.85$$
+$$ r = Ld = \mu_L \mu_D = 1.12 \cdot 97.6 = 656.85$$
 
 La cantidad que pediremos alcanzado este punto ser\'a $q = \sqrt{\dfrac{2ad}{h}}$. Nuevamente, utilizamos la esperanza de $D$,
 
@@ -280,16 +339,16 @@ $$ P(Z > k) = P(\text{ruptura del stock})$$
 Los valores de $q$ y $r$ ser\'an,
 
 $$ q = \sqrt{\dfrac{2\mu_D(a + 0)}{1.5}} = \sqrt{\dfrac{2\cdot 97.6\cdot 400}{1.5}} = 228.15 \text{ unidades.}$$
-$$ r = k\sigma_X + \mu_X = 41.45k + 656.85 \text{ unidades.}$$
+$$ r = k\sigma_X + \mu_X = 20.94k + 656.85 \text{ unidades.}$$
 
-El stock de seguridad ser\'a $r - \mu_X = k\sigma_X = 41.45k$
+El stock de seguridad ser\'a $r - \mu_X = k\sigma_X = 20.94k$
 
 %La probabilidad de ruptura del stock por ciclo ser\'a $$ \dfrac{\mu_D P(Z > k)}{q} = \dfrac{97.6 P(Z > k)}{426.83}$$
 La probabilidad de ruptura del stock por ciclo ser\'a $$ \dfrac{\mu_D P(Z > k)}{q} = \dfrac{97.6 P(Z > k)}{228.15}$$
 
 El \textbf{coste de almacenamiento} por unidad de tiempo (semana) ser\'a, en media, 
 
-$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[41.45k + \dfrac{228.15}{2} \right]\cdot 1.5 = 62.175k + 171.11 \text{ euros.}$$
+$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[20.94k + \dfrac{228.15}{2} \right]\cdot 1.5 = 62.175k + 171.11 \text{ euros.}$$
 
 El \textbf{coste del material} por unidad de tiempo (semana) es, en promedio,
 
@@ -360,7 +419,7 @@ El \textbf{coste del almacenamiento} ser\'a el mismo que en el apartado A [ver \
 
 Con respecto al \textbf{stock de seguridad}, es un factor que no depende del coste por unidad del producto, as\'i que podemos utilizar la misma f\'ormula que antes, en las mismas condiciones que antes, es decir, $k=2$,
 
-$$ \text{factor de seguridad} = k\sigma_X = 41.45k = 82.9$$
+$$ \text{factor de seguridad} = k\sigma_X = 20.94k = 82.9$$
 
 \smallskip
 
