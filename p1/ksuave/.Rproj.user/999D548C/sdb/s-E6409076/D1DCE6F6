@@ -1,0 +1,16 @@
+{
+    "contents" : "\n# This is the server logic for a Shiny web application.\n# You can find out more about building applications with Shiny here:\n# \n# http://www.rstudio.com/shiny/\n#\n\nlibrary(shiny)\n\n\n\nshinyServer(function(input, output) {\n   \n  dataset<-reactive({\n    \n    x<-runif(input$ssize)\n    y<- .4+ 3*x+ 2*exp(-(x-.4)^2/.05) +.09*rnorm(input$ssize)\n    data.frame(x=x,y=y)\n  })\n  \n  output$ksPlot <- renderPlot({\n        \n    # draw the scatterplot and the kernel smoothing line  with the specified bandwidth\n    plot(x = dataset()$x, y = dataset()$y, type=\"n\")\n    if(input$scatter) points(x = dataset()$x, y = dataset()$y)\n    if(input$truereg) \n      {xg<-seq(0,1,length.out = 200)\n       yg<-.4+3*xg+ 2*exp(-(xg-.4)^2/0.05)\n      lines(yg~xg,  lwd=3,col=3)\n         \n    }\n    lines(ksmooth(x = dataset()$x, y = dataset()$y, \n                  kernel = input$kernel,\n                  bandwidth = input$bw,\n                  range.x = c(0,1),\n            n.points = 200),col=2,lwd=.5)\n    \n  })\n  \n})\n",
+    "created" : 1423224134029.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2631838916",
+    "id" : "D1DCE6F6",
+    "lastKnownWriteTime" : 1423224140,
+    "path" : "~/Master/mineria/p1/ksuave/server.R",
+    "project_path" : "server.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
