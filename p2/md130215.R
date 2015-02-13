@@ -26,6 +26,7 @@ mod.lda
 
 ## representacion de las dos grupos de acuerdo con las dos primeras variables can�nica de clasificaci�n
 
+
 plot(mod.lda)
 
 
@@ -34,15 +35,16 @@ plot(mod.lda)
 predictLDA <- predict(mod.lda)
 TAB <- table(iris2$Species, predictLDA$class)
 TAB
-mcrlda <- 1 - sum(diag(TAB))/sum(TAB)
-mcrlda
+# observando la tabla, vemos que de la clase s se clasifican 50 bien, de e sólo 48 y de v 49 y 2 y 1 confusiones
+mcrlda <- 1 - sum(diag(TAB))/sum(TAB) # proporcion de fallos, sumando la diagonal entre el total y haciendo el complementario
+mcrlda # un 2% de mal clasificados
 
 ## Representamos  de forma simultanea la frontera y los datos (utilizamos las variables can�nicas de discriminacion) 
 ## Uso de la funci�n partimat de la libreria klaR
 
 library(klaR)
 
-iris3<-cbind(iris2, predictLDA$x[,1:2])
+iris3<-cbind(iris2, predictLDA$x[,1:2]) # añadimos el iris2 a las que acabamos de obtener
 
 partimat(Species ~ LD2+LD1, data=iris3, method="lda")
 
@@ -82,12 +84,11 @@ partimat(Species ~ ., data=iris2, method="qda", plot.matrix=TRUE)
 
 
 ## Naive Bayes (e1071). En v. métricas asume normalidad. Admite suavizado de laplace.
-
+library(e1071)
 mod.NB <- naiveBayes(Species ~ ., data = iris2)
 mod.NB
 
 ## Estimaci�n de la matriz de mala clasificaci�n y del error de mala clasificacion aparente (peligro de optimismo)
-
 
 predictNB <- predict(mod.NB, newdata=iris2)
 TAB <- table(iris2$Species, predictNB)
@@ -99,7 +100,8 @@ partimat(Species ~., data=iris2, method="naiveBayes", plot.matrix=TRUE)
 
 
 
-## EStimacion por knn  (k=3 default)
+## EStimacion por knn  (k=3 default) http://es.wikipedia.org/wiki/Knn
+# construye un clasificador basandose en los3 vecinos próximos
 
 mod.sknn <- sknn(Species ~ ., data = iris2, gamma=0)
 mod.sknn
@@ -112,8 +114,8 @@ TAB <- table(iris2$Species, predictsknn$class)
 TAB
 mcrsknn <- 1 - sum(diag(TAB))/sum(TAB)
 mcrsknn
-
-partimat(Species ~., data=iris2, method="sknn", plot.matrix=TRUE, gamma=1.0)
+# gamma es el suavizado, gamma = 0.0 no suaviza
+partimat(Species ~., data=iris2, method="sknn", plot.matrix=TRUE, gamma=0.0)
 
 
 
@@ -122,6 +124,7 @@ partimat(Species ~., data=iris2, method="sknn", plot.matrix=TRUE, gamma=1.0)
 
 ## Uso de la fucion stepclass de klaR. improvement=0.001 o m�s peque�o para que entren 2 o m�s variables
 ## Uso del error aparente.
+# permite hacer una selección secuencial de las variables más relevantes  
 
 # Lineal
 
@@ -140,14 +143,19 @@ stepclass(Species~., data=iris2, method="qda", improvement=0.001)
 ## conventional interface and bootstrap sampling:
 x <- iris2[,-5]
 y <- iris2[,5]
-obj2 <- tune.knn(x,y, k = 1:15, tunecontrol = tune.control(sampling = "boot",nboot=500))
+
+# Función tune para knn
+# de 1 a 15 vecinos próximos, x matriz de datos, y variable categorica especies
+# remuestreamos de un conjunto de individuos, en los que puede haber repeticiones
+# utilizando la filosofia bootstrap, más de 100
+
+obj2 <- tune.knn(x,y, k = 1:15, tunecontrol = tune.control(sampling = "boot",nboot=900))
 summary(obj2)
 plot(obj2)
 
 tune.knn(x,y, k = 12, tunecontrol = tune.control(sampling = "boot",nboot=500))
-
-
-
+summary(obj2)
+plot(obj2)
 
 
 
@@ -208,7 +216,7 @@ table(iris2$Species, qda(Species ~., data=iris2,CV=TRUE)$class)
 ####################################
 
 
-#lctura y creacion de 4 grupos
+#lectura y creacion de 4 grupos
 
 library(MASS)
 data(crabs)
@@ -243,18 +251,14 @@ mod.lda
 library(MASS)
 
 data(Pima.tr)
-
 help(Pima.tr)
 
 
 
 plot(Pima.tr[,1:7],col=Pima.tr[,8])
 
+
 densityplot( ~ Pima.tr[,1:7], groups=Pima.tr$type, data=Pima.tr)
-
-
-
-
 
 mod.lda <- lda(type ~ ., data = Pima.tr)
 predictLDA <- predict(mod.lda, newdata = Pima.te)
@@ -280,14 +284,12 @@ confusion(Pima.te$type, predictQDA$class)
 
 ### MODELO de REGRESION LOG�STICA
 
-
-
-pima.glm1<-glm(type~., binomial, data=Pima.tr)
+pima.glm1<-glm(type~., binomial, data=Pima.tr) # para los Pima.training
 summary(pima.glm1)
 
-predictGLM<-predict(pima.glm1, newdata= Pima.te, type = "response")
+predictGLM<-predict(pima.glm1, newdata= Pima.te, type = "response") # para los Pima.test
 
-TAB <- table(Pima.te$type, predictGLM > .5)
+TAB <- table(Pima.te$type, predictGLM > .5) # modificacion: nos quedamos con los valores predichos > 0.5
 TAB
 mcrglm1 <- 1 - sum(diag(TAB))/sum(TAB)
 mcrglm1
@@ -295,7 +297,7 @@ mcrglm1
 
 # alternativamente
 
-TAB <- table(Pima.te$type, round(predictGLM ))
+TAB <- table(Pima.te$type, round(predictGLM )) # similar a > .5 en este caso, lo que hace es redondear a 0 o a 1
 TAB
 mcrglm1 <- 1 - sum(diag(TAB))/sum(TAB)
 mcrglm1
@@ -315,6 +317,9 @@ termplot(pima.glm1, se=TRUE, rug=TRUE)
 require(effects)
 plot(allEffects(pima.glm1))
 
+# vemos que por ejemplo en la edad tenemos una gran banda de icertidumbre aunque tiene mucha relevancia en la diabetes
+# sin embargo el valor bp no influye, es una línea plana, o skin también
+
 ## a�adir suavizadores para detectar efecto no lineal
 
 termplot(pima.glm1, partial.resid=TRUE, se=TRUE, rug=TRUE, smooth=panel.smooth, span.smth=1/5)
@@ -333,7 +338,7 @@ summary(pima.glm2)
 
 stepAIC(pima.glm1, scope=c(upper=.~.^2, lower=.~1))
 
-pima.glm3<-stepAIC(pima.glm1, scope=c(upper=.~.^2, lower=.~1))
+pima.glm3<-stepAIC(pima.glm1, scope=c(upper=.~.^2, lower=.~1)) # interacciones de ornde 2 entre lsa variables
 
 summary(pima.glm3)
 
@@ -342,7 +347,6 @@ confusion(Pima.te$type ,round(predict(pima.glm3, newdata= Pima.te, type = "respo
 # visualización de interacciones
 
 plot(allEffects(pima.glm3))
-
 
 #notar la diferencia con 
 
