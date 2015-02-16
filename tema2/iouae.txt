@@ -1,0 +1,47 @@
+Ejercicio 8
+===========
+
+In [228]:
+from scipy.io import loadmat
+
+In [229]:
+misvar=loadmat(ruta+'operoculta.mat')
+
+In [230]:
+print misvar.keys()
+['y', '__version__', '__header__', '__globals__']
+
+In [231]:
+print type(misvar['y']), shape(misvar['y'])
+<type 'numpy.ndarray'> (1, 32500)
+
+In [232]:
+miy=misvar['y']
+miy=miy.flatten()
+
+In [244]:
+wavwrite(miy,ruta+'operoculta.wav',fs,enc)
+subprocess.Popen([vlc,ruta+'operoculta.wav']);
+
+In [260]:
+tau=0.6
+M=len(X)/2 
+# creamos un vector para poder hacer la operacion e^(-2*pi*i*tau*n) * X1
+n=arange(-M+1,M+1)
+#n=concatenate((n[M:2*M],n[0:M]))  
+#X1=concatenate((X[M+1:2*M],X[0:M+1])) 
+#X2=exp(-2*pi*1j*tau*n)*X1 # retardo
+X2=exp(-2*pi*1j*tau*n)*X # retardo 
+#X2=concatenate((X2[M:2*M],X2[0:M])) 
+x2=real(ifft(X2)*size(x))
+
+In [262]:
+wavwrite(x2,ruta+'foo.wav',fs,enc)
+subprocess.Popen([vlc,ruta+'foo.wav']);
+
+In [263]:
+figure(1,[20.5,8.5])
+subplot(2,2,1), plot(x), grid(True)
+title(u'a');
+subplot(2,2,2), plot(x2), grid(True)
+title(u'c');
