@@ -167,6 +167,8 @@ knnreg = function(xtrain,ytrain,xtest,k=1)
 #ajuste local constante (equiv al estimador de Nadaraya-Watson)
 
 fit = loess(y~x,deg=0,span=0.4,data=d)
+ess(formula = y ~ x, data = d, span = 0.4, degree = 0)
+
 pred = predict(fit,d)
 lines(hex,pred,lty=2)
 summary(fit)
