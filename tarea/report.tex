@@ -1,2 +1,83 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{dsfont}
+\usepackage{tikz} 
+\usepackage[utf8]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{exercise}
+
+\author{Pilar Barbero Iriarte}
+
+\newenvironment{exercise}[1]% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{Ejercicio (#1)}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+
+
+
+
 \begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+\textsc{Tarea de regresi\'on}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Miner\'ia de datos \\[0.4cm] }
+
+\includegraphics[width=0.5\textwidth]{../logoUZ.png}~\\[1cm]
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autor:}\\
+Pilar Barbero Iriarte
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Profesor:} \\
+Tom\'as Alcal\'a Nalvaiz
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\section{Validaci\'on cruzada}
+
+\section{Regresi\'on}
+
+\subsection{Paramétrica}
+
+\subsection{No paramétrica}
+
+
 \end{document}
