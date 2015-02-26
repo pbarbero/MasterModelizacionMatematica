@@ -152,7 +152,6 @@ Nuestro polinomio va a tener grado $17$.
 
 <<d, echo=FALSE, fig=True>>=
 fit.cv <- lm(y ~ poly(x,13), d)
-
 plot(d$x, d$y, main='Polinomio de regresión orden 17.')
 lines(d$x, predict(fit.cv), col='red')
 @
