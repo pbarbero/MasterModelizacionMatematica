@@ -1,0 +1,188 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{dsfont}
+\usepackage{tikz} 
+\usepackage[utf8]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{exercise}
+
+\author{Pilar Barbero Iriarte}
+
+\newenvironment{exercise}[1]% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{Ejercicio (#1)}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+
+
+
+
+\usepackage{Sweave}
+\begin{document}
+\input{tarea-concordance}
+
+
+\begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+\textsc{Tarea de regresi\'on}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Miner\'ia de datos \\[0.4cm] }
+
+\includegraphics[width=0.5\textwidth]{logoUZ.png}~\\[1cm]
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autor:}\\
+Pilar Barbero Iriarte
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Profesor:} \\
+Tom\'as Alcal\'a Nalvaiz
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+
+\section{Presentaci\'on de los datos}
+
+\begin{exercise}{a}
+
+En el paquete de funciones $MASS$ encontramos un conjunto de datos interesante
+para ensayar diversos t\'ecnicas de regresi\'on. El conjunto se denomina
+$mcycle$. Recogen mediciones del tiempo tras un impacto y de la aceleraci\'on
+de la cabeza en simulacros de accidentes de moto, orientados al dise\~no de
+cascos. Cargamos los datos y vemos el gr\'afico de dispersi\'on correspondiente.
+
+\end{exercise}
+
+\begin{Schunk}
+\begin{Sinput}
+> library(MASS)
+> data(mcycle)
+> summary(mcycle)
+\end{Sinput}
+\begin{Soutput}
+     times           accel        
+ Min.   : 2.40   Min.   :-134.00  
+ 1st Qu.:15.60   1st Qu.: -54.90  
+ Median :23.40   Median : -13.30  
+ Mean   :25.18   Mean   : -25.55  
+ 3rd Qu.:34.80   3rd Qu.:   0.00  
+ Max.   :57.60   Max.   :  75.00  
+\end{Soutput}
+\begin{Sinput}
+> plot(mcycle)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{tarea-1}
+
+
+\section{Validaci\'on cruzada}
+
+\begin{exercise}{b}
+Como se aprecia la figura, la relaci\'on entre el tiempo y la aceleraci\'on
+no es una funci\'on inmediata. Ensaya diversas aproximaciones a la misma.
+En todo los casos da una estimaci\'on lo m\'as correcta posible sobre el error de
+predicci\'on que se consigue con cada modelo. Utiliza para ello validaci\'on cruzada. (leve-one-out o $10-$fold).
+\end{exercise}
+
+\pagebreak
+
+\section{Regresi\'on}
+
+\begin{exercise}{c}
+Entre las t\'ecnicas de regresi\'on elige y compara
+una de tipo param´etrico y una de tipo no param\'etrico.
+\end{exercise}
+
+
+\subsection{Paramétrica}
+
+Para esta tarea, vamos a elegir un \textbf{modelo de regresi\'on polin\'omica}, que difiere algo del modelo de regresi\'on lineal. \\
+
+\begin{equation*}
+y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsilon_i\text{,}
+\end{equation*}
+
+con $epsilon_i$ es el error.\\
+
+Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on.
+
+\begin{Schunk}
+\begin{Sinput}
+> library(boot)
+> set.seed(111)
+> x <- mcycle$times
+> y <- mcycle$accel
+> d <- data.frame(x=x,y=y)
+> eep <- rep(NA,20)
+> for ( grado in 1:20 ){
++ eep[grado] <- cv.glm( d, glm( y ~ poly(x, grado), data = d), 
++                      K = 10)$delta[2]
++ }
+> plot(eep,type = 'b')
+\end{Sinput}
+\end{Schunk}
+\includegraphics{tarea-b}
+
+Se puede intuir m\'as o menos el grado del cual haremos la regresi\'on, pero lo aseguramos con:
+
+\begin{Schunk}
+\begin{Sinput}
+> order(eep)
+\end{Sinput}
+\begin{Soutput}
+ [1] 13  8 14  6 12  5  7 10 15  3  4  9  2  1 11 16 17 20 18 19
+\end{Soutput}
+\end{Schunk}
+
+Nuestro polinomio va a tener grado $17$. 
+
+\includegraphics{tarea-5}
+
+
+\subsection{No paramétrica}
+\begin{exercise}{e}
+no-param\'etricas de tipo suavizado: regresi\'on local lineal (hay que justificar la selecci\'on del par\'ametro ventana o de suavizado), loess, funciones
+splines, k-nn (tambi\'en en estos casos hay que justificar el span, el n\'umero
+de vecinos, o el n\'umero equivalente de par\'ametros que se usan).
+no-param\'etricas de tipo \'arbol. Ensayar un \'arbol de regresi\'on y aplicar
+criterios de poda que simplifiquen el tama\~no del \'arbol pero no incrementen
+en exceso el error de predicci\'on estimado.
+\end{exercise}
+
+
+
+\end{document}

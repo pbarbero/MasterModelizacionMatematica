@@ -18,8 +18,9 @@
 \usepackage{lscape} 
 \usepackage{ulem}
 
+\usepackage{Sweave}
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\input{Anapi-concordance}
 
 %%%%%% PORTADA
 \begin{titlepage}
@@ -51,12 +52,6 @@ mediciones del tiempo tras un impacto y de la aceleracion de la cabeza en simula
 accidentes de moto, orientados al dise?o de cascos. Cargamos los datos y vemos el gr?fico de 
 dispersi?n correspondiente. 
 
-<<1, echo=FALSE, results=hide, fig=false>>=
-library(MASS)
-data(mcycle)
-
-plot(mcycle)
-@
 
 \begin{figure}[hc]\label{fig1}
 \begin{center}
@@ -101,24 +96,9 @@ Calcularemos a trav?s del m?todo de validaci?n cruzada el grado $d$ ?ptimo para
 esta regresion y, aunque este sea grande, este m?todo nos proteger? contra el 
 sobreajuste. Los coeficientes del polinomio (\ref{PolReg}) los estimaremos con m?nimos cuadrados. \\
 
-<<2, echo=FALSE, results=hide, fig=FALSE>>=
-library(boot)
-set.seed(1234)
-x <- mcycle$times
-y <- mcycle$accel
-d <- data.frame(x=x,y=y)
-
-mse <- rep(NA,20)
-for (grado in 1:20 )  {
-          mse[grado] <- cv.glm(d, glm( y ~ poly(x, grado), data = d), K = 10)$delta[2]
-}
-@
 
 Vamos a calcular a trav?s de validaci?n cruzada (CV) cual es el grado del polinomio que mejor realiza la regresi?n sobre nuestro conjunto de datos. Para ello realizamos una funci?n que nos calcule el error cuadr?tico medio (MSE, \textit{Mean Squared Error}) que se produce al realizar el polinomio de regresi?n con cada grado $d$.
 
-<<3, echo=FALSE, results=hide, fig=false>>=
-plot(mse,type = 'b')
-@
 
 \begin{figure}[hc]\label{fig1}
 \begin{center}
@@ -129,31 +109,25 @@ plot(mse,type = 'b')
 
 No podemos concretar cual es el grado que minimiza el error cuadr?tico medio, para ello utilizamos la orden: \\
 
-<<4, echo=True>>=
-order(mse)
-@
+\begin{Schunk}
+\begin{Sinput}
+> order(mse)
+\end{Sinput}
+\begin{Soutput}
+ [1] 17  8  6  5  7 15  3 10  4  9 13 12 14  2  1 11 20 16 18 19
+\end{Soutput}
+\end{Schunk}
 
 As? conclu?mos que nuestro polinomio tiene grado $17$. Lo calculamos y observamos en la siguiente imagen. \\
 
-<<5, echo=FALSE, fig=True>>=
-fit.cv <- lm(y ~ poly(x,17), d)
-
-plot(d$x, d$y, main='Datos originales y polinomio de regresi?n de orden 17.')
-lines(d$x, predict(fit.cv), col='red')
-@
+\includegraphics{Anapi-5}
 
 
 \medskip
 
 \subsection{Regresi?n por funciones spline.}
 
-<<6, echo=FALSE, fig=true>>=
-library(splines)
-
-fit.spline<-smooth.spline(d$x,d$y)
-plot(d$x, d$y)
-lines(fit.spline, col=3)
-@
+\includegraphics{Anapi-6}
 
 
 
