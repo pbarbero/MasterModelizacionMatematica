@@ -1,0 +1,160 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+
+
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[dvipsnames, usenames]{color}
+\usepackage{amsmath, amssymb}
+
+\usepackage{pxfonts, pifont}
+
+\usepackage{amsfonts}
+\usepackage{amstext, amsopn, amsbsy}
+\usepackage[colorlinks, linkcolor = black, urlcolor = RoyalBlue]{hyperref}
+\usepackage{lscape} 
+\usepackage{ulem}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+%%%%%% PORTADA
+\begin{titlepage}
+  \sffamily
+  \begin{center}
+		\Huge \textbf{Introducción a la minería de datos.}\\[3cm]
+		\huge Actividad regresión. \\[7cm]
+		\Large Ana Pilar Mateo Sanz\\[2.5cm]
+		\begin{tabular}{l c}
+   			\includegraphics[width=20mm]{escudo_ciencias.jpg} &
+   				Universidad de Zaragoza \\
+    			& Curso 2014-2015
+   		\end{tabular}
+	\end{center}
+\end{titlepage}
+
+%%%%%% INDICE
+
+\tableofcontents
+\newpage
+
+%%%%%% TRABAJO
+
+\section{Presentación de los datos y tareas.}
+
+En el paquete de funciones \textit{MASS} encontraremos un conjunto de datos interesante para 
+ensayar diversas técnicas de regresión. El conjunto se denomina \textsf{mcycle}. Recogen 
+mediciones del tiempo tras un impacto y de la aceleracion de la cabeza en simulacros de 
+accidentes de moto, orientados al diseño de cascos. Cargamos los datos y vemos el gráfico de 
+dispersión correspondiente. 
+
+<<1, echo=FALSE, results=hide, fig=false>>=
+library(MASS)
+data(mcycle)
+
+plot(mcycle)
+@
+
+\begin{figure}[hc]\label{fig1}
+\begin{center}
+  \includegraphics[width = 100mm]{AR-1.pdf}
+  \caption{Datos de motorcycle}
+\end{center}
+\end{figure}
+
+Como se aprecia en \ref{fig1}, la relación entre el tiempo y la aceleración no es una función 
+inmediata. Ensaya diversas aproximaciones a la misma. En todos los casos da una estimación lo 
+más correcta posible sobe el error de prediccion que se consigue con cada modelo. Utiliza para 
+ello validación cruzada (leve-one-out o 10-fold). Entre las técnicas de regresion elige y 
+compara una de tipo paramétrico y una de tipo no paramétrico. 
+
+\newpage
+
+\section{Técnica de regresión paramétrica.}
+
+\subsection{Regresión lineal polinómica.}
+
+\bigskip
+
+En este problema, la relacion entre las variables predictoras y la respuesta es no lineal y por ello tenemos que reemplazar el modelo estándar lineal
+
+\[
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\]
+
+\medskip
+
+por una función polinomial
+
+\begin{equation}\label{PolReg}
+y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \beta_3 x_i^3 + \dots + \beta_d x_i^d + \epsilon_i\text{,}
+\end{equation} 
+
+\medskip
+
+donde $\epsilon_i$ es el término del error. \\
+
+Calcularemos a través del método de validación cruzada el grado $d$ óptimo para 
+esta regresion y, aunque este sea grande, este método nos protegerá contra el 
+sobreajuste. Los coeficientes del polinomio (\ref{PolReg}) los estimaremos con mínimos cuadrados. \\
+
+<<2, echo=FALSE, results=hide, fig=FALSE>>=
+library(boot)
+set.seed(1234)
+x <- mcycle$times
+y <- mcycle$accel
+d <- data.frame(x=x,y=y)
+
+mse <- rep(NA,20)
+for (grado in 1:20 )  {
+          mse[grado] <- cv.glm(d, glm( y ~ poly(x, grado), data = d), K = 10)$delta[2]
+}
+@
+
+Vamos a calcular a través de validación cruzada (CV) cual es el grado del polinomio que mejor realiza la regresión sobre nuestro conjunto de datos. Para ello realizamos una función que nos calcule el error cuadrático medio (MSE, \textit{Mean Squared Error}) que se produce al realizar el polinomio de regresión con cada grado $d$.
+
+<<3, echo=FALSE, results=hide, fig=false>>=
+plot(mse,type = 'b')
+@
+
+\begin{figure}[hc]\label{fig1}
+\begin{center}
+  \includegraphics[width = 60mm]{AR-3.pdf}
+  \caption{Relación entre los grados del polinomio y el error cuadrático medio.}
+\end{center}
+\end{figure}
+
+No podemos concretar cual es el grado que minimiza el error cuadrático medio, para ello utilizamos la orden: \\
+
+<<4, echo=True>>=
+order(mse)
+@
+
+Así concluímos que nuestro polinomio tiene grado $17$. Lo calculamos y observamos en la siguiente imagen. \\
+
+<<5, echo=FALSE, fig=True>>=
+fit.cv <- lm(y ~ poly(x,17), d)
+
+plot(d$x, d$y, main='Datos originales y polinomio de regresión de orden 17.')
+lines(d$x, predict(fit.cv), col='red')
+@
+
+
+\medskip
+
+\subsection{Regresión por funciones spline.}
+
+<<6, echo=FALSE, fig=true>>=
+library(splines)
+
+fit.spline<-smooth.spline(d$x,d$y)
+plot(d$x, d$y)
+lines(fit.spline, col=3)
+@
+
+
+
+\end{document}
