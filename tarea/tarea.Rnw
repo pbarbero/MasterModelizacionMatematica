@@ -86,28 +86,29 @@ cascos. Cargamos los datos y vemos el gr\'afico de dispersi\'on correspondiente.
 
 \end{exercise}
 
-<<1, echo=True, fig=true, width=8, height=8>>=
+\bigskip
+
+El siguiente conjunto de datos ha sido proporcionado con el fin de medir la aceleración de la cabeza en un accidente de moto simulado, con el fin de probar cascos protectores. Aproximadamente en el segundo $20$ se produce el accidente, es ahí donde la regresión cobra más importancia, con el fin de poder predecir resultados.
+
+<<1, echo=False, fig=true, width=10, height=10>>=
 library(MASS)
 data(mcycle)
-summary(mcycle)
 plot(mcycle)
 @
 
 
-\section{Validaci\'on cruzada}
+
+\pagebreak
+
+\section{Regresi\'on}
+
 
 \begin{exercise}{b}
 Como se aprecia la figura, la relaci\'on entre el tiempo y la aceleraci\'on
 no es una funci\'on inmediata. Ensaya diversas aproximaciones a la misma.
 En todo los casos da una estimaci\'on lo m\'as correcta posible sobre el error de
 predicci\'on que se consigue con cada modelo. Utiliza para ello validaci\'on cruzada. (leve-one-out o $10-$fold).
-\end{exercise}
 
-\pagebreak
-
-\section{Regresi\'on}
-
-\begin{exercise}{c}
 Entre las t\'ecnicas de regresi\'on elige y compara
 una de tipo param´etrico y una de tipo no param\'etrico.
 \end{exercise}
@@ -115,7 +116,9 @@ una de tipo param´etrico y una de tipo no param\'etrico.
 
 \subsection{Paramétrica}
 
-Para esta tarea, vamos a elegir un \textbf{modelo de regresi\'on polin\'omica}, que difiere algo del modelo de regresi\'on lineal. \\
+\subsubsection{Modelo de regresi\'on polin\'omica}
+
+Nuestro modelo va a tener la forma,
 
 \begin{equation*}
 y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsilon_i\text{,}
@@ -123,11 +126,18 @@ y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsi
 
 con $epsilon_i$ es el error.\\
 
-Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on.
+Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on. Nuestro polinomio ha de tener grado mayor o igual que 2 (con grado 0 o 1 no podríamos aproximar bien el pico que se produce en el momento del accidente). 
+
+Con el fin de hallar el grado de nuestro polinomio, realizaremos una validación cruzada sobre nuestros datos, en concreto, la validación $10-$fold que divide nuestro conjunto de datos en $10$ subconjuntos. El primer subconjunto no servirá de conjunto de test y los otros 9 nos servirán de entrenamiento. 
+
+Este proceso se repite 10 veces, y en cada iteración, se obtiene un error. El error "absoluto" de este método es la media aritmética de todos los errores.
+
+Supondremos un polinomio de hasta grado 20 y hallaremos el grado real sobre el que haremos la regresión:\\
+
 
 <<b, echo=True, fig=TRUE, width=5, height=5>>=
 library(boot)
-set.seed(111)
+set.seed(1111)
 x <- mcycle$times
 y <- mcycle$accel
 d <- data.frame(x=x,y=y)
@@ -142,28 +152,54 @@ eep[grado] <- cv.glm( d, glm( y ~ poly(x, grado), data = d),
 plot(eep,type = 'b')
 @
 
+
 Se puede intuir m\'as o menos el grado del cual haremos la regresi\'on, pero lo aseguramos con:
 
 <<c, echo=True>>=
 order(eep)
 @
 
-Nuestro polinomio va a tener grado $17$. 
+Nuestro polinomio va a tener grado $15$ (la primera componente del vector). 
 
 <<d, echo=FALSE, fig=True>>=
-fit.cv <- lm(y ~ poly(x,13), d)
-plot(d$x, d$y, main='Polinomio de regresión orden 17.')
+fit.cv <- lm(y ~ poly(x,15), d)
+plot(d$x, d$y, main='Polinomio de regresión orden 15.')
 lines(d$x, predict(fit.cv), col='red')
 @
 
-Gracias a utilizar la validaci\'on cruzada, aseguramos que no hay sobreajuste. 
+Gracias a utilizar la validaci\'on cruzada, aseguramos que no hay sobreajuste, es decir, nuestra funci\'on de regresi\'on no pasa por absolutamente todos los datos.
+
+\pagebreak
 
 
 \subsection{No paramétrica}
 
-Regresi\'on de tipo $k-nn$
+\subsubsection{Splines}
 
+Vamos a utilizar la función de R $smooth.spline()$ la cual genera una sucesión de funciones que luego utilizaremos para hacer mínimos cuadrados. Éste método divide nuestra región en subregiones en las cuales se aplica un modelo de regresión lineal o cuadrático según convenga y luego son unidos a través de algunos puntos en concreto de nuestro conjunto de datos. 
+
+<<e, echo=True, fig=True>>=
+fit.spline <-smooth.spline(x,y)
+plot(x, y, main='Splines')
+lines(fit.spline, col=3)
+@
+
+Podemos intuir a simple vista que este método no va a ser muy fiable ya que depende de la disposición de nuestro conjunto de datos, y de la cantidad empleados. En caso de tener algunos datos muy concentrados, podemos recurrir a ponderar los nodos.
+
+
+\subsubsection{Regresi\'on de tipo $k-nn$}
+
+
+\textit{K-Nearest Neighbors} es un método de clasificación supervisado. 
 <<e, echo=TRUE>>=
+xtrain <- rbind(x)
+xtrain
+
+@
+
+
+
+<<g, echo=TRUE>>=
 knnreg = function(xtrain,ytrain,xtest,k=1)
   {
     n = length(xtrain)
@@ -181,9 +217,36 @@ knnreg = function(xtrain,ytrain,xtest,k=1)
 
 Aplicándolo a nuestro datos.
 
-<<f, echo=True>>=
 
+
+\subsection{Comparación de los modelos}
+
+Podemos observar aquí las tres regresiones,
+
+<<f, echo=False, fig=TRUE>>=
+plot(x,y)
+lines(fit.spline, col='blue')
+lines(d$x, predict(fit.cv), col='red')
+# Falta el knn
 @
+
+
+Utilizaremos el criterio AIC equiparar el método \textit{splines} con los demás.
+<<g, echo=True>>=
+sigma <- sum(residuals(fit.spline)^2)/133
+AIC_spline <- 133*(log(2*pi) + log(sigma) + 1) + 2*fit.spline$df
+AIC_spline
+@
+
+Lo mismo pero para equiparar el modelo polinómico,
+
+<<h, echo=True>>=
+sigma2 <- sum(residuals(fit.cv)^2)/133
+AIC_pol <- 133*(log(2*pi) + log(sigma2) + 1) + 2*fit.cv$df
+AIC_pol
+@
+
+
 
 
 

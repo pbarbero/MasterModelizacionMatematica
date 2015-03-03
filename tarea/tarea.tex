@@ -87,42 +87,25 @@ cascos. Cargamos los datos y vemos el gr\'afico de dispersi\'on correspondiente.
 
 \end{exercise}
 
-\begin{Schunk}
-\begin{Sinput}
-> library(MASS)
-> data(mcycle)
-> summary(mcycle)
-\end{Sinput}
-\begin{Soutput}
-     times           accel        
- Min.   : 2.40   Min.   :-134.00  
- 1st Qu.:15.60   1st Qu.: -54.90  
- Median :23.40   Median : -13.30  
- Mean   :25.18   Mean   : -25.55  
- 3rd Qu.:34.80   3rd Qu.:   0.00  
- Max.   :57.60   Max.   :  75.00  
-\end{Soutput}
-\begin{Sinput}
-> plot(mcycle)
-\end{Sinput}
-\end{Schunk}
+\bigskip
+
+El siguiente conjunto de datos ha sido proporcionado con el fin de medir la aceleración de la cabeza en un accidente de moto simulado, con el fin de probar cascos protectores. Aproximadamente en el segundo $20$ se produce el accidente, es ahí donde la regresión cobra más importancia, con el fin de poder predecir resultados.
+
 \includegraphics{tarea-1}
 
 
-\section{Validaci\'on cruzada}
+
+\pagebreak
+
+\section{Regresi\'on}
+
 
 \begin{exercise}{b}
 Como se aprecia la figura, la relaci\'on entre el tiempo y la aceleraci\'on
 no es una funci\'on inmediata. Ensaya diversas aproximaciones a la misma.
 En todo los casos da una estimaci\'on lo m\'as correcta posible sobre el error de
 predicci\'on que se consigue con cada modelo. Utiliza para ello validaci\'on cruzada. (leve-one-out o $10-$fold).
-\end{exercise}
 
-\pagebreak
-
-\section{Regresi\'on}
-
-\begin{exercise}{c}
 Entre las t\'ecnicas de regresi\'on elige y compara
 una de tipo param´etrico y una de tipo no param\'etrico.
 \end{exercise}
@@ -130,7 +113,9 @@ una de tipo param´etrico y una de tipo no param\'etrico.
 
 \subsection{Paramétrica}
 
-Para esta tarea, vamos a elegir un \textbf{modelo de regresi\'on polin\'omica}, que difiere algo del modelo de regresi\'on lineal. \\
+\subsubsection{Modelo de regresi\'on polin\'omica}
+
+Nuestro modelo va a tener la forma,
 
 \begin{equation*}
 y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsilon_i\text{,}
@@ -138,12 +123,19 @@ y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsi
 
 con $epsilon_i$ es el error.\\
 
-Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on.
+Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on. Nuestro polinomio ha de tener grado mayor o igual que 2 (con grado 0 o 1 no podríamos aproximar bien el pico que se produce en el momento del accidente). 
+
+Con el fin de hallar el grado de nuestro polinomio, realizaremos una validación cruzada sobre nuestros datos, en concreto, la validación $10-$fold que divide nuestro conjunto de datos en $10$ subconjuntos. El primer subconjunto no servirá de conjunto de test y los otros 9 nos servirán de entrenamiento. 
+
+Este proceso se repite 10 veces, y en cada iteración, se obtiene un error. El error "absoluto" de este método es la media aritmética de todos los errores.
+
+Supondremos un polinomio de hasta grado 20 y hallaremos el grado real sobre el que haremos la regresión:\\
+
 
 \begin{Schunk}
 \begin{Sinput}
 > library(boot)
-> set.seed(111)
+> set.seed(1111)
 > x <- mcycle$times
 > y <- mcycle$accel
 > d <- data.frame(x=x,y=y)
@@ -157,6 +149,7 @@ Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo par
 \end{Schunk}
 \includegraphics{tarea-b}
 
+
 Se puede intuir m\'as o menos el grado del cual haremos la regresi\'on, pero lo aseguramos con:
 
 \begin{Schunk}
@@ -164,20 +157,76 @@ Se puede intuir m\'as o menos el grado del cual haremos la regresi\'on, pero lo 
 > order(eep)
 \end{Sinput}
 \begin{Soutput}
- [1] 13  8 14  6 12  5  7 10 15  3  4  9  2  1 11 16 17 20 18 19
+ [1] 15 12  8  6  5  7  4  3 13 10  2  1  9 11 16 17 14 18 20 19
 \end{Soutput}
 \end{Schunk}
 
-Nuestro polinomio va a tener grado $17$. 
+Nuestro polinomio va a tener grado $15$ (la primera componente del vector). 
 
 \includegraphics{tarea-d}
 
-Gracias a utilizar la validaci\'on cruzada, aseguramos que no hay sobreajuste. 
+Gracias a utilizar la validaci\'on cruzada, aseguramos que no hay sobreajuste, es decir, nuestra funci\'on de regresi\'on no pasa por absolutamente todos los datos.
+
+\pagebreak
 
 
 \subsection{No paramétrica}
 
-Regresi\'on de tipo $k-nn$
+\subsubsection{Splines}
+
+Vamos a utilizar la función de R $smooth.spline()$ la cual genera una sucesión de funciones que luego utilizaremos para hacer mínimos cuadrados. Éste método divide nuestra región en subregiones en las cuales se aplica un modelo de regresión lineal o cuadrático según convenga y luego son unidos a través de algunos puntos en concreto de nuestro conjunto de datos. 
+
+\begin{Schunk}
+\begin{Sinput}
+> fit.spline <-smooth.spline(x,y)
+> plot(x, y, main='Splines')
+> lines(fit.spline, col=3)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{tarea-e}
+
+Podemos intuir a simple vista que este método no va a ser muy fiable ya que depende de la disposición de nuestro conjunto de datos, y de la cantidad empleados. En caso de tener algunos datos muy concentrados, podemos recurrir a ponderar los nodos.
+
+
+\subsubsection{Regresi\'on de tipo $k-nn$}
+
+
+\textit{K-Nearest Neighbors} es un método de clasificación supervisado. 
+\begin{Schunk}
+\begin{Sinput}
+> xtrain <- rbind(x)
+> xtrain
+\end{Sinput}
+\begin{Soutput}
+  [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
+x  2.4  2.6  3.2  3.6    4  6.2  6.6  6.8  7.8   8.2   8.8   8.8   9.6    10
+  [,15] [,16] [,17] [,18] [,19] [,20] [,21] [,22] [,23] [,24] [,25] [,26] [,27]
+x  10.2  10.6    11  11.4  13.2  13.6  13.8  14.6  14.6  14.6  14.6  14.6  14.6
+  [,28] [,29] [,30] [,31] [,32] [,33] [,34] [,35] [,36] [,37] [,38] [,39] [,40]
+x  14.8  15.4  15.4  15.4  15.4  15.6  15.6  15.8  15.8    16    16  16.2  16.2
+  [,41] [,42] [,43] [,44] [,45] [,46] [,47] [,48] [,49] [,50] [,51] [,52] [,53]
+x  16.2  16.4  16.4  16.6  16.8  16.8  16.8  17.6  17.6  17.6  17.6  17.8  17.8
+  [,54] [,55] [,56] [,57] [,58] [,59] [,60] [,61] [,62] [,63] [,64] [,65] [,66]
+x  18.6  18.6  19.2  19.4  19.4  19.6  20.2  20.4  21.2  21.4  21.8    22  23.2
+  [,67] [,68] [,69] [,70] [,71] [,72] [,73] [,74] [,75] [,76] [,77] [,78] [,79]
+x  23.4    24  24.2  24.2  24.6    25    25  25.4  25.4  25.6    26  26.2  26.2
+  [,80] [,81] [,82] [,83] [,84] [,85] [,86] [,87] [,88] [,89] [,90] [,91] [,92]
+x  26.4    27  27.2  27.2  27.2  27.6  28.2  28.4  28.4  28.6  29.4  30.2    31
+  [,93] [,94] [,95] [,96] [,97] [,98] [,99] [,100] [,101] [,102] [,103] [,104]
+x  31.2    32    32  32.8  33.4  33.8  34.4   34.8   35.2   35.2   35.4   35.6
+  [,105] [,106] [,107] [,108] [,109] [,110] [,111] [,112] [,113] [,114] [,115]
+x   35.6   36.2   36.2     38     38   39.2   39.4     40   40.4   41.6   41.6
+  [,116] [,117] [,118] [,119] [,120] [,121] [,122] [,123] [,124] [,125] [,126]
+x   42.4   42.8   42.8     43     44   44.4     45   46.6   47.8   47.8   48.8
+  [,127] [,128] [,129] [,130] [,131] [,132] [,133]
+x   50.6     52   53.2     55     55   55.4   57.6
+\end{Soutput}
+\begin{Sinput}
+> 
+\end{Sinput}
+\end{Schunk}
+
+
 
 \begin{Schunk}
 \begin{Sinput}
@@ -196,6 +245,45 @@ Regresi\'on de tipo $k-nn$
 +   }
 \end{Sinput}
 \end{Schunk}
+
+Aplicándolo a nuestro datos.
+
+
+
+\subsection{Comparación de los modelos}
+
+Podemos observar aquí las tres regresiones,
+
+\includegraphics{tarea-f}
+
+
+Utilizaremos el criterio AIC equiparar el método \textit{splines} con los demás.
+\begin{Schunk}
+\begin{Sinput}
+> sigma <- sum(residuals(fit.spline)^2)/133
+> AIC_spline <- 133*(log(2*pi) + log(sigma) + 1) + 2*fit.spline$df
+> AIC_spline
+\end{Sinput}
+\begin{Soutput}
+[1] 1219.147
+\end{Soutput}
+\end{Schunk}
+
+Lo mismo pero para equiparar el modelo polinómico,
+
+\begin{Schunk}
+\begin{Sinput}
+> sigma2 <- sum(residuals(fit.cv)^2)/133
+> AIC_pol <- 133*(log(2*pi) + log(sigma2) + 1) + 2*fit.cv$df
+> AIC_pol
+\end{Sinput}
+\begin{Soutput}
+[1] 1427.194
+\end{Soutput}
+\end{Schunk}
+
+
+
 
 
 \end{document}
