@@ -190,14 +190,7 @@ Podemos intuir a simple vista que este método no va a ser muy fiable ya que dep
 \subsubsection{Regresi\'on de tipo $k-nn$}
 
 
-\textit{K-Nearest Neighbors} es un método de clasificación supervisado. 
-<<e, echo=TRUE>>=
-xtrain <- rbind(x)
-xtrain
-
-@
-
-
+\textit{K-Nearest Neighbors} es un método de clasificación supervisado.TODO
 
 <<g, echo=TRUE>>=
 knnreg = function(xtrain,ytrain,xtest,k=1)
@@ -215,6 +208,15 @@ knnreg = function(xtrain,ytrain,xtest,k=1)
   }
 @
 
+Ajuste por regresión mediante K-vecinos proximos, con k elegido en base al estimador de N-W (estimador Nadayara-Watson)
+<<h, echo=True, fig=True>>=
+
+k=as.integer(100/4.23)
+
+pred.knn = knnreg(x,y,x,k=k)
+lines(x,pred.knn,lty=2)
+@
+
 Aplicándolo a nuestro datos.
 
 
@@ -226,8 +228,8 @@ Podemos observar aquí las tres regresiones,
 <<f, echo=False, fig=TRUE>>=
 plot(x,y)
 lines(fit.spline, col='blue')
-lines(d$x, predict(fit.cv), col='red')
-# Falta el knn
+lines(x, predict(fit.cv), col='red')
+lines(x,pred.knn,lty=2, color='green')
 @
 
 
@@ -246,7 +248,15 @@ AIC_pol <- 133*(log(2*pi) + log(sigma2) + 1) + 2*fit.cv$df
 AIC_pol
 @
 
+Y con los k vecinos próximos
 
+<<h, echo=True>>=
+sigma3 <- sum(residuals(pred.knn)^2)/133
+AIC_knn <- 133*(log(2*pi) + log(sigma2) + 1) + 2*pred.knn$df
+AIC_knn
+@
+
+ TODO Elegir el mejor
 
 
 
