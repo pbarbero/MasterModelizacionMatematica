@@ -22,9 +22,6 @@
   \end{itshape}\ignorespacesafterend
 }
 
-
-
-
 \usepackage{Sweave}
 \begin{document}
 \input{tarea-concordance}
@@ -46,6 +43,7 @@
 \vfill
 
 { \huge \bfseries Miner\'ia de datos \\[0.4cm] }
+\vfill
 
 \includegraphics[width=0.5\textwidth]{logoUZ.png}~\\[1cm]
 
@@ -93,8 +91,6 @@ El siguiente conjunto de datos ha sido proporcionado con el fin de medir la acel
 
 \includegraphics{tarea-1}
 
-
-
 \pagebreak
 
 \section{Regresi\'on}
@@ -110,18 +106,17 @@ Entre las t\'ecnicas de regresi\'on elige y compara
 una de tipo param´etrico y una de tipo no param\'etrico.
 \end{exercise}
 
-
 \subsection{Paramétrica}
 
 \subsubsection{Modelo de regresi\'on polin\'omica}
 
-Nuestro modelo va a tener la forma,
+El modelo de regresión polinómica paramétrico tiene la forma,
 
 \begin{equation*}
 y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsilon_i\text{,}
 \end{equation*}
 
-con $epsilon_i$ es el error.\\
+donde $\epsilon_i$ es el error cometido.\\
 
 Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on. Nuestro polinomio ha de tener grado mayor o igual que 2 (con grado 0 o 1 no podríamos aproximar bien el pico que se produce en el momento del accidente). 
 
@@ -161,7 +156,7 @@ Se puede intuir m\'as o menos el grado del cual haremos la regresi\'on, pero lo 
 \end{Soutput}
 \end{Schunk}
 
-Nuestro polinomio va a tener grado $15$ (la primera componente del vector). 
+Nuestro polinomio va a tener grado $15$ (la primera componente del vector).
 
 \includegraphics{tarea-d}
 
@@ -180,110 +175,74 @@ Vamos a utilizar la función de R $smooth.spline()$ la cual genera una sucesión
 \begin{Sinput}
 > fit.spline <-smooth.spline(x,y)
 > plot(x, y, main='Splines')
-> lines(fit.spline, col=3)
+> lines(predict(fit.spline), col='blue')
 \end{Sinput}
 \end{Schunk}
 \includegraphics{tarea-e}
 
 Podemos intuir a simple vista que este método no va a ser muy fiable ya que depende de la disposición de nuestro conjunto de datos, y de la cantidad empleados. En caso de tener algunos datos muy concentrados, podemos recurrir a ponderar los nodos.
 
+\subsubsection{LOESS}
 
-\subsubsection{Regresi\'on de tipo $k-nn$}
+LOESS es un método de regresión no paramétrico que combina múltiples modelos de regresión de tipo KNN.
 
+Utilizaremos la función \textit{loess()} de R, sin embargo, debemos fijar los valores del \textit{span} y el grado \text{deg}. A mayor valor del span, mayor suavizado obtendremos. 
 
-\textit{K-Nearest Neighbors} es un método de clasificación supervisado. 
-\begin{Schunk}
-\begin{Sinput}
-> xtrain <- rbind(x)
-> xtrain
-\end{Sinput}
-\begin{Soutput}
-  [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
-x  2.4  2.6  3.2  3.6    4  6.2  6.6  6.8  7.8   8.2   8.8   8.8   9.6    10
-  [,15] [,16] [,17] [,18] [,19] [,20] [,21] [,22] [,23] [,24] [,25] [,26] [,27]
-x  10.2  10.6    11  11.4  13.2  13.6  13.8  14.6  14.6  14.6  14.6  14.6  14.6
-  [,28] [,29] [,30] [,31] [,32] [,33] [,34] [,35] [,36] [,37] [,38] [,39] [,40]
-x  14.8  15.4  15.4  15.4  15.4  15.6  15.6  15.8  15.8    16    16  16.2  16.2
-  [,41] [,42] [,43] [,44] [,45] [,46] [,47] [,48] [,49] [,50] [,51] [,52] [,53]
-x  16.2  16.4  16.4  16.6  16.8  16.8  16.8  17.6  17.6  17.6  17.6  17.8  17.8
-  [,54] [,55] [,56] [,57] [,58] [,59] [,60] [,61] [,62] [,63] [,64] [,65] [,66]
-x  18.6  18.6  19.2  19.4  19.4  19.6  20.2  20.4  21.2  21.4  21.8    22  23.2
-  [,67] [,68] [,69] [,70] [,71] [,72] [,73] [,74] [,75] [,76] [,77] [,78] [,79]
-x  23.4    24  24.2  24.2  24.6    25    25  25.4  25.4  25.6    26  26.2  26.2
-  [,80] [,81] [,82] [,83] [,84] [,85] [,86] [,87] [,88] [,89] [,90] [,91] [,92]
-x  26.4    27  27.2  27.2  27.2  27.6  28.2  28.4  28.4  28.6  29.4  30.2    31
-  [,93] [,94] [,95] [,96] [,97] [,98] [,99] [,100] [,101] [,102] [,103] [,104]
-x  31.2    32    32  32.8  33.4  33.8  34.4   34.8   35.2   35.2   35.4   35.6
-  [,105] [,106] [,107] [,108] [,109] [,110] [,111] [,112] [,113] [,114] [,115]
-x   35.6   36.2   36.2     38     38   39.2   39.4     40   40.4   41.6   41.6
-  [,116] [,117] [,118] [,119] [,120] [,121] [,122] [,123] [,124] [,125] [,126]
-x   42.4   42.8   42.8     43     44   44.4     45   46.6   47.8   47.8   48.8
-  [,127] [,128] [,129] [,130] [,131] [,132] [,133]
-x   50.6     52   53.2     55     55   55.4   57.6
-\end{Soutput}
-\begin{Sinput}
-> 
-\end{Sinput}
-\end{Schunk}
+El parámetro \textit{span} controla el grado de suavizado de la regresión, mientras que el grado \textit{deg} controla el grado de los polinomios que utilizaremos para la regresión. Este valor varía entre 0, 1 y 2, aunque si utilizamos grado 0 estaremos haciendo una regresión local constante.
 
-
+En este caso hemos elegido como \textit{span} igual a 0.2 y el grado será 2. 
 
 \begin{Schunk}
 \begin{Sinput}
-> knnreg = function(xtrain,ytrain,xtest,k=1)
-+   {
-+     n = length(xtrain)
-+     N = length(xtest)
-+     f.hat = rep(NA,N)
-+     for(i in 1:N)
-+       {
-+         d = (xtest[i]-xtrain)^2
-+         ind = c(1:n)[rank(d)<(k+1)]
-+         f.hat[i] = mean(y[ind])
-+       }
-+     f.hat
-+   }
+> set.seed(1111)
+> fit.lp = loess(y~x,deg=2,span=0.2,data=d)
+> plot(x, y, main='LOESS')
+> lines(x, predict(fit.lp), col='green')
 \end{Sinput}
 \end{Schunk}
-
-Aplicándolo a nuestro datos.
-
-
+\includegraphics{tarea-f}
 
 \subsection{Comparación de los modelos}
 
 Podemos observar aquí las tres regresiones,
 
-\includegraphics{tarea-f}
+\includegraphics{tarea-g}
 
+El criterio AIC nos proporciona una técnica para decidir entre nuestros modelos estadísticos el que mejor se ajusta a nuestros datos sin conseguir un sobreajuste indeseado. En el caso general la definición del AIC es:
 
-Utilizaremos el criterio AIC equiparar el método \textit{splines} con los demás.
+$$ AIC = 2k - 2 log(L)$$
+
+donde $L$ es el estimador de máxima verosimilutud.
+
 \begin{Schunk}
 \begin{Sinput}
 > sigma <- sum(residuals(fit.spline)^2)/133
 > AIC_spline <- 133*(log(2*pi) + log(sigma) + 1) + 2*fit.spline$df
+> sigma2 <- sum(residuals(fit.cv)^2)/133
+> AIC_pol <- 133*(log(2*pi) + log(sigma2) + 1) + 2*fit.cv$df
+> sigma3 <- sum(fit.lp$residuals^2)/fit.lp$n
+> AIC_pl<- fit.lp$n*(log(2*pi)+log(sigma3) + 1) + 2 *fit.lp$enp
 > AIC_spline
 \end{Sinput}
 \begin{Soutput}
 [1] 1219.147
 \end{Soutput}
-\end{Schunk}
-
-Lo mismo pero para equiparar el modelo polinómico,
-
-\begin{Schunk}
 \begin{Sinput}
-> sigma2 <- sum(residuals(fit.cv)^2)/133
-> AIC_pol <- 133*(log(2*pi) + log(sigma2) + 1) + 2*fit.cv$df
 > AIC_pol
 \end{Sinput}
 \begin{Soutput}
 [1] 1427.194
 \end{Soutput}
+\begin{Sinput}
+> AIC_pl
+\end{Sinput}
+\begin{Soutput}
+[1] 1220.154
+\end{Soutput}
 \end{Schunk}
 
-
-
+A la vista de los resultados, podemos afirmar que el menor AIC lo genera el modelo de suavizado por splines, así que nos quedamos con este.
 
 
 \end{document}
+

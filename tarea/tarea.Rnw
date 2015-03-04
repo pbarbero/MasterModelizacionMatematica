@@ -22,9 +22,6 @@
   \end{itshape}\ignorespacesafterend
 }
 
-
-
-
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 
@@ -45,6 +42,7 @@
 \vfill
 
 { \huge \bfseries Miner\'ia de datos \\[0.4cm] }
+\vfill
 
 \includegraphics[width=0.5\textwidth]{logoUZ.png}~\\[1cm]
 
@@ -96,8 +94,6 @@ data(mcycle)
 plot(mcycle)
 @
 
-
-
 \pagebreak
 
 \section{Regresi\'on}
@@ -113,18 +109,17 @@ Entre las t\'ecnicas de regresi\'on elige y compara
 una de tipo param´etrico y una de tipo no param\'etrico.
 \end{exercise}
 
-
 \subsection{Paramétrica}
 
 \subsubsection{Modelo de regresi\'on polin\'omica}
 
-Nuestro modelo va a tener la forma,
+El modelo de regresión polinómica paramétrico tiene la forma,
 
 \begin{equation*}
 y_i = \alpha_0 + \alpha_1 x_i + \alpha_2 x_i^2 +  \dots + \alpha_d x_i^d + \epsilon_i\text{,}
 \end{equation*}
 
-con $epsilon_i$ es el error.\\
+donde $\epsilon_i$ es el error cometido.\\
 
 Utilizando el m\'etodo de validaci\'on cruzada, hallaremos el grado \'optimo para la regresi\'on. Nuestro polinomio ha de tener grado mayor o igual que 2 (con grado 0 o 1 no podríamos aproximar bien el pico que se produce en el momento del accidente). 
 
@@ -159,12 +154,12 @@ Se puede intuir m\'as o menos el grado del cual haremos la regresi\'on, pero lo 
 order(eep)
 @
 
-Nuestro polinomio va a tener grado $15$ (la primera componente del vector). 
+Nuestro polinomio va a tener grado $15$ (la primera componente del vector).
 
 <<d, echo=FALSE, fig=True>>=
 fit.cv <- lm(y ~ poly(x,15), d)
-plot(d$x, d$y, main='Polinomio de regresión orden 15.')
-lines(d$x, predict(fit.cv), col='red')
+plot(x, y, main='Polinomio de regresión orden 15.')
+lines(x, predict(fit.cv), col='red')
 @
 
 Gracias a utilizar la validaci\'on cruzada, aseguramos que no hay sobreajuste, es decir, nuestra funci\'on de regresi\'on no pasa por absolutamente todos los datos.
@@ -181,83 +176,63 @@ Vamos a utilizar la función de R $smooth.spline()$ la cual genera una sucesión
 <<e, echo=True, fig=True>>=
 fit.spline <-smooth.spline(x,y)
 plot(x, y, main='Splines')
-lines(fit.spline, col=3)
+lines(predict(fit.spline), col='blue')
 @
 
 Podemos intuir a simple vista que este método no va a ser muy fiable ya que depende de la disposición de nuestro conjunto de datos, y de la cantidad empleados. En caso de tener algunos datos muy concentrados, podemos recurrir a ponderar los nodos.
 
+\subsubsection{LOESS}
 
-\subsubsection{Regresi\'on de tipo $k-nn$}
+LOESS es un método de regresión no paramétrico que combina múltiples modelos de regresión de tipo KNN.
 
+Utilizaremos la función \textit{loess()} de R, sin embargo, debemos fijar los valores del \textit{span} y el grado \text{deg}. A mayor valor del span, mayor suavizado obtendremos. 
 
-\textit{K-Nearest Neighbors} es un método de clasificación supervisado.TODO
+El parámetro \textit{span} controla el grado de suavizado de la regresión, mientras que el grado \textit{deg} controla el grado de los polinomios que utilizaremos para la regresión. Este valor varía entre 0, 1 y 2, aunque si utilizamos grado 0 estaremos haciendo una regresión local constante.
 
-<<g, echo=TRUE>>=
-knnreg = function(xtrain,ytrain,xtest,k=1)
-  {
-    n = length(xtrain)
-    N = length(xtest)
-    f.hat = rep(NA,N)
-    for(i in 1:N)
-      {
-        d = (xtest[i]-xtrain)^2
-        ind = c(1:n)[rank(d)<(k+1)]
-        f.hat[i] = mean(y[ind])
-      }
-    f.hat
-  }
+En este caso hemos elegido como \textit{span} igual a 0.2 y el grado será 2. 
+
+<<f, echo=True, fig=TRUE>>=
+set.seed(1111)
+fit.lp = loess(y~x,deg=2,span=0.2,data=d)
+
+plot(x, y, main='LOESS')
+lines(x, predict(fit.lp), col='green')
 @
-
-Ajuste por regresión mediante K-vecinos proximos, con k elegido en base al estimador de N-W (estimador Nadayara-Watson)
-<<h, echo=True, fig=True>>=
-
-k=as.integer(100/4.23)
-
-pred.knn = knnreg(x,y,x,k=k)
-lines(x,pred.knn,lty=2)
-@
-
-Aplicándolo a nuestro datos.
-
-
 
 \subsection{Comparación de los modelos}
 
 Podemos observar aquí las tres regresiones,
 
-<<f, echo=False, fig=TRUE>>=
-plot(x,y)
-lines(fit.spline, col='blue')
+<<g, echo=False, fig=TRUE>>=
+plot(x,y,main='Comparación de regresiones')
 lines(x, predict(fit.cv), col='red')
-lines(x,pred.knn,lty=2, color='green')
+lines(fit.spline, col='blue')
+lines(x, predict(fit.lp), col='green')
 @
 
+El criterio AIC nos proporciona una técnica para decidir entre nuestros modelos estadísticos el que mejor se ajusta a nuestros datos sin conseguir un sobreajuste indeseado. En el caso general la definición del AIC es:
 
-Utilizaremos el criterio AIC equiparar el método \textit{splines} con los demás.
+$$ AIC = 2k - 2 log(L)$$
+
+donde $L$ es el estimador de máxima verosimilutud.
+
 <<g, echo=True>>=
 sigma <- sum(residuals(fit.spline)^2)/133
 AIC_spline <- 133*(log(2*pi) + log(sigma) + 1) + 2*fit.spline$df
-AIC_spline
-@
 
-Lo mismo pero para equiparar el modelo polinómico,
-
-<<h, echo=True>>=
 sigma2 <- sum(residuals(fit.cv)^2)/133
 AIC_pol <- 133*(log(2*pi) + log(sigma2) + 1) + 2*fit.cv$df
+
+sigma3 <- sum(fit.lp$residuals^2)/fit.lp$n
+AIC_pl<- fit.lp$n*(log(2*pi)+log(sigma3) + 1) + 2 *fit.lp$enp
+
+AIC_spline
 AIC_pol
+AIC_pl
 @
 
-Y con los k vecinos próximos
-
-<<h, echo=True>>=
-sigma3 <- sum(residuals(pred.knn)^2)/133
-AIC_knn <- 133*(log(2*pi) + log(sigma2) + 1) + 2*pred.knn$df
-AIC_knn
-@
-
- TODO Elegir el mejor
-
+A la vista de los resultados, podemos afirmar que el menor AIC lo genera el modelo de suavizado por splines, así que nos quedamos con este.
 
 
 \end{document}
+
