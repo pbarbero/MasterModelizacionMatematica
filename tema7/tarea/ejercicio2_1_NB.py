@@ -34,14 +34,9 @@ if __name__ == "__main__":
     	I = Image.open("boat_256.png")
     	uc=np.asarray(I,dtype=np.float32)
 	u0 = aplicar_ruido(uc)
-	u2 = u1 = u0
+	u1 = u0
 
-	OUTPUT_1 = "output_boat_restaurada1.jpg"
-	output1  = restaurar(u1, 10, 0.01, 1*math.exp(-6))
-	Image.fromarray(output1.astype(np.uint8)).save(OUTPUT_1)	
-	print "Output Restaurada 1 saved in: %s" %(OUTPUT_1)
-
-	OUTPUT_2 = "output_boat_restaurada2.jpg"
-	output2  = restaurar(u2, 0.1, 0.75, 1*math.exp(-6))
-	Image.fromarray(output2.astype(np.uint8)).save(OUTPUT_2)	
-	print "Output Restaurada 2 saved in: %s" %(OUTPUT_2)
+	OUTPUT  = "output_boat_restaurada.png"
+	output  = restaurar(u1, 0.1, 0.75, 1*math.exp(-6))
+	Image.fromarray(output.astype(np.uint8)).save(OUTPUT)	
+	print "Output Boat Restaurada saved in: %s" %(OUTPUT)
