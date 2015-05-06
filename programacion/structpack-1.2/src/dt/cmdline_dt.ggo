@@ -1,0 +1,77 @@
+# cmdline_dt.ggo
+# Process this file with gengetopt to generate the source code files for
+# command line parsing.
+#
+# For more information please see the GNU Gengetopt manual at
+# http://www.gnu.org/software/gengetopt/gengetopt.html
+#
+# Date: 12 Febrero 2012
+# Author: Daniel Arguelles <daniel.arguelles.martino@gmail.com>
+
+package "dt"
+version "1.0"
+purpose "Solution of Toeplitz Linear Systems"
+args "-a gengetopt_args_info_dt -F cmdline_dt"
+
+section "Data source"
+option "size" n
+	"Size of problem"
+	int required
+option "toeplitz-random" t
+	"Use random data"
+	flag on
+option "first-column-file" -
+	"File containing first column of the Toeplitz matrix values (set to '-' to use standard input)"
+	string optional
+option "first-row-file" -
+	"File containing first row of the Toeplitz matrix values (set to '-' to use standard input)"
+	string optional
+option "rhs-file" -
+	"File containing rhs vector values (set to '-' to use standard input)"
+	string optional
+option "rhs-random" -
+	"Use random data of specified size as rhs vector"
+	flag on
+option "first-column-random" -
+	"Use random data of specified size as first column of the Toeplitz matrix"
+	flag on
+option "first-column-save-random" -
+	"File where random toeplitz first column data should be saved"
+	string dependon="toeplitz-random" optional
+option "first-row-random" -
+	"Use random data of specified size as first row of the Toeplitz matrix"
+	flag on
+option "first-row-save-random" -
+	"File where random toeplitz first row data should be saved"
+	string dependon="toeplitz-random" optional	
+option "rhs-save-random" -
+	"File where random rhs data should be saved"
+	string dependon="rhs-random" optional
+option "random-seed" -
+	"Seed used to initialize random number generator (allows repeatable tests)"
+	int optional
+
+section "Method options"
+option "block-size" b
+	"Block size"
+	int default="64" optional
+option "pivoting" p
+	"Uses partial local pivoting"
+	flag off
+option "refinement" r
+	"Uses iterative refinement"
+	int optional
+
+section "Output options"
+option "time" -
+	"Show time spent in system resolution"
+	flag on
+option "show-results" -
+	"Print system solution vector to standard output"
+	flag off
+option "raw-results" -
+	"Generates raw results for statistical graphics"
+	flag off
+option "raw-headers" -
+	"Prints commented header (column info) for raw results"
+	flag off

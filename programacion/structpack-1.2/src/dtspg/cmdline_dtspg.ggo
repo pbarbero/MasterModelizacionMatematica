@@ -1,0 +1,65 @@
+# cmdline_dtspg.ggo
+# Process this file with gengetopt to generate the source code files for
+# command line parsing.
+#
+# For more information please see the GNU Gengetopt manual at
+# http://www.gnu.org/software/gengetopt/gengetopt.html
+#
+# Date: 12 Febrero 2012
+# Author: Daniel Arguelles <daniel.arguelles.martino@gmail.com>
+
+package "dtspg"
+version "1.0"
+purpose "Solution of Toeplitz Linear Systems"
+args "-a gengetopt_args_info_dtspg -F cmdline_dtspg"
+
+section "Data source"
+option "size" n
+	"Size of problem"
+	int optional
+option "block-size" z
+	"Block size"
+	int optional
+option "number-blocks" b
+	"Number of blocks"
+	int optional    
+
+option "toeplitz-file" -
+	"File containing toeplitz vector values (set to '-' to use standard input)"
+	string optional
+option "toeplitz-random" -
+	"Use random data of specified size as toeplitz vector"
+	flag on
+option "toeplitz-save-random" -
+	"File where random toeplitz data should be saved"
+	string dependon="toeplitz-random" optional
+
+    
+option "rhs-file" -
+	"File containing rhs vector values (set to '-' to use standard input)"
+	string optional
+option "rhs-random" -
+	"Use random data of specified size as rhs vector"
+	flag on
+option "rhs-save-random" -
+	"File where random rhs data should be saved"
+	string dependon="rhs-random" optional
+    
+    
+option "random-seed" -
+	"Seed used to initialize random number generator (allows repeatable tests)"
+	int optional
+
+section "Output options"
+option "time" -
+	"Show time spent in system resolution"
+	flag on
+option "show-results" -
+	"Print system solution vector to standard output"
+	flag off
+option "raw-results" -
+	"Generates raw results for statistical graphics"
+	flag off
+option "raw-headers" -
+	"Prints commented header (column info) for raw results"
+	flag off

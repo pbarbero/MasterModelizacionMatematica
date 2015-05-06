@@ -1,0 +1,123 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{dsfont}
+\usepackage{tikz} 
+\usepackage[utf8]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{exercise}
+
+\author{Pilar Barbero Iriarte}
+
+\newenvironment{exercise}[1]% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{Ejercicio (#1)}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+
+
+
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+%\textsc{Ejercicios}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Programaci\'on Cient\'ifica y \'Algebra Computacional \\[0.4cm] }
+
+\vfill
+
+
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\includegraphics[width=1.1\textwidth]{images/logoUZ.png}~\\[4.5cm]
+\emph{Autor:}\\
+Pilar Barbero Iriarte 
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[width=0.5\textwidth]{images/logoUNIOVI.png}~\\[1cm]
+\includegraphics[width=0.5\textwidth]{images/logoUNIRIOJA.png}~\\[1cm]
+
+\emph{Profesores:} \\
+Pedro Alonso Vel\'azquez\\
+Jos\'e Mar\'ia Izquierdo
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\section{Programaci\'on Cient\'ifica}
+
+\begin{exercise}{1}
+
+Reorganizar el proceso de eliminiaci\'on de Neville en t\'erminos de operaciones de nivel 3 de BLAS.
+
+\end{exercise}
+
+\section{\'Algebra Computacional}
+
+\begin{exercise}{1}
+Determina usando t\'ecnicas de Groebner si los siguientes ideales son iguales:
+
+\begin{itemize}
+	\item $< y^3 - z^2, xz - y^2, xy - z, x^2 -y >$
+	\item $< xy - z^2, xz - y^2, xy - z, x^2 - y >$
+	\item $< xz - y^2, x + y^2 - z - 1, xyz - 1>$
+	\item $< y^2 -x^2y, z - xy, y - x^2 >$
+\end{itemize}
+
+Puedes ayudarte del ordenador.
+
+\end{exercise}
+
+\begin{exercise}{2}
+
+Calcula, sin usar el ordenador, mediante el algoritmo de Buchberger una base reducida del ideal $I = <xy + z, x^2+y^2>$. Determina tambi\'en sin usar el ordenador si la clase $[x + 1]$ es invertible en $k[x,y,z]/I$
+
+\end{exercise}
+
+\begin{exercise}{3}
+
+Calcula el abanico de Groebner del ideal $<x^2 - y^3, x^3 - y^2 + x>$.
+
+\end{exercise}
+
+\begin{exercise}{4}
+
+¿Puede escribirse $4x^4y^2 + 4y^6 - 2x^4 - 4x^2y^2 - 6y^4 + 2x^2 + 4y^2 -1$ de la forma $h(x^2 + y^2 - 1, x^2 - y^2)$ para alg\'un polinomio $h\in \mathbb{Q}[x,y]$?
+
+\end{exercise}
+
+\end{document}

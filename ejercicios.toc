@@ -1,0 +1,2 @@
+\contentsline {section}{\numberline {1}Programaci\'on Cient\'ifica}{2}
+\contentsline {section}{\numberline {2}\'Algebra Computacional}{2}

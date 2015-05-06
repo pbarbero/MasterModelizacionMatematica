@@ -1,0 +1,44 @@
+
+StructPack 
+==========
+
+This is StructPack, a collection of numerical routines for efficiently
+solving systems of linear equations with structured matrices.
+
+StructPack is free software, you can redistribute it and/or modify it under
+the terms of the Modified BSD License.
+
+The Modified BSD License permits this software to be redistributed 
+under terms specified in file COPYING. 
+
+This software is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Availability
+============
+
+The current stable version of StructPack is available from
+http://inco2nas.dcom.upv.es/versions/structpack-1.2.tar.gz or
+http://structpack.uniovi.es/download/structpack-1.2.tar.gz
+
+Installation
+============
+
+StructPack follows the standard GNU installation procedure.  Please consult
+the INSTALL file in this distribution for more detailed instructions.
+
+More information about StructPack
+=================================
+
+The StructPack project homepages are
+
+   http://structpack.uniovi.es   and  
+
+   http://www.inco2.upv.es/structpack.html
+
+Contact
+=======
+
+structpack@gmail.com
+

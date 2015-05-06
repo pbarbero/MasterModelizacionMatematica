@@ -1,0 +1,40 @@
+This directory contains some example programs to illustrate the use of the
+StructPack routines.
+
+- dts_example.c
+    A simple C program that solves a general symmetric Toeplitz system using
+    the csp_dts_sv function.
+
+- dts_example.F90
+    A simple Fortran program that solves a general symmetric Toeplitz system
+    using the sp_dts_sv subroutine.
+
+- dpis_example.c
+    A simple C program that solves a tridiagonal symmetric Toeplitz system
+    using the csp_dpis_rojosv function.
+
+- dpis_example.F90
+    A simple Fortran program that solves a tridiagonal symmetric Toeplitz
+    system using the sp_dpis_rojosv subroutine.
+
+- dt_example.c
+    A simple C program that solves a general non symmetric Toeplitz system using
+    the csp_dt_sv function.
+
+- dt_example.F90
+    A simple Fortran  program that solves a general non symmetric Toeplitz system
+    using the csp_dt_sv function.
+
+- dtspg_example.c
+    A simple C program that solves a general symmetric Toeplitz block system using
+    the csp_dtspg_sv function.
+
+- dtspg_example.F90
+    A simple Fortran  program that solves a general symmetric block Toeplitz system
+    using the csp_dtspg_sv function.
+
+A shell script for compiling and linking the examples is provided. You can
+type:
+
+  $> ./create_examples.sh
+

@@ -1,0 +1,11 @@
+This directory contains the source files for compiling the MEX files suitable
+for using StructPack from Matlab or GNU Octave.
+A shell script for compiling the MEX files is provided. You can type:
+
+   $> ./create_mex_files.sh
+
+You can test the routines with the 'test.m' file provided. For example, in
+Octave:
+
+   octave> test
+

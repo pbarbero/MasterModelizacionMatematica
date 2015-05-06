@@ -1,0 +1,88 @@
+# cmdline_dpis.ggo
+# Process this file with gengetopt to generate the source code files for
+# command line parsing.
+#
+# For more information please see the GNU Gengetopt manual at
+# http://www.gnu.org/software/gengetopt/gengetopt.html
+#
+# Date: 7 January 2011
+# Author: Pablo Martinez Naredo <pmnaredo@gmail.com>
+
+package "dpis"
+version "v1.0"
+purpose "Solution of Symmetric Tridiagonal Toeplitz Linear Systems with different methods"
+args "-a gengetopt_args_info_dpis -F cmdline_dpis"
+
+section "Data source"
+# Options for Toeplitz data input
+#
+option "size" n
+	"Size of problem"
+	int required
+option "toeplitz-random" t
+	"Use random data"
+	flag on
+option "diagonal" -
+	"Diagonal of the Toeplitz matrix"
+	double dependon="off-diagonal" optional
+option "off-diagonal" -
+	"Sub- and super- diagonals of the Toeplitz matrix"
+	double dependon="diagonal" optional
+# Options for rhs vector data input
+#
+option "rhs-file" -
+	"File containing rhs vector values (set to '-' to use standard input)"
+	string optional
+option "rhs-random" -
+	"Use random data of specified size as rhs vector"
+	flag on
+#option "rhs-multiple" m
+#	"Solve multiple rhs vectors"
+#	int dependon="rhs-random" default="1" optional
+option "rhs-save-random" -
+	"File where random rhs data should be saved"
+	string dependon="rhs-random" optional
+option "random-seed" -
+	"Seed used to initialize random number generator (allows repeatable tests)"
+	int optional
+
+# Options for the method to use
+#
+section "Method options"
+option "rojo" r
+	"Use the Modified Rojo Method"
+	flag on
+option "dst" d
+	"Use the DST Method"
+	flag off
+option "ldlt" l
+	"Use the LDLt Method"
+	flag off
+
+# Other options
+#
+section "Output options"
+#option "verify" v
+#	"Compare GPU result with CPU result using a given tolerance"
+#	flag on
+#option "cpu-only" c
+#	"Solve the system using the CPU (not the GPU)"
+#	flag off
+option "time" -
+	"Show time spent in system resolution"
+	flag on
+#option "show-input" -
+#	"Shows Toeplitz and rhs data"
+#	flag off
+option "show-results" -
+	"Print system solution vector to standard output"
+	flag off
+#option "show-stats" -
+#	"Show other stats like memory consumption"
+#	flag on
+option "raw-results" -
+	"Generates raw results for statistical graphics"
+	flag off
+option "raw-headers" -
+	"Prints commented header (column info) for raw results"
+	flag off dependon="raw-results"
