@@ -1,9 +1,0 @@
-2011-02-25  Pablo Martinez Naredo  <pmnaredo@gmail.com>
-	* ChangeLog: file created
-2011-11-08  Pablo Martinez Naredo  <pmnaredo@gmail.com>
-	* Directory examples added
-2012-02-10  Pablo Martinez Naredo  <pmnaredo@gmail.com>
-	* tpsymm.c: backward and forward error are now calculated using only
-	the 1-norm (for vectors and matrices)
-	* tpsytrid.c: backward and forward error are now calculated using only
-	the 2-norm (for vectors and matrices)
