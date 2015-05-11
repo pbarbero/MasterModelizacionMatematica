@@ -13,23 +13,18 @@ def aplicar_ruido(uc):
 
 def variacion_total(u0, lbda, tau, eps):
     u=np.copy(u0)
+    #u=u0
     for i in range(0,20):
         GradU=np.gradient(u)
-        pupx=GradU[0] # partial x
-        pupy=GradU[1] # partial y
-        Grad_pupx=np.gradient(pupx) 
-        Grad_pupy=np.gradient(pupy)
-        p2up2x=Grad_pupx[0]
-        p2up2y=Grad_pupy[1]
-        if np.linalg.norm(GradU) == 0:
-            lap=(p2up2x+p2up2y)/(sqrt(eps**2+norm(GradU)**2))
-        else:
-            lap=(p2up2x+p2up2y)/np.linalg.norm(GradU)
+        pupx=GradU[0]
+        pupy=GradU[1]
+        coefx = pupx / np.sqrt(eps**2 + pupx**2 + pupy**2)
+        coefy = pupy / np.sqrt(eps**2 + pupx**2 + pupy**2)
+        lap = np.gradient(coefx)[0] + np.gradient(coefy)[1]        
         u = u+tau*(lap+lbda*(u0-u))
-    
-    u1=255*(u-u.min()) / (u.max()-u.min())
-    
-    return u1
+
+    u=255*(u-u.min())/(u.max()-u.min())    
+    return u
 
 def yaroslavsky(b0, h, rho):
     b=np.copy(b0)
@@ -41,18 +36,12 @@ def yaroslavsky(b0, h, rho):
             jMax=min(j + rho, 256)
             I=b0[iMin:iMax,jMin:jMax]
             H=np.exp(-(I-b0[i][j])**2/h**2)
-	    print sum(H*I)/sum(H)
-            b[i][j]=sum(H*I)/sum(H)
+            b[i][j]=np.sum(H*I)/np.sum(H)
     return b
 
 def PSNR(u0, u):
     MSE = ((u0 - u) ** 2).mean(axis=None)
-    # MSE = 0
-    # for i in range(0,256):
-    #     for j in range(0,256):
-    #         MSE = MSE + (u0[i][j] - u[i][j])**2
-    # MSE = MSE/256**2
-    return 20*log10(u.max()/sqrt(MSE))
+    return 20*np.log10(u.max()/np.sqrt(MSE))
 
 if __name__ == "__main__":
     	I = Image.open("boat_256.png")
@@ -61,18 +50,19 @@ if __name__ == "__main__":
 	a1 = np.copy(a)
 	a2 = np.copy(a)
 
-	OUTPUT_VT  = "output_boat_restaurada_VT.png"
-	output_vt  = variacion_total(a1, 0.1, 0.75, 1*math.exp(-6))
+	OUTPUT_VT  = "output_boat_restaurada_ejer3_VT.png"
+	output_vt  = variacion_total(a1, 0.1, 0.75, 10**(-6))
 	Image.fromarray(output_vt.astype(np.uint8)).save(OUTPUT_VT)	
 	print "Output Boat Restaurada saved in: %s" %(OUTPUT_VT)
 
-	OUTPUT_YA  = "output_boat_restaurada_YA.png"
+	OUTPUT_YA  = "output_boat_restaurada_ejer3_YA.png"
 	output_ya  = yaroslavsky(a2, 30, 30)
 	Image.fromarray(output_ya.astype(np.uint8)).save(OUTPUT_YA)	
 	print "Output Boat Restaurada saved in: %s" %(OUTPUT_YA)
 
 	print "PSNR asociado a filtro Variacion Total: "
 	print PSNR(a, output_vt)
+	print "PSNR asociado a filtro Yarosvslasky : "
 	print PSNR(a, output_ya)
 
 
