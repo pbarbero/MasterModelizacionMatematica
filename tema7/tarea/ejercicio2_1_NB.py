@@ -32,7 +32,7 @@ def restaurar(u, lbda, tau, eps):
 
 if __name__ == "__main__":
     	I = Image.open("boat_256.png")
-    	uc=np.asarray(I,dtype=np.float32)
+    	uc = np.asarray(I,dtype=np.float32)
 	u0 = aplicar_ruido(uc)
 	u1 = u0
 
