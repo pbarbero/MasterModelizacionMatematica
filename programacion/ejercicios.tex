@@ -11,6 +11,7 @@
 \usepackage{exercise}
 \usepackage{algorithmic}
 \usepackage{mathtools}
+\usepackage{multicol}
 
 \author{Pilar Barbero Iriarte}
 
@@ -80,7 +81,7 @@ Pedro Alonso Vel\'azquez\\
 \tableofcontents
 \pagebreak
 
-\section{Programaci\'on Cient\'ifica}
+\section{Eliminaci\'on de Neville}
 
 
 \textbf{Reorganizar el proceso de eliminiaci\'on de Neville en t\'erminos de operaciones de nivel 3 de BLAS.}\\
@@ -106,19 +107,24 @@ En el paso $i$ del algoritmo, las columnas de la $1$ a la $i$, al igual que las 
 
 El algoritmo BLAS de nivel 3 reorganiza las operaciones retrasando el paso 4 del algoritmo de neville de nivel 2 durante \textit{b} pasos. Este n\'umero \textit{b} es un entero peque\~no que se llama \textit{block size}. El valor de \'este par\'ametro var\'ia dependiendo de si queremos maximizar la velocidad del algoritmo, sin embargo, suele ser $b=32$ \'o $64$. M\'as adelante, se aplican todos los pasos n\'umero 4 en una misma multiplicaci\'on de matriz por matriz.\\
 
-Supongamos que ya hemos computado las $i-1$ primeras filas de $U$,
-
+Supongamos que ya hemos computado las $i-1$ primeras filas de $U$, para una matriz A
 
 \begin{equation}
 \begin{array}{l l}
-  		A =
+  		A = 
+  		\begin{bmatrix}
+			A_{11} & A_{12} & A_{13} \\
+			A_{21} & A_{22} & A_{23} \\
+			A_{31} & A_{32} & A_{33}  		
+  		\end{bmatrix}
+  		\xrightarrow{\text{paso i}} &
   		\bordermatrix{
   				 	& i-b & b & n-b-i+1 \cr
-                	i-1     & A_{11} & A_{12} & A_{13}\\
-                	b       & A_{31} & A_{22} & A_{23}\\
-                	n-b-i+1 & A_{31} & A_{32} & A_{33}
-                }
-	  = &
+                	i-1     & A_{11}^{*} & A_{12}^{*} & A_{13}^{*}\\
+                	b       & A_{31}^{*} & A_{22}/A_{12} & A_{23} - A_{22}/A_{12}\cdot A_{13} \\
+                	n-b-i+1 & A_{31}^{*} & A_{32}/A_{22} & A_{33} - A_{32}/A_{22}\cdot A_{23}
+                }\\[1cm]
+	  \, & = 
 	  \begin{bmatrix}
 			L_{11} & 0 & 0 \\
 			L_{21} & I & 0 \\
@@ -131,6 +137,24 @@ Supongamos que ya hemos computado las $i-1$ primeras filas de $U$,
 	  \end{bmatrix}\\
 \end{array}
 \end{equation}
+
+donde,
+
+\begin{multicols}{2}
+	\begin{itemize}
+		\item $A_{11}^{*} = L_{11}\cdot U_{11}$
+		\item $A_{12}^{*} = L_{11}\cdot U_{21}$
+		\item $A_{13}^{*} = L_{11}\cdot U_{31}$
+		\item $A_{21}^{*} = L_{21}\cdot U_{11}$
+		\item $A_{31}^{*} = L_{31}\cdot U_{11}$
+	\end{itemize}
+	\begin{itemize}
+		\item $\widetilde{A}_{22} = A_{22}/A_{12}$
+		\item $\widetilde{A}_{32} = A_{32}/A_{22}$
+		\item $\widetilde{A}_{23} = A_{23} - A_{22}/A_{12}\cdot A_{13}$
+		\item $\widetilde{A}_{33} = A_{33} - A_{32}/A_{22}\cdot A_{23}$
+	\end{itemize}
+\end{multicols}
 
 \bigskip
 
@@ -225,12 +249,12 @@ En conjunto, conseguimos una factorizaci\'on $LU$ tal que,
 	\end{bmatrix}
 \end{equation}
 
-Esto definde un algoritmo con los siguientes tres pasos, 
+Esto define un algoritmo de la siguiente forma, 
 
 \begin{itemize}
 	\item Usar el algoritmo de nivel 2 de Neville para factorizar,
 	$$\begin{pmatrix} \widetilde{A}_{22}\\ \widetilde{A}_{32} 
-\end{pmatrix} = \begin{pmatrix} L_{22} \\ L{32} \end{pmatrix} \cdot U_{22}$$
+\end{pmatrix} = \begin{pmatrix} L_{22} \\ L_{32} \end{pmatrix} \cdot U_{22}$$
 	\item Asignar $U_{23} = L_{22}^{-1} \widetilde{A}_{23}$. Esto implica resolver un sistema triangular lineal utilizando una operaci\'on simple BLAS.
 	\item Asignar $\widetilde{\widetilde{A}}_{33} = \widetilde{A}_{33} - L_{32}\cdot U_{23}$, una multiplicaci\'on matriz por matriz.
 \end{itemize}
@@ -243,8 +267,21 @@ Formalmente,
 	\FOR{$i=1:b:n-1$ }
 		\STATE{Factorizar $A(i:n, i:i+b-1) = \bigl(\begin{smallmatrix} L_{22} \\ L_{32} \end{smallmatrix}\bigr) U_{22}$
 		}
-		\STATE{$A(i:i+b-1, i+b:n) = L_{22}^{-1}\cdot A(i:i+b-1, i+b:n)$ /* Aqu\'i se asigna $U_{23}$ */}
-		\STATE{$A(i+b:n, i+b:n) = A(i+b:n, i+b:n) - A(i+b:n, i:i+b-1)\cdot A(i:i+b-1, i+b:n)$ /* Aqu\'i se asigna $\widetilde{\widetilde{A}}_{33}$ */} 
+		\STATE{\begin{equation}	
+					\begin{array}{l l}
+						A(n:-1:i+b+1, i+b:n) = \\
+						\, \, \, \, A(n-1:-1:i, i)^{-1}\cdot A(n:-1:i+b+1, i+b:n)
+					\end{array}
+				\end{equation}
+			  }
+		\STATE{\begin{equation} 
+			 		\begin{array}{l l}
+						A(n:-1:i+b+1, i+b:n) = \\
+						\, \, \, \, A(n:-1:i+b+1, i+b:n) - \\ 
+						\, \, \, \, A(i+b:n, i+b)\cdot A(n-1:-1:i+b, i+b:n)
+			 		\end{array}
+			   \end{equation}
+			  }
 	\ENDFOR
 \end{algorithmic}
 
