@@ -1,0 +1,14 @@
+# Texmaker #
+############
+*.log
+*.aux
+*.toc
+*.gz
+*.out
+
+# Data #
+########
+
+# comp #
+########
+*.rar

@@ -1,0 +1,1273 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[dvipsnames, usenames]{color}
+\usepackage{amsmath, amssymb}
+
+\usepackage{pxfonts, pifont}
+
+\usepackage{amsfonts}
+\usepackage{amstext, amsopn, amsbsy}
+
+\usepackage{lscape}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks, urlcolor = MidnightBlue, linkcolor=MidnightBlue, citecolor = MidnightBlue}
+
+
+\begin{document}
+
+\SweaveOpts{concordance=TRUE}
+
+\begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+\textsc{Trabajo Final}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Miner\'ia de datos \\[0.4cm] }
+\vfill
+
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.6\textwidth}
+\begin{flushleft} \large
+\includegraphics[width=1\textwidth]{logoUZ.png}~\\[1cm]
+\emph{Autores:}\\
+Barbero Iriarte, Pilar \\
+Escudero Argaluza, Julene \\
+Mateo Sanz, Ana Pilar\\
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.3\textwidth}
+\begin{flushright} \large
+\includegraphics[width=0.8\textwidth]{logoUPV.png}~\\[1.5cm]
+\emph{Profesor:} \\
+Alcal\'a Nalvaiz, Jos\'e Tomás
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+
+
+
+
+
+%%%%%% INTRODUCCIÓN. CARGA DE LOS DATOS Y ANÁLISIS PRELIMINAR. %%%%%%%
+\section{Introducci\'on}
+
+\bigskip
+
+El conjunto de datos con el que vamos a tratar en este trabajo recoge el seguimiento de pacientes con cancer de pecho. El problema al que nos vamos a dedicar es clasificar si un tumor es recurrente o no a un cierto umbral de tiempo (24 meses). Como m\'as adelante veremos, esta variable no se encuentra en el conjunto tal cual, la construiremos a partir de la informaci\'on que hay en los primeros campos del fichero de datos y que hacen referencia a si cada paciente ha desarrollado recurrencia y en qu\'e momento desde la operaci\'on. \\
+
+\bigskip
+
+\subsection{Descripci\'on de los datos}
+
+\bigskip
+
+El conjunto de datos con el que vamos a trabajar se ha obtenido de la siguiente \href{https://archive.ics.uci.edu/ml/datasets.html}{base de datos}. \\
+
+Una breve descripci\'on de lo que encontramos al entrar en nuestro \href{https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Prognostic)}{conjunto de datos} es: 
+
+\begin{itemize}
+  \item Nombre del estudio: Wisconsin Prognostic Breast Cancer (WPBC).
+  \item Fecha: Diciembre $1995$.
+  \item Donante de los datos: Nick Street
+  \item Descripci\'on: Cada registro representa un seguimiento de un caso de c\'ancer de pecho. Son pacientes del Dr. Wolberg       desde 1984 e incluyen s\'olo aquellos casos que presentan un c\'ancer de mama invasivo y no hay evidencia de met\'astasis en el momento del diagn\'ostico.
+  \item N\'umero de casos: $198$.
+  \item N\'umero de variables: $34$. \\
+\end{itemize}
+
+\bigskip
+
+\newpage
+
+\subsection{Conjunto de datos}
+
+\bigskip
+
+Cargamos los datos y los observamos un resumen de ellos para poder describir cada variable.
+
+<<echo=false>>=
+library(TH.data)
+library(ggplot2)
+library(gridExtra)
+data("wpbc")
+summary(wpbc)
+@
+
+Los primeros $2$ atributos describen el resultado esperado y el tiempo en el que se desencadena la recurrencia.
+
+\begin{enumerate}
+    \item \textbf{Resultado:} R=recurrente, N=no recurrente
+    \item \textbf{Tiempo:} tiempo de recurrencia si el resultado es R (recurrente), vac\'io si el campo 2 es N (no recurrente)
+\end{enumerate}
+
+Los atributos del $4 - 32$ est\'an formados por $10$ par\'ametros distintos, y de cada uno de ellos se obtienen tres: la media, el error est\'andar y el peor caso (media de los tres casos m\'as grandes). Por ejemplo, el atributo $4$ es la media del radio, el atributo n\'umero $14$ es el error est\'andar del radio y el atributo del 24 es el peor radio posible. 
+
+Cada uno de ellos cuenta con 4 cifras significativas.
+
+\begin{enumerate}
+    \item[3] \textbf{Radio:} media de las distancia entre el centro a los puntos del per\'imetro.
+    \item[4] \textbf{Textura:} desviaci\'on est\'andar de los valores en escala de grises.
+    \item[5] \textbf{Per\'imetro.}
+    \item[6] \textbf{\'Area.}
+    \item[7] \textbf{Smoothness:} variaci\'on local en unidades de longitud seg\'un el radio.
+    \item[8] \textbf{Compacidad:} $\dfrac{\text{per\'imetro}^2}{\text{area} - 1.0}$.
+    \item[9] \textbf{Concavidad:} gravedad de las partes c\'oncavas del contorno.
+    \item[10] \textbf{Puntos de concavidad:} n\'umero de partes c\'oncavas del contorno.
+    \item[11] \textbf{Simetr\'ia.}
+    \item[12] \textbf{Fractal dimension:} $\text{coastline approximation} - 1$.
+    \item[33] \textbf{Tama\~no del tumor:} di\'ametro del tumor extirpado en centr\'imetros.
+    \item[34] \textbf{Estado del ganglio linf\'atico:} n\'umero de ganglios linf\'aticos axilares observados en el momento de la cirug\'ia. \\
+\end{enumerate}  
+
+Todas las variables, salvo la que nos indica si es una paciente recurrente o no recurrente, son cuantitativas. Esta variable y la que vamos a crear son variables cualitativas. \\
+
+Como hemos comentado anteriormente, la nueva variable que vamos a crear la denominaremos \textsf{clase} y su valor ser\'a \textsf{Positivo} o \textsf{Negativo}. A continuaci\'on se muestra como la creamos:
+
+<<echo=TRUE>>=
+wpbc$clase[wpbc$status == "R" & wpbc$time <= 24] <- "Positivo"
+wpbc$clase[wpbc$status == "R" & wpbc$time > 24] <- "Negativo"
+wpbc$clase[wpbc$status == "N"] <- "Negativo"
+wpbc$clase = as.factor(wpbc$clase)
+@
+
+A continuaci\'on observamos un resumen de esta nueva variable que hemos creado:
+
+<<echo = F, results=tex>>=
+library(xtable)
+tabla=as.matrix(summary(wpbc$clase))
+xtable(tabla,caption="Resumen de la nueva variable")
+@
+
+Antes de comenzar a realizar un an\'alisis de correlaci\'on entre las variables para estudiar si ser\'ia posible realizar un An\'alisis Factorial para poder agrupar varias de las variables por factores tenemos que comentar que en \textsf{summary(wpbc)} se observa que la variable \textsf{pnodes} contiene cuatro valores perdidos. En caso de que m\'as adelante nos den alg\'un problema, los omitiremos de nuestro estudio con la orden \textsf{use = "pairwise.complete.obs"}. \\
+
+M\'as adelante, cuando tengamos estudiado nuestro conjunto de datos, observemos en un diagrama de cajas la variable \textsf{Resultado}, por si acaso hubiese alg\'un dato at\'ipico que m\'as adelante pudiese provocar alg\'un problema en el estudio de clasificaci\'on provocando falsos positivos o falsos negativos. \\
+
+\bigskip 
+
+\newpage
+
+\subsection{An\'alisis descriptivo e importancia de cada variable}
+
+\bigskip
+
+Comenzamos este an\'alisis observando la normalidad o no normalidad de las variables cuantitativas. Ya que es un requisito para poder aplicar sobre ellas el An\'alisis Factorial. \\
+
+Este estudio de normalidad lo realizamos mediante el test de Shapiro Wilk, observando el p-valor obtenido en cada variable. Si el p-valor es menor que $0.05$, diremos que la variable es normal. En caso contrario, no ser\'a normal y estudiaremos su normalizaci\'on a partir de su histograma. \\
+
+<<echo=FALSE>>=
+a = shapiro.test(wpbc$time)
+b = shapiro.test(wpbc$mean_radius)
+c = shapiro.test(wpbc$mean_texture)
+d = shapiro.test(wpbc$mean_perimeter)
+e = shapiro.test(wpbc$mean_area)
+f = shapiro.test(wpbc$mean_smoothness)
+g = shapiro.test(wpbc$mean_compactness)
+h = shapiro.test(wpbc$mean_concavity)
+i = shapiro.test(wpbc$mean_concavepoints)
+j = shapiro.test(wpbc$mean_symmetry)
+k = shapiro.test(wpbc$mean_fractaldim)
+
+l = shapiro.test(wpbc$SE_radius)
+m = shapiro.test(wpbc$SE_texture)
+n = shapiro.test(wpbc$SE_perimeter)
+o = shapiro.test(wpbc$SE_area)
+p = shapiro.test(wpbc$SE_smoothness)
+q = shapiro.test(wpbc$SE_compactness)
+r = shapiro.test(wpbc$SE_concavity)
+s = shapiro.test(wpbc$SE_concavepoints)
+t = shapiro.test(wpbc$SE_symmetry)
+u = shapiro.test(wpbc$SE_fractaldim)
+
+v = shapiro.test(wpbc$worst_radius)
+w = shapiro.test(wpbc$worst_texture)
+x = shapiro.test(wpbc$worst_perimeter)
+y = shapiro.test(wpbc$worst_area)
+z = shapiro.test(wpbc$worst_smoothness)
+aa = shapiro.test(wpbc$worst_compactness)
+bb = shapiro.test(wpbc$worst_concavity)
+cc = shapiro.test(wpbc$worst_concavepoints)
+dd = shapiro.test(wpbc$worst_symmetry)
+ee = shapiro.test(wpbc$worst_fractaldim)
+
+library(base)
+shapiro = c(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee)
+SHAPIRO = t(matrix(shapiro, 4,31))
+SHAPIRO[,1] = SHAPIRO[,4]
+SHAPIRO = SHAPIRO[,-4]
+SHAPIRO = SHAPIRO[,-3]
+View(SHAPIRO)
+@
+
+
+\begin{table}[!htbp] \centering
+  \caption{Valor del p-valor de cada variable con el test Shapiro-Wilk.}
+  \label{ShapiroWilk}
+  
+  \bigskip
+  
+  \begin{tabular}{l l l}
+    \textbf{Variable} & \textbf{p-valor} & \\
+    \\[-1.8ex]\hline 
+    \hline \\[-1.8ex] 
+    time & 3.8349e-08 & \\ 
+    mean\_radius & 0.0477 & \\ 
+    mean\_texture & 0.0045 & \\ 
+    mean\_perimeter & 0.0239 & \\ 
+    mean\_area & 3.3787e-05 & \\ 
+    mean\_smoothness & 0.0297 & \\ 
+    mean\_compactness & 0.0006 & \\ 
+    mean\_concavity & 0.0006 & \\ 
+    mean\_concavepoints & 0.0001 & \\ 
+    mean\_symmetry & 9.3708e-05 & \\ 
+    mean\_fractaldim & 5.1141e-07 & \\ 
+    SE\_radius & 3.6084e-10 & \\ 
+    SE\_texture & 1.8953e-09 & \\ 
+    SE\_perimeter & 2.3373e-10 & \\ 
+    SE\_area & 3.4747e-13 & \\ 
+    SE\_smoothness & 6.2242e-18 & \\ 
+    SE\_compactness & 3.8661e-13 & \\ 
+    SE\_concavity & 6.3635e-12 & \\ 
+    SE\_concavepoints & 1.5151e-08 & \\ 
+    SE\_symmetry & 8.5175e-16 & \\ 
+    SE\_fractaldim & 7.6399e-12 & \\ 
+    worst\_radius & 0.0005 & \\ 
+    worst\_texture & 0.0730 & \textcolor{Red}{\ding{56}} \\ 
+    worst\_perimeter & 0.0003 & \\ 
+    worst\_area & 8.1871e-09 & \\ 
+    worst\_smoothness & 0.0107 & \\ 
+    worst\_compactness & 7.5361e-08 & \\ 
+    worst\_concavity & 5.1077e-05 & \\ 
+    worst\_concavepoints & 0.6136 & \textcolor{Red}{\ding{56}}\\ 
+    worst\_symmetry & 1.3440-07 & \\ 
+    worst\_fractaldim & 1.3481e-09 & \\ 
+    \hline \\[-1.8ex] 
+  \end{tabular} 
+\end{table}
+
+Este test nos asegura en la tabla \ref{ShapiroWilk} la normalidad de todas las variables excepto dos, cuyos p-valores son mayores que $0.05$. Estas dos variables en las cuales no tenemos asegurada su normalidad son \textsf{worst\_texture} y \textsf{worst\_concavepoints}. \\
+
+A continuaci\'on observemos sus histogramas para poder deducir si podemos considerarlas normales o transformarlas para que lo sean. \\
+
+\begin{figure}[!htbp] \label{HistQQ1}
+  \caption{Histograma y Q-Q plot de la variable \textsf{worst\_texture}}
+  \begin{tabular}{c}
+<<echo=F, fig=T, width=4, height=4>>=
+hist(wpbc$worst_texture,main="Hist worst_texture",xlab = "worst_texture", ylab="Frecuencia",col=grey(0.5))
+@
+\\
+<<echo=F, fig=T, width=4, height=4>>=
+qqnorm(wpbc$worst_texture,main="Normal Q-Q plot worst_texture",xlab = "worst_texture", ylab="Quantiles")
+qqline(wpbc$worst_texture, col='blue')
+@
+  \end{tabular}
+\end{figure}
+
+Podemos observar en la Figura \ref{HistQQ1} que el histograma y la Normal Q-Q plot de esta variable, si que podr\'ia considerarse normal. Recordemos que el p-valor obtenido es muy cercano a $0.05$ y esto tambi\'en ayuda a considerarla finalmente como una variable normal. \\
+
+Lo mismo ocurre en la Figura \ref{HistQQ2} con la variable \textsf{worst\_concavepoints}, aunque su p-valor si que est\'a muy lejano de $0.05$, al realizar su histograma y Normal Q-Q plot podemos observar como si que podr\'ia considerarse tambi\'en como una variable normal. \\
+
+\begin{figure}[!htbp]\label{HistQQ2}
+  \caption{Histograma y Q-Q plot de la variable \textsf{worst\_concavepoints}}
+  \begin{tabular}{c}
+<<echo=F, fig=T, width=4, height=4>>=
+hist(wpbc$worst_concavepoints,main="Hist worst_concavepoints", xlab = "worst_texture", ylab="Frecuencia",col=grey(0.5))
+@
+\\
+<<echo=F, fig=T, width=4, height=4>>=
+qqnorm(wpbc$worst_concavepoints,main="Normal Q-Q plot worst_concavepoints",xlab = "worst_texture", ylab="Quantiles")
+qqline(wpbc$worst_concavepoints, col='blue')
+@
+  \end{tabular}
+\end{figure}
+
+Podemos concluir que todas las variables que utilizamos en nuestro estudio son normales, por tanto es posible calcular la correlaci\'on que hay entre ellas a trav\'es de la matriz de correlaciones para luego determinar si podemos aplicar sobre nuestros datos el An\'alisis Factorial. \\
+
+Para el c\'alculo de esta matriz debemos de quitar de nuestra base de datos las variables que no son cuantitativas, es decir, las variables \textsf{status} y \textsf{clase}. \\
+
+\newpage
+
+<<echo=FALSE>>=
+library("psych")
+
+wpbc1<-wpbc[,-c(1,35)]
+x <- subset(wpbc1) # Omit missing values
+r <- cor(x,  use = "pairwise.complete.obs") # Correlation matrix
+r2 <- r^2 # Squared correlation coefficients
+i <- solve(r) # Inverse matrix of correlation matrix
+d <- diag(i) # Diagonal elements of inverse matrix
+p2 <- (-i/sqrt(outer(d, d)))^2 # Squared partial correlation coefficients
+diag(r2) <- diag(p2) <- 0 # Delete diagonal elements
+KMO <- sum(r2)/(sum(r2)+sum(p2))
+MSA <- colSums(r2)/(colSums(r2)+colSums(p2))
+
+MSA <- as.matrix(MSA)
+#print(xtable(MSA, caption='MSA',label='MSA'))
+
+KMO <- as.matrix(KMO)
+#print(xtable(KMO, caption='KMO', label='KMO'))
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{l l}
+  \hline
+ & x \\ 
+  \hline
+  time & 0.84 \\ 
+  mean\_radius & 0.81 \\ 
+  mean\_texture & 0.47 \\ 
+  mean\_perimeter & 0.81 \\ 
+  mean\_area & 0.85 \\ 
+  mean\_smoothness & 0.83 \\ 
+  mean\_compactness & 0.83 \\ 
+  mean\_concavity & 0.90 \\ 
+  mean\_concavepoints & 0.88 \\ 
+  mean\_symmetry & 0.83 \\ 
+  mean\_fractaldim & 0.89 \\ 
+  SE\_radius & 0.76 \\ 
+  SE\_texture & 0.55 \\ 
+  SE\_perimeter & 0.76 \\ 
+  SE\_area & 0.84 \\ 
+  SE\_smoothness & 0.61 \\ 
+  SE\_compactness & 0.68 \\ 
+  SE\_concavity & 0.71 \\ 
+  SE\_concavepoints & 0.70 \\ 
+  SE\_symmetry & 0.70 \\ 
+  SE\_fractaldim & 0.73 \\ 
+  worst\_radius & 0.75 \\ 
+  worst\_texture & 0.40 \\ 
+  worst\_perimeter & 0.80 \\ 
+  worst\_area & 0.78 \\ 
+  worst\_smoothness & 0.74 \\ 
+  worst\_compactness & 0.70 \\ 
+  worst\_concavity & 0.77 \\ 
+  worst\_concavepoints & 0.85 \\ 
+  worst\_symmetry & 0.71 \\ 
+  worst\_fractaldim & 0.79 \\ 
+  tsize & 0.62 \\ 
+  pnodes & 0.46 \\ 
+   \hline
+\end{tabular}
+\caption{MSA: Medida de adecuación de la muestra para cada variable.}
+\label{MSA}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{l l}
+  \hline
+ & x \\ 
+  \hline
+1 & 0.77 \\ 
+   \hline
+\end{tabular}
+\caption{KMO: Kaiser-Meyer-Olkin. Indice de adecuación de la muestra.}
+\label{KMO}
+\end{table}
+
+En \ref{MSA} es claro que hay cuatro variables que son poco relevantes y por tanto pueden salir del estudio, estas son las tres relacionadas con la textura: \textsf{mean\_texture}, \textsf{SE\_texture}, \textsf{worst\_texture} y la variable \textsf{pnodes}. \\
+
+En \ref{KMO} observamos tambi\'en que el valor del KMO no nos desaconseja la utilizaci\'on de un An\'alisis Factorial. \\
+
+A continuaci\'on, quitamos de nuestro an\'alisis estas variables y volvemos a calcular el KMO, a ver si mejora. \\
+
+<<echo=FALSE>>=
+library("psych")
+
+wpbc2<-wpbc1[,-c(3, 13, 23, 33)]
+x2 <- subset(wpbc2) # Omit missing values
+r2 <- cor(x2,  use = "pairwise.complete.obs") # Correlation matrix
+r22 <- r2^2 # Squared correlation coefficients
+i2 <- solve(r2) # Inverse matrix of correlation matrix
+d2 <- diag(i2) # Diagonal elements of inverse matrix
+p22 <- (-i2/sqrt(outer(d2, d2)))^2 # Squared partial correlation coefficients
+diag(r22) <- diag(p22) <- 0 # Delete diagonal elements
+KMO2 <- sum(r22)/(sum(r22)+sum(p22))
+MSA2 <- colSums(r22)/(colSums(r22)+colSums(p22))
+
+MSA2 <- as.matrix(MSA2)
+#print(xtable(MSA2, caption='MSA', label='MSA2'))
+
+KMO2 <- as.matrix(KMO2)
+#print(xtable(KMO2, caption='KMO', label='KMO2'))
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{ll}
+  \hline
+ & x \\ 
+  \hline
+time & 0.86 \\ 
+  mean\_radius & 0.81 \\ 
+  mean\_perimeter & 0.81 \\ 
+  mean\_area & 0.86 \\ 
+  mean\_smoothness & 0.85 \\ 
+  mean\_compactness & 0.83 \\ 
+  mean\_concavity & 0.90 \\ 
+  mean\_concavepoints & 0.87 \\ 
+  mean\_symmetry & 0.85 \\ 
+  mean\_fractaldim & 0.89 \\ 
+  SE\_radius & 0.74 \\ 
+  SE\_perimeter & 0.76 \\ 
+  SE\_area & 0.84 \\ 
+  SE\_smoothness & 0.62 \\ 
+  SE\_compactness & 0.67 \\ 
+  SE\_concavity & 0.72 \\ 
+  SE\_concavepoints & 0.69 \\ 
+  SE\_symmetry & 0.71 \\ 
+  SE\_fractaldim & 0.72 \\ 
+  worst\_radius & 0.75 \\ 
+  worst\_perimeter & 0.80 \\ 
+  worst\_area & 0.79 \\ 
+  worst\_smoothness & 0.77 \\ 
+  worst\_compactness & 0.69 \\ 
+  worst\_concavity & 0.77 \\ 
+  worst\_concavepoints & 0.84 \\ 
+  worst\_symmetry & 0.72 \\ 
+  worst\_fractaldim & 0.78 \\ 
+  tsize & 0.73 \\ 
+   \hline
+\end{tabular}
+\caption{MSA: Medida de adecuación de la muestra para cada variable.}
+\label{MSA2}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+  \hline
+ & x \\ 
+  \hline
+1 & 0.79 \\ 
+   \hline
+\end{tabular}
+\caption{KMO: Kaiser-Meyer-Olkin. Indice de adecuación de la muestra.}
+\label{KMO2}
+\end{table}
+
+En el Cuadro \ref{MSA2} observamos ya que todas las variables tienen su relevancia y adem\'as en el Cuadro \ref{KMO2} se observa la mejor\'ia en el valor del KMO. \\
+
+Ahora, calculamos la matriz de correlaciones y realizaremos un mapa de calor de esta matriz para observar de forma gr\'afica si hay grupos de variables correladas y poder aplicar un buen An\'alisis Factorial. \\
+
+<<echo=FALSE, fig=F>>=
+matriz.correlaciones<-cor(wpbc2, use = "pairwise.complete.obs")
+# matriz.correlaciones
+det<-det(matriz.correlaciones)
+#det
+@
+
+\begin{figure}[h]\label{MapaCalor}
+<<echo=FALSE, fig=TRUE>>=
+library(reshape2)
+qplot(x=Var1, y=Var2, data=melt(cor(wpbc2, use = "pairwise.complete.obs")), fill=abs(value), geom="tile", main="Mapa de calor de la matriz de correlación")
+@
+\end{figure}
+
+Se observa como las \'unicas variables que tienen relaci\'on entre ellas son aquellas que tienen relaci\'on con el \'Area, Per\'imetro y Radio. Entre el resto de variables no se observa ninguna correlaci\'on y por tanto no es recomendable utilizar el An\'alisis Factorial, ya que habr\'ia factores en los que se encontrar\'ia una \'unica variable. \\
+
+Para asegurarnos de que no es recomendable el An\'alisis Factorial, vamos a realizar tambi\'en la prueba de esfericidad de Bartlett. \\
+
+<<echo=FALSE>>=
+# Prueba de esfericidad de Bartlett
+n<-198 #numero de casos 
+p<-29 #numero de variables
+est<- (n-1-((2*p+5)/6))*log(det)
+#est
+gl<-(p^2-p)/2
+#gl
+Bartlett <- pchisq(c(est),df=gl, lower.tail=FALSE)
+Bartlett <- as.matrix(Bartlett)
+#print(xtable(Bartlett, caption = 'Bartlett', label='Bartlett'))
+@
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+1 & 1.00 \\ 
+   \hline
+\end{tabular}
+\caption{Bartlett: Test de esfericidad de Bartlett.}
+\label{Bartlett}
+\end{table}
+
+El test de Bartlett nos devuelve en \ref{Bartlett} la aceptaci\'on de la hip\'otesis de que la matriz de correlaciones es la matriz identidad. Por esto queda afirmada la incorrelaci\'on lineal entre las variables y no realizaremos un An\'alisis Factorial. \\
+
+Aunque no realicemos un An\'alisis Factorial, hemos visto que hay variables que s\'i que est\'an correladas entre s\'i. Por ello haremos un an\'alisis de Componentes Principales y observaremos que podemos cambiar estas variables por una Componente Principal formada por todas ellas. \\
+
+Comenzamos realizando un an\'alisis de Componentes principales tomando todas las variables y con dos factores. Obtenemos tabla de comunalidades \ref{communality} para las distintas variables: \\
+
+<<echo=FALSE>>=
+library(psych)
+library(GPArotation)
+wpbc3 <- wpbc2[,-c(1,29)]
+CP1 <- principal(wpbc3, nfactors = 2, rotate=F, scores=TRUE)
+h2 <- as.matrix(CP1$communality)
+#print(xtable(h2, caption = 'Comunalidades de las variables', label='communality'))
+@
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+mean\_radius & 0.90 \\ 
+  mean\_perimeter & 0.91 \\ 
+  mean\_area & 0.92 \\ 
+  mean\_smoothness & 0.58 \\ 
+  mean\_compactness & 0.88 \\ 
+  mean\_concavity & 0.85 \\ 
+  mean\_concavepoints & 0.82 \\ 
+  mean\_symmetry & 0.51 \\ 
+  mean\_fractaldim & 0.81 \\ 
+  SE\_radius & 0.66 \\ 
+  SE\_perimeter & 0.67 \\ 
+  SE\_area & 0.78 \\ 
+  SE\_smoothness & 0.13 \\ 
+  SE\_compactness & 0.62 \\ 
+  SE\_concavity & 0.54 \\ 
+  SE\_concavepoints & 0.31 \\ 
+  SE\_symmetry & 0.23 \\ 
+  SE\_fractaldim & 0.59 \\ 
+  worst\_radius & 0.87 \\ 
+  worst\_perimeter & 0.88 \\ 
+  worst\_area & 0.84 \\ 
+  worst\_smoothness & 0.49 \\ 
+  worst\_compactness & 0.67 \\ 
+  worst\_concavity & 0.65 \\ 
+  worst\_concavepoints & 0.66 \\ 
+  worst\_symmetry & 0.38 \\ 
+  worst\_fractaldim & 0.72 \\ 
+   \hline
+\end{tabular}
+\caption{Comunalidades de las variables} 
+\label{communality}
+\end{table}
+
+En la tabla \ref{communality} observamos que hay varias variables con comunalidades muy bajas, y por tanto podemos omitirlas en este an\'alisis, ya que lo que nos interesa es encontrar un factor que nos englobe las variables que est\'an relacionadas con el radio, per\'imetro y \'area. Las variables que eliminamos para el siguiente an\'alisis son: \textsf{mean\_symetry}, \textsf{SE\_smoothness}, \textsf{SE\_concavepoints}, \textsf{SE\_symmetry}, \textsf{worst\_smoothness} y \textsf{worst\_symmetry}. \\
+
+Repetimos el proceso y obtenemos que hay otras dos variables con comunalidades muy bajas y que tambi\'en pueden ser omitidas del an\'alisis. Estas variables son \textsf{mean\_smoothness} y \textsf{SE\_concavity}. \\
+
+Finalmente, realizamos un an\'alisis de componentes principales con las 19 variables restantes. Consideraremos 3 factores y utilizaremos la rotaci\'on \textit{varimax}. Obtenemos el siguiente esquema: \\
+
+\begin{center}
+<<echo=false, fig=TRUE, height=8>>=
+wpbc4<-wpbc3[,-c(8,13,16,17,22,26)]
+CP2 <- principal(wpbc4, nfactors = 2, rotate=F, scores=TRUE)
+#CP2$communality
+
+wpbc5<-wpbc4[,-c(4,13)]
+CP3 <- principal(wpbc5, nfactors = 2, rotate="varimax", scores=TRUE)
+
+fa.diagram(CP3, label='Factores')
+@
+\end{center}
+
+En \ref{Factores} observamos como de los dos factores obtenidos, hay uno que nos agrupa todas las variables que anteriormente hab\'iamos visto que estaban correlacionadas. Si nos fijamos en la segunda componente obtenida, podemos ver que \ref{MapaCalor} nos muestra que estas variables tambi\'en est\'an correlacionadas entre s\'i, y por ello vamos a considerar estas dos componentes y las sustituiremos por todas las variables que nos relacionan. \\ 
+
+Por tanto, vamos a sustituir las 19 variables por las dos componentes: \\
+
+\begin{itemize}
+  \item[\ding{226}] Componente 1:
+    \begin{tabular}{l l}
+      worst\_radius & worst\_perimeter \\
+      mean\_area & mean\_perimeter \\
+      mean\_radius & worst\_area \\
+      mean\_concavepoints & SE\_area \\
+      SE\_radius & SE\_perimeter \\
+    \end{tabular}
+  \item[\ding{226}] Componente 2:
+    \begin{tabular}{l l}
+      mean\_compactness & worst\_compactness \\
+      worst\_concavity & mean\_fractaldim \\
+      worst\_fractaldim & SE\_compactness \\
+      SE\_fractaldim & mean\_concavity \\
+      worst\_concavepoints & \\
+    \end{tabular}
+\end{itemize}
+
+A continuaci\'on mostramos el peso de cada variable en la nueva componente para que, si es necesario, podamos obtener este valor cuando tengamos nuevos individuos. \\
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & PC1 & PC2 \\ 
+  \hline
+mean\_radius & 0.11 & -0.03 \\ 
+  mean\_perimeter & 0.11 & -0.01 \\ 
+  mean\_area & 0.11 & -0.03 \\ 
+  mean\_compactness & 0.02 & 0.14 \\ 
+  mean\_concavity & 0.05 & 0.11 \\ 
+  mean\_concavepoints & 0.08 & 0.08 \\ 
+  mean\_fractaldim & -0.05 & 0.14 \\ 
+  SE\_radius & 0.09 & -0.00 \\ 
+  SE\_perimeter & 0.09 & 0.01 \\ 
+  SE\_area & 0.10 & -0.01 \\ 
+  SE\_compactness & -0.00 & 0.12 \\
+  SE\_fractaldim & -0.01 & 0.12 \\ 
+  worst\_radius & 0.11 & -0.02 \\ 
+  worst\_perimeter & 0.11 & -0.00 \\ 
+  worst\_area & 0.11 & -0.02 \\ 
+  worst\_compactness & -0.03 & 0.14 \\
+   \hline
+\end{tabular}
+\caption{Relación de cada CP con las variables} 
+\end{table}  
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & PC1 & PC2 \\ 
+  \hline
+  worst\_concavity & -0.00 & 0.14 \\ 
+  worst\_concavepoints & 0.04 & 0.11 \\ 
+  worst\_fractaldim & -0.05 & 0.14 \\ 
+   \hline
+\end{tabular}
+\caption{Relación de cada CP con las variables} 
+\end{table}
+
+
+Por tanto, nos queda el conjunto final de datos formado por 198 observaciones y 14 variables que vienen reflejadas en la siguiente tabla: \\
+
+<<echo=false>>=
+datos <- wpbc
+
+# Añadimos las dos componentes
+x<-c(rownames(datos), CP1)
+X<-matrix(x, ncol=2)
+datos$CPR1<-CP3$scores[,1]
+
+# Quitamos las variables que no explican nada: MSA
+datos <- datos[-c(4, 14, 24, 34)]
+
+# Quitamos las variables que son sustituidas por las componentes
+datos <- datos[,-c(3, 4, 5, 9, 12, 13, 14, 21, 22, 23)]
+variables <- as.matrix(datos[0,])
+
+
+
+# Si añadimos la segunda componente:
+datos2<-datos
+
+x<-c(rownames(datos), CP2)
+X<-matrix(x, ncol=2)
+datos2$CPR2<-CP3$scores[,2]
+
+datos2 <- datos2[-c(3,4,7,9,13,15,16,17,19)]
+variables2 <- as.matrix(datos2[0,])
+
+# print(xtable(variables2, caption = 'Variables del conjunto final de datos'))
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{llll}
+  \hline
+  status & time & mean\_concavity & mean\_symmetry \\
+  SE\_smoothness & SE\_concavity & SE\_concavepoints & SE\_symmetry \\
+  worst\_smoothness & worst\_symmetry & tsize & clase \\
+  CPR1 & CPR2 & &\\
+  \hline
+\hline
+\end{tabular}
+\caption{Variables del conjunto final de datos} 
+\end{table}
+
+Finalmente, observando las \textsf{boxplot} de la variable \textsf{status} con cada una de las dem\'as deducimos que no hay ning\'un dato at\'ipico que nos pueda producir alg\'un problema de falso positivo o falso negativo en los estudios de clasificaci\'on que haremos m\'as adelante. \\
+
+<<echo=false, fig=FALSE>>=
+# Las variables status y clase son las cualitativas, con esas no hacemos boxplot
+boxplot(time ~ status, data = datos2)
+boxplot(mean_concavity ~ status, data = datos2)
+boxplot(mean_symmetry ~ status, data = datos2)
+boxplot(SE_smoothness ~ status, data = datos2)
+boxplot(SE_concavity ~ status, data = datos2)
+boxplot(SE_concavepoints ~ status, data = datos2)
+boxplot(SE_symmetry ~ status, data = datos2)
+boxplot(worst_smoothness ~ status, data = datos2)
+boxplot(worst_symmetry ~ status, data = datos2)
+boxplot(CPR1 ~ status, data = datos2)
+boxplot(CPR2 ~ status, data = datos2)
+
+#par(mfrow=c(3,4))
+#for(i in 2:13) boxplot(wpbc[,i] ~ status, data=wpbc)
+#for(i in 14:20) boxplot(wpbc[,i] ~ status, data=wpbc)
+#for(i in 21:22) boxplot(wpbc[,i] ~ status, data=wpbc)
+@
+
+
+
+\section{T\'ecnicas de clasificaci\'on}
+
+Con el conjunto de datos obtenido tras el an\'alisis preliminar, comenzamos este apartado en el que ajustaremos, valoraremos y compararemos los tres clasificadores que vamos a estudiar. 
+
+\subsection{\'Arboles de decisi\'on}
+
+Los \'arboles de decisi\'on son una alternativa no param\'etrica de modelizaci\'on. Consiste en segmentar la poblaci\'on para encontrar grupos homog\'eneos seg\'un una cierta variable de respuesta. \\
+
+Comenzamos realizando un \'arbol de decisi\'on directamente sobre el conjunto de datos, sin realizar ni \textit{Cross Validation} ni \textit{Bootstrap}. M\'as adelante realizaremos estas dos t\'ecnicas y compararemos los tres \'arboles de decisi\'on, para as\'i observar cual es el que mejor nos clasifica a un nuevo individuo, a trav\'es del error de restituci\'on. \\
+
+<<echo=FALSE, fig=TRUE, width=10, height=10>>=
+# library(randomForest)
+library(rpart)
+library(klaR)
+
+
+set.seed(1234)
+arbol <- rpart(clase ~ mean_concavity + mean_symmetry + SE_smoothness + SE_concavity
+             + SE_concavepoints + SE_symmetry + worst_smoothness
+             + worst_symmetry + tsize + CPR1 + CPR2, data=datos2, method='class')
+
+plot(arbol)
+text(arbol)
+@
+
+A continuaci\'on observamos la matriz de confusi\'on y el error de restituci\'on: \\
+
+<<echo=FALSE>>=
+pred <- predict(arbol, newdata=datos2, type='class')
+mc <- table(datos2$clase, pred) #matriz de confusion
+mc <- as.matrix(mc)
+# print(xtable(mc, caption="Matriz de confusión"))
+
+error.arbol <- 1-(sum(diag(mc))/sum(mc))
+
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & Negativo & Positivo \\ 
+  \hline
+Negativo &  160 &   9 \\ 
+  Positivo &   16 &   13 \\ 
+   \hline
+\end{tabular}
+\caption{Matriz de confusión}
+\end{table}
+
+El error de resustitucion obtenido es del 12.62\%. Sabemos que este indicador es parcial; subestima la tasa de error de verdad. \\
+
+La validaci\'on cruzada es un enfoque nuevo de muestreo, que permite obtener una mayor estimaci\'on de tasa de error honesto del árbol calculado sobre todo el conjunto de datos. Est\'a disponible en casi todos las herramientas de software de minería de datos. Con R, debemos programar el método , pero es bastante simple: \\
+
+Preparamos los valores del n\'umero de observaciones, el $k$ referente a la validaci\'on cruzada, el tama\~no del bloque. Generamos $n$ valores aleatorios, \'utiles a la hora de realizar el proceso. \\
+
+<<echo=TRUE, fig=False>>=
+n <- nrow(datos2) #numero de observaciones
+K <- 10 #para hacer un 10-CV
+tam <- n%/%K #determina el tamaño del bloque
+set.seed(5)
+alea <- runif(n) #genera n valores aleatorios
+rang <- rank(alea) #Asocia a cada individuo un rango
+bloc <- (rang - 1)%/% tam + 1 #asocia a cada individuo un numero de bloque
+bloc <- as.factor(bloc)
+# summary(bloc)
+@
+
+Podemos repetir ahora el proceso de aprendizaje y el proceso de prueba. \\
+
+Recopilamos cada tasa de error en un vector, \\
+
+<<echo=false>>=
+all.err <- numeric(0)
+for (k in 1:K){
+  #aprendemos el modelo con los individuos menos el bloque k
+  a <- rpart(clase ~ mean_concavity +mean_symmetry +SE_smoothness +SE_concavity
+             +SE_concavepoints+ SE_symmetry+worst_smoothness
+             + worst_symmetry + tsize + CPR1+CPR2 ,data=datos2[bloc!=k,], method='class')
+  #aplicamos el modelo al bloque k
+  pred <- predict(a , newdata = datos2[bloc==k,], type='class')
+  #matriz de confusion
+  mc <- table(datos2$clase[bloc==k], pred)
+  error.rpart<-1-(sum(diag(mc))/sum(mc))
+  #tasa de error
+  err <- 1 - (mc[1,1] + mc[2,2])/sum(mc)
+  all.err<-rbind(all.err,err)
+}
+all.err
+@
+
+Debido a que tenemos el mismo número de ejemplos en cada pliegue (menos en el \'ultimo), podemos calcular la media no ponderada. \\
+
+<<echo=FALSE, fig=False>>=
+
+#Esta es la estimación de tasa de error de validación cruzada
+err.cv <- mean(all.err)
+# err.cv
+# haciendo la media de todos menos el ultimo 0.2397661
+# Importancia de cada variable en el árbol: arbol$variable.importance
+@
+
+Realizando la media con todos los factores se obtiene un valor de 0.2210526, es decir, un error de restituci\'on del 22.1\%. \\
+
+
+A trav\'es de la t\'ecnica de \textit{Bagging (Bootstrap Aggregating)} mejoraremos la estabilidad y precisi\'on de nuestro algoritmo. \\
+
+Esta t\'ecnica funciona especialmente para algoritmos de aprendizaje inestables en los que cambian mucho sus estructuras al cambiar un poco los individuos. \\
+
+Realizamos el \textit{Bagging} a nuestro conjunto de datos y generaremos 10 \'arboles, observaremos un gr\'afico que muestra el error de clasificaci\'on para cada uno de los \'arboles generados y gracias a esto deduciremos cual de ellos es el que mejor clasifica un nuevo individuo. \\
+
+<<echo=false, fig=true, height=5, width=7>>=
+#### Bagging
+library(adabag)
+
+set.seed(1234)
+Bagg<- bagging(clase ~ mean_concavity + mean_symmetry + SE_smoothness 
+                   + SE_concavity + SE_concavepoints + SE_symmetry + worst_smoothness
+             + worst_symmetry + tsize + CPR1 + CPR2, data=datos2, mfinal=10)
+# Bagg$formula
+# Bagg$trees
+# Bagg$votes
+# Bagg$prob
+# Bagg$class
+# Bagg$samples
+# Bagg$importance
+
+errorevol(Bagg, datos2 ) -> evol
+error.bagg <- evol$error
+plot(evol$error, main="Error Vs. Nº Arboles", type="l", col = "blue",  xlab = "Numero de Arboles", ylab="Error")
+@ 
+
+Como se puede observar, el \'arbol de clasificaci\'on cuyo error es m\'inimo es el n\'umero 9. Lo representamos: \\
+
+<<echo=FALSE, fig=TRUE, width=10, height=10>>=
+# order(error.bagg)
+
+## El árbol con un error menor es el número 9
+plot(Bagg$trees[[9]])
+text(Bagg$trees[[9]])
+
+# error.bagg[9]
+
+#error.bagg
+
+# Comparamos los errores obtenidos con rpart, y con bagging
+# Quiero hacer una gráfica que me ponga los errores de las dos cosas!!! 
+#plot(evol$error)
+@
+
+Su error de restituci\'on es del 9.09\%. Bastante mejor que en el caso de realizar el \'arbol de decisi\'on sin realizar ni \textit{Cross Validation} ni \textit{Bootstrap} y en el caso en el que s\'i que se utilizar la t\'ecnica de \textit{Cross Validation}. Recordemos que estos errores eran un 12.62\% y un 22.1\% respectivamente. \\
+
+\subsection{Clasificador SVM}
+
+Las M\'aquinas de Vectores Soporte (SVM) son nuevas estructuras de aprendizaje basadas
+en la teor\'ia estad\'istica del aprendizaje. Se basan en transformar el espacio de entrada en
+otro de dimensi\'on superior (infinita) en el que el problema puede ser resuelto mediante
+un hiperplano \'optimo (de m\'aximo margen). \\
+
+Esta t\'ecnica presenta un buen rendimiento al generalizar en problemas de clasificaci\'on, 
+pese a no incorporar conocimiento espec\'ifico sobre el dominio. La soluci\'on no depende de la 
+estructura del planteamiento del problema. \\
+
+Vamos a utilizar la funci\'on \texttt{ksvm} que nos proporciona el paquete \texttt{kernlab}. 
+
+Esta funci\'on soporta las clasificaciones \texttt{C-svc} y \texttt{nu-svc} que nos servir\'an a la hora de clasificar nuestros datos. Adem\'as, nos da la opci\'on de elegir una funci\'on kernel, as\'i que podremos realizar el m\'etodo de entrenamiento con un kernel no lineal. En este caso hemos elegido un kernel lineal y otro radial.
+
+El kernel radial, por lo general, nos permite obtener resultados m\'as satisfactorios, es una funci\'on cuyos valores dependen s\'olo de la distancia al origin, es decir, $\phi(x) = \phi(|x|)$, utilizando la norma eucll\'idea. Definimos el kernel radial como,
+
+$$ K(x,x') = exp\big(-\frac{|x-x'|^2}{2\sigma^2}\big)$$
+
+donde $\sigma$ es un par\'ametro libre. Utilizando la funci\'on \texttt{ksvm} est\'a misma hace uso de \texttt{sigest} para calcular cu\'al es el \'optimo.
+
+\subsubsection{KSVM con C-svc y kernel radial}
+
+<<echo=true, fig=false>>=
+library(e1071)
+library(MASS)
+library(kernlab)
+
+### KSVM con C-svc y radial
+set.seed(1234)
+svp <- ksvm(clase ~ mean_concavity + mean_symmetry + SE_smoothness 
+            + SE_concavity + SE_concavepoints + SE_symmetry 
+            + worst_smoothness + worst_symmetry + tsize + CPR1 
+            + CPR2, data=datos2, type="C-svc",kernel='rbfdot',
+            kpar=list(sigma=1),C=1, cross=10)
+@
+
+\subsubsection{KSVM con C-svc y kernel lineal}
+
+<<echo=true, fig=false>>=
+### KSVM con C-svc y lineal
+set.seed(1234)
+svp2 <- ksvm(clase ~ mean_concavity + mean_symmetry + SE_smoothness 
+            + SE_concavity + SE_concavepoints + SE_symmetry 
+            + worst_smoothness + worst_symmetry + tsize + CPR1 
+            + CPR2, data=datos2, type="C-svc",kernel='vanilladot',
+            C=1, cross=10)
+@
+
+\subsubsection{KSVM con nu-svc y kernel radial}
+
+<<echo=true, fig=false>>=
+### KSVM con nu-svc y radial
+set.seed(1234)
+svp3 <- ksvm(clase ~ mean_concavity + mean_symmetry + SE_smoothness 
+            + SE_concavity + SE_concavepoints + SE_symmetry 
+            + worst_smoothness + worst_symmetry + tsize + CPR1 
+            + CPR2, data=datos2, type="nu-svc",kernel='rbfdot',
+            kpar=list(sigma=1),C=1, cross=10)
+@
+
+\subsubsection{KSVM con nu-svc y kernel lineal}
+
+<<echo=true, fig=false>>=
+### KSVM con nu-svc y lineal
+set.seed(1234)
+svp4 <- ksvm(clase ~ mean_concavity + mean_symmetry + SE_smoothness 
+            + SE_concavity + SE_concavepoints + SE_symmetry 
+            + worst_smoothness + worst_symmetry + tsize + CPR1 
+            + CPR2, data=datos2, type="nu-svc",kernel='vanilladot',
+            C=1, cross=10)
+@
+
+El porcentaje de falsos positivos y negativos que obtenemos por cada m\'etodo es el siguiente: 
+
+\begin{itemize}
+  \item[\ding{84}] M\'etodo 1: 14.68\%
+  \item[\ding{84}] M\'etodo 2: 14.68\%
+  \item[\ding{84}] M\'etodo 3: 15.18\%
+  \item[\ding{84}] M\'etodo 4: 41.36\%
+\end{itemize}
+
+Se puede observar que dependiendo del clasificador y el tipo de kernel que utilicemos, estos errores var\'ian. Entre clasificadores, podemos afirmar que \texttt{C-svc} es mejor, sin embargo entre kernels, el tipo de kernel radial es sin duda el m\'as ventajoso.
+
+\subsection{An\'alisis Discriminante}
+
+El objetivo del an\'alisis discriminante es obtener una funci\'on capaz de clasificar un nuevo dato o individuo a partir del conocimiento de los valores de las variables discriminadoras. 
+
+\subsubsection{An\'alisis Discriminante Lineal}
+
+El an\'alisis discriminante lineal es una generalizaci\'on del an\'alisis discriminante lineal de Fisher, que consiste en obtener una combinaci\'on lineal de las variables discriminadoras con el fin de clasificar cada individuo. Utilizaremos la funci\'n \texttt{lda} de la biblioteca \texttt{MASS}.
+
+Estudiaremos tanto el caso con utilizando validaci\'on cruzada como el caso sin. 
+
+<<echo=TRUE, fig=false, results=hide>>=
+# LDA sin CV
+set.seed(1234)
+modelo.lda <- lda(clase ~ mean_concavity + mean_symmetry 
+                  + SE_smoothness + SE_concavity + SE_concavepoints 
+                  + SE_symmetry + worst_smoothness + worst_symmetry 
+                  + tsize + CPR1 + CPR2, data=datos2)
+
+predictLDA <- predict(modelo.lda, newdata = datos2)
+TAB <- table(datos2$clase, predictLDA$class)
+mcrlda <- 1 - sum(diag(TAB))/sum(TAB)
+@
+
+\medskip
+
+<<echo=TRUE, fig=false, results=hide>>=
+# LDA con CV leave-one-out
+modelo.ldaCV <- lda(clase ~ mean_concavity + mean_symmetry 
+                    + SE_smoothness + SE_concavity + SE_concavepoints 
+                    + SE_symmetry + worst_smoothness + worst_symmetry 
+                    + tsize + CPR1 + CPR2, data=datos2, CV = TRUE)
+
+TAB.CV <- table(datos2$clase, modelo.ldaCV$class) 
+
+mcrldaCV <- 1 - sum(diag(TAB.CV))/sum(TAB.CV)
+@
+
+Los errores obtenidos con este m\'etodo son: 16.16\% sin utilizar validaci\'on cruzada y 16.66\% utiliz\'andola. Vemos que el error es menor sin CV, sin embargo esta estrategia nos previene del sobreajuste, por tanto aunque el error de la estrategia con CV tenga un error mayor, ser\'ia recomendable utilizar \'esta. 
+
+
+\subsubsection{An\'alisis Discriminante Cuadr\'atico}
+
+El procedimiento que sigue el an\'alisis discriminante cuadr\'atico es similar al del lineal pero utilizando una superficie cuadr\'atica para realizar la clasificaci\'on.
+
+<<echo=true, fig=false>>=
+# QDA sin CV
+set.seed(1234)
+mod.qda <- qda(clase ~ mean_concavity + mean_symmetry 
+                    + SE_smoothness + SE_concavity + SE_concavepoints 
+                    + SE_symmetry + worst_smoothness + worst_symmetry 
+                    + tsize + CPR1 + CPR2, data=datos2)
+predictQDA <- predict(mod.qda, newdata = datos2, type="response")
+TAB <- table(datos2$clase, predictQDA$class)
+mcrqda <- 1 - sum(diag(TAB))/sum(TAB)
+@
+
+\medskip 
+
+<<echo=true, fig=false>>=
+# QDA con CV leave-one-out
+mod.qdaCV <- qda(clase ~ mean_concavity + mean_symmetry 
+                    + SE_smoothness + SE_concavity + SE_concavepoints 
+                    + SE_symmetry + worst_smoothness + worst_symmetry 
+                    + tsize + CPR1 + CPR2, data=datos2, CV = TRUE)
+TAB <- table(datos2$clase, mod.qdaCV$class) 
+mcrqda <- 1 - sum(diag(TAB))/sum(TAB)
+@
+
+
+Los errores obtenidos con este m\'etodo son: 13.13\% sin utilizar validaci\'on cruzada y 22.72\% utiliz\'andola. Vemos que el error es menor sin CV, sin embargo esta estrategia nos previene del sobreajuste, por tanto aunque el error de la estrategia con CV tenga un error mayor, ser\'ia recomendable utilizar \'esta. 
+
+Comparando los m\'etodos de an\'alisis discriminante, observamos que el m\'etodo lineal clasifica mejor que el cuadr\'atico. 
+
+\section{Comparaci\'on de los clasificadores}
+
+
+\subsection{Seg\'un curvas ROC}
+
+Una curva ROC es la representaci\'on gr\'afica del ratio de verdaderos positivos frente al ratio de falsos positivos. Vamos a realizar un estudio sobre las curvas ROC de cada clasificador elegido. Para ello, utilizaremos la librer\'ia \texttt{roc}.
+
+Empezaremos con el clasificador LDA sin Validaci\'on Cruzada. \\
+
+<<echo=false,fig=TRUE, results=hide>>=
+library(ROCR)
+
+lda.pred <-  predict(modelo.lda, newdata = datos2)
+previ <- as.data.frame(lda.pred)
+
+datos2.LDA <- cbind(datos2, "pred.def"=lda.pred$class, 
+                    "pr.def"=round(lda.pred$posterior, digits=4))
+
+addmargins(table(datos2$clase, lda.pred$class)) 
+
+lda.pred.2 <- rep("Negativo", nrow(datos2))
+lda.pred.2[datos2.LDA$pr.def.Positivo>0.2]="Positivo"
+matriz <- addmargins(table(datos2$clase, lda.pred.2))
+matriz <- as.matrix(matriz)
+print(xtable(matriz, caption="Matriz de confusión de LDA sin CV"))
+
+pred <- prediction(datos2.LDA$pr.def.Positivo, datos2$clase)
+perf <- performance(pred, measure="tpr", x.measure="fpr")
+plot(perf, colorize=T, lwd=3)
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Negativo & Positivo & Sum \\ 
+  \hline
+Negativo & 140 & 29 & 169 \\ 
+  Positivo & 12 & 17 & 29 \\ 
+  Sum & 152& 46 & 198 \\ 
+   \hline
+\end{tabular}
+\caption{Matriz de confusión de LDA sin CV} 
+\end{table}
+
+Seguimos con el mismo clasificador pero con Validaci\'on Cruzada. \\
+
+<<echo=false,fig=TRUE, results=hide>>=
+lda.CV<-data.frame(modelo.ldaCV$class,modelo.ldaCV$posterior)
+
+
+datos2.LDACV <- cbind(datos2, "pred.def"=modelo.ldaCV$class, 
+                    "pr.def"=round(modelo.ldaCV$posterior, digits=4))
+
+addmargins(table(datos2$clase, modelo.ldaCV$class)) # Matriz de confusión
+
+lda.cv.pred.2 <-rep("Negativo", nrow(datos2))
+lda.cv.pred.2[lda.CV$Positivo>0.2]="Positivo"
+conf <- addmargins(table(datos2$clase, lda.cv.pred.2))
+conf <- as.matrix(conf)
+print(xtable(conf, caption="Matriz de confusión de LDA con CV"))
+
+pred <- prediction(datos2.LDACV$pr.def.Positivo, datos2$clase)
+perf <- performance(pred, measure="tpr", x.measure="fpr")
+plot(perf, colorize=T, lwd=3)
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Negativo & Positivo & Sum \\ 
+  \hline
+Negativo & 135 & 34 & 169 \\ 
+  Positivo & 14 & 15 & 29 \\ 
+  Sum & 149 & 49 & 198 \\ 
+   \hline
+\end{tabular}
+\caption{Matriz de confusión de LDA con CV} 
+\end{table}
+
+Con respecto al estudio de la curva del ROC con respecto al an\'alisis discriminante cuadr\'atico, volvemos a tener dos casos. 
+
+<<echo=false,fig=TRUE, results=hide>>=
+qda.pred <-  predict(mod.qda, newdata = datos2)
+previ <- as.data.frame(qda.pred)
+
+datos2.QDA <- cbind(datos2, "pred.def"=qda.pred$class, 
+                    "pr.def"=round(qda.pred$posterior, digits=4))
+
+addmargins(table(datos2$clase, qda.pred$class)) # Matriz de confusión
+
+qda.pred.2 <- rep("Negativo", nrow(datos2))
+qda.pred.2[datos2.QDA$pr.def.Positivo>0.2]="Positivo"
+mat <- addmargins(table(datos2$clase, qda.pred.2))
+mat <- as.matrix(mat)
+print(xtable(mat, caption="Matriz de confusión de QDA sin CV"))
+
+pred <- prediction(datos2.QDA$pr.def.Positivo, datos2$clase)
+perf <- performance(pred, measure="tpr", x.measure="fpr")
+plot(perf, colorize=T, lwd=3)
+
+qda.CV<-data.frame(mod.qdaCV$class,mod.qdaCV$posterior)
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Negativo & Positivo & Sum \\ 
+  \hline
+Negativo & 123 & 46 & 169 \\ 
+  Positivo & 1 & 28 & 29 \\ 
+  Sum & 124 & 74 & 198 \\ 
+   \hline
+\end{tabular}
+\caption{Matriz de confusión de QDA sin CV} 
+\end{table}
+
+<<echo=false, fig=TRUE, results=hide>>=
+datos2.QDACV <- cbind(datos2, "pred.def"=mod.qdaCV$class, 
+                    "pr.def"=round(mod.qdaCV$posterior, digits=4))
+
+addmargins(table(datos2$clase, mod.qdaCV$class)) # Matriz de confusión
+
+qda.cv.pred.2 <- rep("Negativo", nrow(datos2))
+qda.cv.pred.2[qda.CV$Positivo>0.2]="Positivo"
+
+con <- addmargins(table(datos2$clase, qda.cv.pred.2))
+con <- as.matrix(con)
+print(xtable(con, caption="Matriz de confusión de QDA con CV"))
+
+#Construimos la curva ROC
+pred <- prediction(datos2.QDACV$pr.def.Positivo, datos2$clase)
+perf <- performance(pred, measure="tpr", x.measure="fpr")
+plot(perf, colorize=T, lwd=3)
+
+@
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Negativo & Positivo & Sum \\ 
+  \hline
+Negativo & 122 & 47 & 169 \\ 
+  Positivo & 14 & 15 & 29 \\ 
+  Sum & 136 & 62 & 198 \\ 
+   \hline
+\end{tabular}
+\caption{Matriz de confusión de QDA con CV} 
+\end{table}
+
+Comparando la sensibilidad y la especificidad de cada modelo obtenemos:
+
+\bigskip
+
+\begin{center}
+\begin{tabular}{lll}
+  & Sensibilidad & Especificidad \\
+  \hline
+  \hline \\
+  LDA & 51.72\% & 79.88\% \\
+  QDA & 51.72\% & 72.19\% \\
+\end{tabular}
+\end{center}
+
+\bigskip
+
+Compararemos s\'olo los m\'etodos con Validaci\'on Cruzada, ya que estos nos previenen del sobreajuste, aunque algunos errores vistos en los m\'etodos sin validaci\'on cruzada sean mejores que los de validaci\'on cruzada. \\
+
+Visualizando las curvas ROC en un mismo gr\'afico. \\
+
+<<echo=false, fig=TRUE>>=
+lda.pred <- prediction(lda.CV$Positivo, datos2$clase)
+lda.perf <- performance(lda.pred, measure="tpr", x.measure="fpr")
+qda.pred <- prediction(qda.CV$Positivo, datos2$clase )
+qda.perf <- performance(qda.pred, measure="tpr", x.measure="fpr" )
+plot(lda.perf, col="blue", lwd=2)
+plot(qda.perf, col="red", lwd=2, add=T)
+title(main="Comparación de curvas ROC: LDA y QDA")
+legend(0.6,0.6,c('LDA','QDA'),col=c('blue', 'red'), lwd=3)
+@
+
+
+
+
+\subsection{Seg\'un el error}
+
+A continuaci\'on vamos a mostrar una tabla que re\'une los errores de todos los m\'etodos estudiados en la secci\'on anterior. \\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l c}
+  \textbf{M\'etodo} & \textbf{Estrategia} & \textbf{Error} \\
+  \hline
+  \hline \\
+  \'Arbol           & Sin                 & 16.62\%        \\
+                    & CV                  & 22.1\%         \\
+                    & Bootstrap           & 9.09\%         \\
+  \hline \\
+  SVM               & CV, C-svc, Radial   & 14.68\%        \\
+                    & CV, C-svc, Lineal   & 14.68\%        \\
+                    & CV, nu-svc, Radial  & 15.18\%        \\
+                    & CV, nu-svc, Lineal  & 41.36\%        \\
+  \hline \\
+  LDA               & Sin                 & 16.16\%        \\
+                    & CV                  & 16.66\%        \\
+  \hline \\
+  QDA               & Sin                 & 13.13\%        \\
+                    & CV                  & 22.72\%        \\
+  \hline \\
+\end{tabular}
+\end{table}
+
+\medskip
+
+En la secci\'on anterior hemos comparado cual es la mejor estrategia para cada m\'etodo en particular, ahora vamos a ver cual es el mejor m\'etodo de todos los estudiados. La mayor\'ia de m\'etodos tienen una tasa de error similar, pero el m\'etodo que mejor nos clasifica nuestro conjunto de datos es el de \'arboles con la t\'ecnica del Bootstrap. 
+
+
+\pagebreak
+
+%\begin{thebibliography}
+%  \bibitem{roc} \url{https://rocr.bioinf.mpi-sb.mpg.de/}
+%\end{thebibliography}
+
+
+
+\end{document}
+

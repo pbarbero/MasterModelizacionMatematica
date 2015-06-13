@@ -1,0 +1,645 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[dvipsnames, usenames]{color}
+\usepackage{amsmath, amssymb}
+
+\usepackage{pxfonts, pifont}
+
+\usepackage{amsfonts}
+\usepackage{amstext, amsopn, amsbsy}
+
+\usepackage{lscape}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks, urlcolor = MidnightBlue, linkcolor=MidnightBlue, citecolor = MidnightBlue}
+
+
+\usepackage{Sweave}
+\begin{document}
+
+\input{Mineria-concordance}
+
+
+%%%%%% INTRODUCCIÓN. CARGA DE LOS DATOS Y ANÁLISIS PRELIMINAR. %%%%%%%
+\section{Introducci\'on}
+
+\bigskip
+
+El conjunto de datos con el que vamos a tratar en este trabajo recoge el seguimiento de pacientes con cancer de pecho. El problema al que nos vamos a dedicar es clasificar si un tumor es recurrente o no a un cierto umbral de tiempo (24 meses). Como m\'as adelante veremos, esta variable no se encuentra en el conjunto tal cual, la construiremos a partir de la informaci\'on que hay en los primeros campos del fichero de datos y que hacen referencia a si cada paciente ha desarrollado recurrencia y en qu\'e momento desde la operaci\'on. \\
+
+\bigskip
+
+\subsection{Descripci\'on de los datos}
+
+\bigskip
+
+El conjunto de datos con el que vamos a trabajar se ha obtenido de la siguiente \href{https://archive.ics.uci.edu/ml/datasets.html}{base de datos}. \\
+
+Una breve descripci\'on de lo que encontramos al entrar en nuestro \href{https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Prognostic)}{conjunto de datos} es: 
+
+\begin{itemize}
+  \item Nombre del estudio: Wisconsin Prognostic Breast Cancer (WPBC).
+  \item Fecha: Diciembre $1995$.
+  \item Donante de los datos: Nick Street
+  \item Descripci\'on: Cada registro representa un seguimiento de un caso de c\'ancer de pecho. Son pacientes del Dr. Wolberg       desde 1984 e incluyen s\'olo aquellos casos que presentan un c\'ancer de mama invasivo y no hay evidencia de met\'astasis en el momento del diagn\'ostico.
+  \item N\'umero de casos: $198$.
+  \item N\'umero de variables: $34$. \\
+\end{itemize}
+
+\bigskip
+
+\newpage
+
+\subsection{Conjunto de datos}
+
+\bigskip
+
+Cargamos los datos y los observamos un resumen de ellos para poder describir cada variable.
+
+
+\begin{Schunk}
+\begin{Soutput}
+ status       time         mean_radius     mean_texture   mean_perimeter  
+ N:151   Min.   :  1.00   Min.   :10.95   Min.   :10.38   Min.   : 71.90  
+ R: 47   1st Qu.: 14.00   1st Qu.:15.05   1st Qu.:19.41   1st Qu.: 98.16  
+         Median : 39.50   Median :17.29   Median :21.75   Median :113.70  
+         Mean   : 46.73   Mean   :17.41   Mean   :22.28   Mean   :114.86  
+         3rd Qu.: 72.75   3rd Qu.:19.58   3rd Qu.:24.66   3rd Qu.:129.65  
+         Max.   :125.00   Max.   :27.22   Max.   :39.28   Max.   :182.10  
+                                                                          
+   mean_area      mean_smoothness   mean_compactness  mean_concavity   
+ Min.   : 361.6   Min.   :0.07497   Min.   :0.04605   Min.   :0.02398  
+ 1st Qu.: 702.5   1st Qu.:0.09390   1st Qu.:0.11020   1st Qu.:0.10685  
+ Median : 929.1   Median :0.10190   Median :0.13175   Median :0.15135  
+ Mean   : 970.0   Mean   :0.10268   Mean   :0.14265   Mean   :0.15624  
+ 3rd Qu.:1193.5   3rd Qu.:0.11098   3rd Qu.:0.17220   3rd Qu.:0.20050  
+ Max.   :2250.0   Max.   :0.14470   Max.   :0.31140   Max.   :0.42680  
+                                                                       
+ mean_concavepoints mean_symmetry    mean_fractaldim     SE_radius     
+ Min.   :0.02031    Min.   :0.1308   Min.   :0.05025   Min.   :0.1938  
+ 1st Qu.:0.06367    1st Qu.:0.1741   1st Qu.:0.05672   1st Qu.:0.3882  
+ Median :0.08607    Median :0.1893   Median :0.06171   Median :0.5333  
+ Mean   :0.08678    Mean   :0.1928   Mean   :0.06271   Mean   :0.6033  
+ 3rd Qu.:0.10393    3rd Qu.:0.2093   3rd Qu.:0.06671   3rd Qu.:0.7509  
+ Max.   :0.20120    Max.   :0.3040   Max.   :0.09744   Max.   :1.8190  
+                                                                       
+   SE_texture      SE_perimeter       SE_area       SE_smoothness     
+ Min.   :0.3621   Min.   : 1.153   Min.   : 13.99   Min.   :0.002667  
+ 1st Qu.:0.9213   1st Qu.: 2.743   1st Qu.: 35.37   1st Qu.:0.005001  
+ Median :1.1685   Median : 3.767   Median : 58.45   Median :0.006193  
+ Mean   :1.2645   Mean   : 4.255   Mean   : 70.23   Mean   :0.006762  
+ 3rd Qu.:1.4632   3rd Qu.: 5.213   3rd Qu.: 92.48   3rd Qu.:0.007973  
+ Max.   :3.5030   Max.   :13.280   Max.   :316.00   Max.   :0.031130  
+                                                                      
+ SE_compactness      SE_concavity     SE_concavepoints    SE_symmetry      
+ Min.   :0.007347   Min.   :0.01094   Min.   :0.005174   Min.   :0.007882  
+ 1st Qu.:0.019803   1st Qu.:0.02681   1st Qu.:0.011423   1st Qu.:0.014795  
+ Median :0.027880   Median :0.03691   Median :0.014175   Median :0.017905  
+ Mean   :0.031199   Mean   :0.04075   Mean   :0.015099   Mean   :0.020555  
+ 3rd Qu.:0.038335   3rd Qu.:0.04897   3rd Qu.:0.017665   3rd Qu.:0.022880  
+ Max.   :0.135400   Max.   :0.14380   Max.   :0.039270   Max.   :0.060410  
+                                                                           
+ SE_fractaldim       worst_radius   worst_texture   worst_perimeter
+ Min.   :0.001087   Min.   :12.84   Min.   :16.67   Min.   : 85.1  
+ 1st Qu.:0.002748   1st Qu.:17.63   1st Qu.:26.21   1st Qu.:118.1  
+ Median :0.003719   Median :20.52   Median :30.14   Median :136.5  
+ Mean   :0.003987   Mean   :21.02   Mean   :30.14   Mean   :140.3  
+ 3rd Qu.:0.004630   3rd Qu.:23.73   3rd Qu.:33.55   3rd Qu.:159.9  
+ Max.   :0.012560   Max.   :35.13   Max.   :49.54   Max.   :232.2  
+                                                                   
+   worst_area     worst_smoothness  worst_compactness worst_concavity  
+ Min.   : 508.1   Min.   :0.08191   Min.   :0.05131   Min.   :0.02398  
+ 1st Qu.: 947.3   1st Qu.:0.12932   1st Qu.:0.24870   1st Qu.:0.32215  
+ Median :1295.0   Median :0.14185   Median :0.35130   Median :0.40235  
+ Mean   :1405.0   Mean   :0.14392   Mean   :0.36510   Mean   :0.43669  
+ 3rd Qu.:1694.2   3rd Qu.:0.15488   3rd Qu.:0.42368   3rd Qu.:0.54105  
+ Max.   :3903.0   Max.   :0.22260   Max.   :1.05800   Max.   :1.17000  
+                                                                       
+ worst_concavepoints worst_symmetry   worst_fractaldim      tsize       
+ Min.   :0.02899     Min.   :0.1565   Min.   :0.05504   Min.   : 0.400  
+ 1st Qu.:0.15265     1st Qu.:0.2759   1st Qu.:0.07658   1st Qu.: 1.500  
+ Median :0.17925     Median :0.3103   Median :0.08689   Median : 2.500  
+ Mean   :0.17878     Mean   :0.3234   Mean   :0.09083   Mean   : 2.847  
+ 3rd Qu.:0.20713     3rd Qu.:0.3588   3rd Qu.:0.10138   3rd Qu.: 3.500  
+ Max.   :0.29030     Max.   :0.6638   Max.   :0.20750   Max.   :10.000  
+                                                                        
+     pnodes      
+ Min.   : 0.000  
+ 1st Qu.: 0.000  
+ Median : 1.000  
+ Mean   : 3.211  
+ 3rd Qu.: 4.000  
+ Max.   :27.000  
+ NA's   :4       
+\end{Soutput}
+\end{Schunk}
+
+
+Los primeros $2$ atributos describen el resultado esperado y el tiempo en el que se desencadena la recurrencia.
+
+\begin{enumerate}
+    \item \textbf{Resultado:} R=recurrente, N=no recurrente
+    \item \textbf{Tiempo:} tiempo de recurrencia si el resultado es R (recurrente), vac\'io si el campo 2 es N (no recurrente)
+\end{enumerate}
+
+Los atributos del $4 - 32$ est\'an formados por $10$ par\'ametros distintos, y de cada uno de ellos se obtienen tres: la media, el error est\'andar y el peor caso (media de los tres casos m\'as grandes). Por ejemplo, el atributo $4$ es la media del radio, el atributo n\'umero $14$ es el error est\'andar del radio y el atributo del 24 es el peor radio posible. 
+
+Cada uno de ellos cuenta con 4 cifras significativas.
+
+\begin{enumerate}
+    \item[3] \textbf{Radio:} media de las distancia entre el centro a los puntos del per\'imetro.
+    \item[4] \textbf{Textura:} desviaci\'on est\'andar de los valores en escala de grises.
+    \item[5] \textbf{Per\'imetro.}
+    \item[6] \textbf{\'Area.}
+    \item[7] \textbf{Smoothness:} variaci\'on local en unidades de longitud seg\'un el radio.
+    \item[8] \textbf{Compacidad:} $\dfrac{\text{per\'imetro}^2}{\text{area} - 1.0}$.
+    \item[9] \textbf{Concavidad:} gravedad de las partes c\'oncavas del contorno.
+    \item[10] \textbf{Puntos de concavidad:} n\'umero de partes c\'oncavas del contorno.
+    \item[11] \textbf{Simetr\'ia.}
+    \item[12] \textbf{Fractal dimension:} $\text{coastline approximation} - 1$.
+    \item[33] \textbf{Tama\~no del tumor:} di\'ametro del tumor extirpado en centr\'imetros.
+    \item[34] \textbf{Estado del ganglio linf\'atico:} n\'umero de ganglios linf\'aticos axilares observados en el momento de la cirug\'ia. \\
+\end{enumerate}  
+
+Todas las variables, salvo la que nos indica si es una paciente recurrente o no recurrente, son cuantitativas. Esta variable y la que vamos a crear son variables cualitativas. \\
+
+Como hemos comentado anteriormente, la nueva variable que vamos a crear la denominaremos \textsf{clase} y su valor ser\'a \textsf{Positivo} o \textsf{Negativo}. A continuaci\'on se muestra como la creamos:
+
+\begin{Schunk}
+\begin{Sinput}
+> #attach(wpbc)
+> wpbc$clase[wpbc$status == "R" & wpbc$time <= 24] <- "Positivo"
+> wpbc$clase[wpbc$status == "R" & wpbc$time > 24] <- "Negativo"
+> wpbc$clase[wpbc$status == "N"] <- "Negativo"
+> #detach(wpbc)
+> wpbc$clase = as.factor(wpbc$clase)
+\end{Sinput}
+\end{Schunk}
+
+A continuaci\'on observamos un resumen de esta nueva variable que hemos creado:
+
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Tue Jun  9 22:33:53 2015
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+Negativo & 169 \\ 
+  Positivo &  29 \\ 
+   \hline
+\end{tabular}
+\caption{Resumen de la nueva variable} 
+\end{table}
+Antes de comenzar a realizar un an\'alisis de correlaci\'on entre las variables para estudiar si ser\'ia posible realizar un An\'alisis Factorial para poder agrupar varias de las variables por factores tenemos que comentar que en \textsf{summary(wpbc)} se observa que la variable \textsf{pnodes} contiene cuatro valores perdidos. En caso de que m\'as adelante nos den alg\'un problema, los omitiremos de nuestro estudio con la orden \textsf{use = "pairwise.complete.obs"}. \\
+
+M\'as adelante, cuando tengamos estudiado nuestro conjunto de datos, observemos en un diagrama de cajas la variable \textsf{Resultado}, por si acaso hubiese alg\'un dato at\'ipico que m\'as adelante pudiese provocar alg\'un problema en el estudio de clasificaci\'on provocando falsos positivos o falsos negativos. \\
+
+\bigskip 
+
+\newpage
+
+\subsection{An\'alisis descriptivo e importancia de cada variable}
+
+\bigskip
+
+Comenzamos este an\'alisis observando la normalidad o no normalidad de las variables cuantitativas. Ya que es un requisito para poder aplicar sobre ellas el An\'alisis Factorial. \\
+
+Este estudio de normalidad lo realizamos mediante el test de Shapiro Wilk, observando el p-valor obtenido en cada variable. Si el p-valor es menor que $0.05$, diremos que la variable es normal. En caso contrario, no ser\'a normal y estudiaremos su normalizaci\'on a partir de su histograma. \\
+
+
+
+\begin{table}[!htbp] \centering
+  \caption{Valor del p-valor de cada variable con el test Shapiro-Wilk.}
+  \label{ShapiroWilk}
+  
+  \bigskip
+  
+  \begin{tabular}{l l l}
+    \textbf{Variable} & \textbf{p-valor} & \\
+    \\[-1.8ex]\hline 
+    \hline \\[-1.8ex] 
+    time & 3.8349e-08 & \\ 
+    mean\_radius & 0.0477 & \\ 
+    mean\_texture & 0.0045 & \\ 
+    mean\_perimeter & 0.0239 & \\ 
+    mean\_area & 3.3787e-05 & \\ 
+    mean\_smoothness & 0.0297 & \\ 
+    mean\_compactness & 0.0006 & \\ 
+    mean\_concavity & 0.0006 & \\ 
+    mean\_concavepoints & 0.0001 & \\ 
+    mean\_symmetry & 9.3708e-05 & \\ 
+    mean\_fractaldim & 5.1141e-07 & \\ 
+    SE\_radius & 3.6084e-10 & \\ 
+    SE\_texture & 1.8953e-09 & \\ 
+    SE\_perimeter & 2.3373e-10 & \\ 
+    SE\_area & 3.4747e-13 & \\ 
+    SE\_smoothness & 6.2242e-18 & \\ 
+    SE\_compactness & 3.8661e-13 & \\ 
+    SE\_concavity & 6.3635e-12 & \\ 
+    SE\_concavepoints & 1.5151e-08 & \\ 
+    SE\_symmetry & 8.5175e-16 & \\ 
+    SE\_fractaldim & 7.6399e-12 & \\ 
+    worst\_radius & 0.0005 & \\ 
+    worst\_texture & 0.0730 & \textcolor{Red}{\ding{56}} \\ 
+    worst\_perimeter & 0.0003 & \\ 
+    worst\_area & 8.1871e-09 & \\ 
+    worst\_smoothness & 0.0107 & \\ 
+    worst\_compactness & 7.5361e-08 & \\ 
+    worst\_concavity & 5.1077e-05 & \\ 
+    worst\_concavepoints & 0.6136 & \textcolor{Red}{\ding{56}}\\ 
+    worst\_symmetry & 1.3440-07 & \\ 
+    worst\_fractaldim & 1.3481e-09 & \\ 
+    \hline \\[-1.8ex] 
+  \end{tabular} 
+\end{table}
+
+Este test nos asegura en la tabla \ref{ShapiroWilk} la normalidad de todas las variables excepto dos, cuyos p-valores son mayores que $0.05$. Estas dos variables en las cuales no tenemos asegurada su normalidad son \textsf{worst\_texture} y \textsf{worst\_concavepoints}. \\
+
+A continuaci\'on observemos sus histogramas para poder deducir si podemos considerarlas normales o transformarlas para que lo sean. \\
+
+\begin{figure}[!htbp] \label{HistQQ1}
+  \caption{Histograma y Q-Q plot de la variable \textsf{worst\_texture}}
+  \begin{tabular}{c}
+\includegraphics{Mineria-007}
+\\
+\includegraphics{Mineria-008}
+  \end{tabular}
+\end{figure}
+
+Podemos observar en la Figura \ref{HistQQ1} que el histograma y la Normal Q-Q plot de esta variable, si que podr\'ia considerarse normal. Recordemos que el p-valor obtenido es muy cercano a $0.05$ y esto tambi\'en ayuda a considerarla finalmente como una variable normal. \\
+
+Lo mismo ocurre en la Figura \ref{HistQQ2} con la variable \textsf{worst\_concavepoints}, aunque su p-valor si que est\'a muy lejano de $0.05$, al realizar su histograma y Normal Q-Q plot podemos observar como si que podr\'ia considerarse tambi\'en como una variable normal. \\
+
+\begin{figure}[!htbp]\label{HistQQ2}
+  \caption{Histograma y Q-Q plot de la variable \textsf{worst\_concavepoints}}
+  \begin{tabular}{c}
+\includegraphics{Mineria-009}
+\\
+\includegraphics{Mineria-010}
+  \end{tabular}
+\end{figure}
+
+Podemos concluir que todas las variables que utilizamos en nuestro estudio son normales, por tanto es posible calcular la correlaci\'on que hay entre ellas a trav\'es de la matriz de correlaciones para luego determinar si podemos aplicar sobre nuestros datos el An\'alisis Factorial. \\
+
+Para el c\'alculo de esta matriz debemos de quitar de nuestra base de datos las variables que no son cuantitativas, es decir, las variables \textsf{status} y \textsf{clase}. \\
+
+\newpage
+
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{l l}
+  \hline
+ & x \\ 
+  \hline
+  time & 0.84 \\ 
+  mean\_radius & 0.81 \\ 
+  mean\_texture & 0.47 \\ 
+  mean\_perimeter & 0.81 \\ 
+  mean\_area & 0.85 \\ 
+  mean\_smoothness & 0.83 \\ 
+  mean\_compactness & 0.83 \\ 
+  mean\_concavity & 0.90 \\ 
+  mean\_concavepoints & 0.88 \\ 
+  mean\_symmetry & 0.83 \\ 
+  mean\_fractaldim & 0.89 \\ 
+  SE\_radius & 0.76 \\ 
+  SE\_texture & 0.55 \\ 
+  SE\_perimeter & 0.76 \\ 
+  SE\_area & 0.84 \\ 
+  SE\_smoothness & 0.61 \\ 
+  SE\_compactness & 0.68 \\ 
+  SE\_concavity & 0.71 \\ 
+  SE\_concavepoints & 0.70 \\ 
+  SE\_symmetry & 0.70 \\ 
+  SE\_fractaldim & 0.73 \\ 
+  worst\_radius & 0.75 \\ 
+  worst\_texture & 0.40 \\ 
+  worst\_perimeter & 0.80 \\ 
+  worst\_area & 0.78 \\ 
+  worst\_smoothness & 0.74 \\ 
+  worst\_compactness & 0.70 \\ 
+  worst\_concavity & 0.77 \\ 
+  worst\_concavepoints & 0.85 \\ 
+  worst\_symmetry & 0.71 \\ 
+  worst\_fractaldim & 0.79 \\ 
+  tsize & 0.62 \\ 
+  pnodes & 0.46 \\ 
+   \hline
+\end{tabular}
+\caption{MSA: Medida de adecuación de la muestra para cada variable.}
+\label{MSA}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{l l}
+  \hline
+ & x \\ 
+  \hline
+1 & 0.77 \\ 
+   \hline
+\end{tabular}
+\caption{KMO: Kaiser-Meyer-Olkin. Indice de adecuación de la muestra.}
+\label{KMO}
+\end{table}
+
+En \ref{MSA} es claro que hay cuatro variables que son poco relevantes y por tanto pueden salir del estudio, estas son las tres relacionadas con la textura: \textsf{mean\_texture}, \textsf{SE\_texture}, \textsf{worst\_texture} y la variable \textsf{pnodes}. \\
+
+En \ref{KMO} observamos tambi\'en que el valor del KMO no nos desaconseja la utilizaci\'on de un An\'alisis Factorial. \\
+
+A continuaci\'on, quitamos de nuestro an\'alisis estas variables y volvemos a calcular el KMO, a ver si mejora. \\
+
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{ll}
+  \hline
+ & x \\ 
+  \hline
+time & 0.86 \\ 
+  mean\_radius & 0.81 \\ 
+  mean\_perimeter & 0.81 \\ 
+  mean\_area & 0.86 \\ 
+  mean\_smoothness & 0.85 \\ 
+  mean\_compactness & 0.83 \\ 
+  mean\_concavity & 0.90 \\ 
+  mean\_concavepoints & 0.87 \\ 
+  mean\_symmetry & 0.85 \\ 
+  mean\_fractaldim & 0.89 \\ 
+  SE\_radius & 0.74 \\ 
+  SE\_perimeter & 0.76 \\ 
+  SE\_area & 0.84 \\ 
+  SE\_smoothness & 0.62 \\ 
+  SE\_compactness & 0.67 \\ 
+  SE\_concavity & 0.72 \\ 
+  SE\_concavepoints & 0.69 \\ 
+  SE\_symmetry & 0.71 \\ 
+  SE\_fractaldim & 0.72 \\ 
+  worst\_radius & 0.75 \\ 
+  worst\_perimeter & 0.80 \\ 
+  worst\_area & 0.79 \\ 
+  worst\_smoothness & 0.77 \\ 
+  worst\_compactness & 0.69 \\ 
+  worst\_concavity & 0.77 \\ 
+  worst\_concavepoints & 0.84 \\ 
+  worst\_symmetry & 0.72 \\ 
+  worst\_fractaldim & 0.78 \\ 
+  tsize & 0.73 \\ 
+   \hline
+\end{tabular}
+\caption{MSA: Medida de adecuación de la muestra para cada variable.}
+\label{MSA2}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+  \hline
+ & x \\ 
+  \hline
+1 & 0.79 \\ 
+   \hline
+\end{tabular}
+\caption{KMO: Kaiser-Meyer-Olkin. Indice de adecuación de la muestra.}
+\label{KMO2}
+\end{table}
+
+En el Cuadro \ref{MSA2} observamos ya que todas las variables tienen su relevancia y adem\'as en el Cuadro \ref{KMO2} se observa la mejor\'ia en el valor del KMO. \\
+
+Ahora, calculamos la matriz de correlaciones y realizaremos un mapa de calor de esta matriz para observar de forma gr\'afica si hay grupos de variables correladas y poder aplicar un buen An\'alisis Factorial. \\
+
+
+\begin{figure}[h]\label{MapaCalor}
+\includegraphics{Mineria-014}
+\end{figure}
+
+Se observa como las \'unicas variables que tienen relaci\'on entre ellas son aquellas que tienen relaci\'on con el \'Area, Per\'imetro y Radio. Entre el resto de variables no se observa ninguna correlaci\'on y por tanto no es recomendable utilizar el An\'alisis Factorial, ya que habr\'ia factores en los que se encontrar\'ia una \'unica variable. \\
+
+Para asegurarnos de que no es recomendable el An\'alisis Factorial, vamos a realizar tambi\'en la prueba de esfericidad de Bartlett. \\
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+1 & 1.00 \\ 
+   \hline
+\end{tabular}
+\caption{Bartlett: Test de esfericidad de Bartlett.}
+\label{Bartlett}
+\end{table}
+
+El test de Bartlett nos devuelve en \ref{Bartlett} la aceptaci\'on de la hip\'otesis de que la matriz de correlaciones es la matriz identidad. Por esto queda afirmada la incorrelaci\'on lineal entre las variables y no realizaremos un An\'alisis Factorial. \\
+
+Aunque no realicemos un An\'alisis Factorial, hemos visto que hay variables que s\'i que est\'an correladas entre s\'i. Por ello haremos un an\'alisis de Componentes Principales y observaremos que podemos cambiar estas variables por una Componente Principal formada por todas ellas. \\
+
+Comenzamos realizando un an\'alisis de Componentes principales tomando todas las variables y con dos factores. Obtenemos tabla de comunalidades \ref{communality} para las distintas variables: \\
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+mean\_radius & 0.90 \\ 
+  mean\_perimeter & 0.91 \\ 
+  mean\_area & 0.92 \\ 
+  mean\_smoothness & 0.58 \\ 
+  mean\_compactness & 0.88 \\ 
+  mean\_concavity & 0.85 \\ 
+  mean\_concavepoints & 0.82 \\ 
+  mean\_symmetry & 0.51 \\ 
+  mean\_fractaldim & 0.81 \\ 
+  SE\_radius & 0.66 \\ 
+  SE\_perimeter & 0.67 \\ 
+  SE\_area & 0.78 \\ 
+  SE\_smoothness & 0.13 \\ 
+  SE\_compactness & 0.62 \\ 
+  SE\_concavity & 0.54 \\ 
+  SE\_concavepoints & 0.31 \\ 
+  SE\_symmetry & 0.23 \\ 
+  SE\_fractaldim & 0.59 \\ 
+  worst\_radius & 0.87 \\ 
+  worst\_perimeter & 0.88 \\ 
+  worst\_area & 0.84 \\ 
+  worst\_smoothness & 0.49 \\ 
+  worst\_compactness & 0.67 \\ 
+  worst\_concavity & 0.65 \\ 
+  worst\_concavepoints & 0.66 \\ 
+  worst\_symmetry & 0.38 \\ 
+  worst\_fractaldim & 0.72 \\ 
+   \hline
+\end{tabular}
+\caption{Comunalidades de las variables} 
+\label{communality}
+\end{table}
+
+En la tabla \ref{communality} observamos que hay varias variables con comunalidades muy bajas, y por tanto podemos omitirlas en este an\'alisis, ya que lo que nos interesa es encontrar un factor que nos englobe las variables que est\'an relacionadas con el radio, per\'imetro y \'area. Las variables que eliminamos para el siguiente an\'alisis son: \textsf{mean\_symetry}, \textsf{SE\_smoothness}, \textsf{SE\_concavepoints}, \textsf{SE\_symmetry}, \textsf{worst\_smoothness} y \textsf{worst\_symmetry}. \\
+
+Repetimos el proceso y obtenemos que hay otras dos variables con comunalidades muy bajas y que tambi\'en pueden ser omitidas del an\'alisis. Estas variables son \textsf{mean\_smoothness} y \textsf{SE\_concavity}. \\
+
+Finalmente, realizamos un an\'alisis de componentes principales con las 19 variables restantes. Consideraremos 3 factores y utilizaremos la rotaci\'on \textit{varimax}. Obtenemos el siguiente esquema: \\
+
+\begin{center}
+\includegraphics{Mineria-017}
+\end{center}
+
+En \ref{Factores} observamos como de los dos factores obtenidos, hay uno que nos agrupa todas las variables que anteriormente hab\'iamos visto que estaban correlacionadas. Si nos fijamos en la segunda componente obtenida, podemos ver que \ref{MapaCalor} nos muestra que estas variables tambi\'en est\'an correlacionadas entre s\'i, y por ello vamos a considerar estas dos componentes y las sustituiremos por todas las variables que nos relacionan. \\ 
+
+Por tanto, vamos a sustituir las 19 variables por las dos componentes: \\
+
+\begin{itemize}
+  \item[\ding{226}] Componente 1:
+    \begin{tabular}{l l}
+      worst\_radius & worst\_perimeter \\
+      mean\_area & mean\_perimeter \\
+      mean\_radius & worst\_area \\
+      mean\_concavepoints & SE\_area \\
+      SE\_radius & SE\_perimeter \\
+    \end{tabular}
+  \item[\ding{226}] Componente 2:
+    \begin{tabular}{l l}
+      mean\_compactness & worst\_compactness \\
+      worst\_concavity & mean\_fractaldim \\
+      worst\_fractaldim & SE\_compactness \\
+      SE\_fractaldim & mean\_concavity \\
+      worst\_concavepoints & \\
+    \end{tabular}
+\end{itemize}
+
+En el Anexo mostraremos el peso de cada variable en la nueva componente para que, si es necesario, podamos obtener este valor cuando tengamos nuevos individuos. \\
+
+
+Por tanto, nos queda el conjunto final de datos formado por 198 observaciones y 14 variables que vienen reflejadas en la siguiente tabla: \\
+
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{llll}
+  \hline
+  status & time & mean\_concavity & mean\_symmetry \\
+  SE\_smoothness & SE\_concavity & SE\_concavepoints & SE\_symmetry \\
+  worst\_smoothness & worst\_symmetry & tsize & clase \\
+  CPR1 & CPR2 & &\\
+  \hline
+\hline
+\end{tabular}
+\caption{Variables del conjunto final de datos} 
+\end{table}
+
+Finalmente, observando las \textsf{boxplot} de la variable \textsf{status} con cada una de las dem\'as deducimos que no hay ning\'un dato at\'ipico que nos pueda producir alg\'un problema de falso positivo o falso negativo en los estudios de clasificaci\'on que haremos m\'as adelante. \\
+
+
+
+
+\section{T\'ecnicas de clasificaci\'on}
+
+Con el conjunto de datos obtenido tras el an\'alisis preliminar, comenzamos este apartado en el que ajustaremos, valoraremos y compararemos los tres clasificadores que vamos a estudiar. 
+
+\subsection{\'Arboles de decisi\'on}
+
+Los \'arboles de decisi\'on son una alternativa no param\'etrica de modelizaci\'on. Consiste en segmentar la poblaci\'on para encontrar grupos homog\'eneos seg\'un una cierta variable de respuesta. \\
+
+Comenzamos realizando un \'arbol de decisi\'on directamente sobre el conjunto de datos, sin realizar ni \textit{Cross Validation} ni \textit{Bootstrap}. M\'as adelante realizaremos estas dos t\'ecnicas y compararemos los tres \'arboles de decisi\'on, para as\'i observar cual es el que mejor nos clasifica a un nuevo individuo, a trav\'es del error de restituci\'on. \\
+
+\includegraphics{Mineria-021}
+
+A continuaci\'on observamos la matriz de confusi\'on y el error de restituci\'on: \\
+
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & Negativo & Positivo \\ 
+  \hline
+Negativo &  160 &   9 \\ 
+  Positivo &   16 &   13 \\ 
+   \hline
+\end{tabular}
+\caption{Matriz de confusión}
+\end{table}
+
+El error de resustitucion obtenido es del 12.62\%. Sabemos que este indicador es parcial; subestima la tasa de error de verdad. \\
+
+La validaci\'on cruzada es un enfoque nuevo de muestreo, que permite obtener una mayor estimaci\'on de tasa de error honesto del árbol calculado sobre todo el conjunto de datos. Est\'a disponible en casi todos las herramientas de software de minería de datos. Con R, debemos programar el método , pero es bastante simple: \\
+
+Preparamos los valores del n\'umero de observaciones, el $k$ referente a la validaci\'on cruzada, el tama\~no del bloque. Generamos $n$ valores aleatorios, \'utiles a la hora de realizar el proceso. \\
+
+\begin{Schunk}
+\begin{Sinput}
+> n <- nrow(datos2) #numero de observaciones
+> K <- 10 #para hacer un 10-CV
+> tam <- n%/%K #determina el tamaño del bloque
+> set.seed(5)
+> alea <- runif(n) #genera n valores aleatorios
+> rang <- rank(alea) #Asocia a cada individuo un rango
+> bloc <- (rang - 1)%/% tam + 1 #asocia a cada individuo un numero de bloque
+> bloc <- as.factor(bloc)
+> # summary(bloc)
+\end{Sinput}
+\end{Schunk}
+
+Podemos repetir ahora el proceso de aprendizaje y el proceso de prueba. Recopilamos cada tasa de error en un vector, \\
+
+\begin{Schunk}
+\begin{Soutput}
+          [,1]
+err 0.36842105
+err 0.15789474
+err 0.15789474
+err 0.26315789
+err 0.26315789
+err 0.36842105
+err 0.21052632
+err 0.05263158
+err 0.31578947
+err 0.05263158
+\end{Soutput}
+\end{Schunk}
+
+Debido a que tenemos el mismo número de ejemplos en cada pliegue (menos en el \'ultimo), podemos calcular media no ponderada. \\
+
+
+Realizando la media con todos los factores se obtiene un valor de 0.2210526, es decir, un error de restituci\'on del 22.1\%. \\
+
+
+A trav\'es de la t\'ecnica de \textit{Bagging (Bootstrap Aggregating)} mejoraremos la estabilidad y precisi\'on de nuestro algoritmo. \\
+
+Esta t\'ecnica funciona especialmente para algoritmos de aprendizaje inestables en los que cambian mucho sus estructuras al cambiar un poco los individuos. \\
+
+Realizamos el \textit{Bagging} a nuestro conjunto de datos y generaremos 10 \'arboles, observaremos un gr\'afico que muestra el error de clasificaci\'on para cada uno de los \'arboles generados y gracias a esto deduciremos cual de ellos es el que mejor clasifica un nuevo individuo. \\
+
+\includegraphics{Mineria-026}
+
+Como se puede observar, el \'arbol de clasificaci\'on cuyo error es m\'inimo es el n\'umero 9. Lo representamos: \\
+
+\includegraphics{Mineria-027}
+
+Su error de restituci\'on es del 9.09\%. Bastante mejor que en el caso de realizar el \'arbol de decisi\'on sin realizar ni \textit{Cross Validation} ni \textit{Bootstrap} y en el caso en el que s\'i que se utilizar la t\'ecnica de \textit{Cross Validation}. Recordemos que estos errores eran un 12.62\% y un 22.1\% respectivamente. \\
+
+\subsection{Clasificador SVM}
+
+Las M\'aquinas de Vectores Soporte (SVM) son nuevas estructuras de aprendizaje basadas
+en la teor\'ia estad\'istica del aprendizaje. Se basan en transformar el espacio de entrada en
+otro de dimensi\'on superior (infinita) en el que el problema puede ser resuelto mediante
+un hiperplano \'optimo (de m\'aximo margen). \\
+
+Esta t\'ecnica presenta un buen rendimiento al generalizar en problemas de clasificaci\'on, 
+pese a no incorporar conocimiento espec\'ifico sobre el dominio. La soluci\'on no depende de la 
+estructura del planteamiento del problema. \\
+
+Vamos a utilizar la funci\'on \textrm{ksvm} que nos proporciona el paquete \textrm{kernlab}
+
