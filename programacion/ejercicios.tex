@@ -1,0 +1,361 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{dsfont}
+\usepackage{tikz} 
+\usepackage[utf8]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{exercise}
+\usepackage{algorithmic}
+\usepackage{mathtools}
+\usepackage{multicol}
+
+\author{Pilar Barbero Iriarte}
+
+\newenvironment{exercise}[1]% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{Ejercicio (#1)}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+
+
+
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+\textsc{Ejercicios Programaci\'on Cient\'fica}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Programaci\'on Cient\'ifica y \'Algebra Computacional \\[0.4cm] }
+
+\vfill
+
+
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\includegraphics[width=1.1\textwidth]{../images/logoUZ.png}~\\
+\emph{Autor:}\\
+Pilar Barbero Iriarte 
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[width=0.5\textwidth]{../images/logoUNIOVI.png}~\\
+%\includegraphics[width=0.5\textwidth]{../images/logoUNIRIOJA.png}~\\[1cm]
+
+\emph{Profesor:} \\
+Pedro Alonso Vel\'azquez\\
+%Jos\'e Mar\'ia Izquierdo
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\section{Eliminaci\'on de Neville}
+
+
+\textbf{Reorganizar el proceso de eliminiaci\'on de Neville en t\'erminos de operaciones de nivel 3 de BLAS.}\\
+
+\smallskip
+
+El algoritmo de eliminaci\'on de Neville es una alternativa a la eliminaci\'on Gaussiana que nos permite transformar una matriz cuadrada $n\times n$  en una matriz triangular superior $U$.
+
+Podemos expresar el algoritmo de eliminación de nivel en t\'erminos de operaciones de nivel 2 de la siguiente forma,\\
+
+%\begin{algorithmic}[1]\label{neville2}
+%	\FOR{$k=1 \text{ to } n-1$} 
+%		\STATE{$ A(n:i+1, i) = A(n:i+1, i)/A(n-1:i, i) $}
+%		\IF{$i < n$}
+%			\STATE{$ A(n:i+1, i+1:n) = A(n:i+1, i+1:n) - A(n:i+1, i)\cdot A(n-1:i,i+1:n)$ }
+%		\ENDIF
+%	\ENDFOR
+%\end{algorithmic}
+
+\begin{algorithmic}[1]\label{neville2}
+        \FOR{$k=1 \text{ to } n-1$} 
+                \FOR{$i=n \text{ to } k+1 \text{ (step -1)}$}
+                	\STATE{$ A(i, k) = A(i, k)/A(i-1, i) $}
+                	\FOR{$j=k+1 \text{ to } n$}
+                        \STATE{$ A(i, j) = A(i, j) - A(i, k)\cdot A(i-1,j)$ }
+                   \ENDFOR
+                \ENDFOR
+        \ENDFOR
+\end{algorithmic}
+
+
+
+\bigskip
+
+En el paso $k$ del algoritmo, las filas de la $k+1$ a la $n$ y las columnas $k+1$ a la $n$ de $U$ están computadas. 
+
+El algoritmo BLAS de nivel 3 reorganiza las operaciones retrasando el paso 4 del algoritmo de neville de nivel 2 durante \textit{b} pasos. Este n\'umero \textit{b} es un entero peque\~no que se llama \textit{block size}. El valor de \'este par\'ametro var\'ia dependiendo de si queremos maximizar la velocidad del algoritmo, sin embargo, suele ser $b=32$ \'o $64$. M\'as adelante, se aplican todos los pasos n\'umero 4 en una misma multiplicaci\'on de matriz por matriz.\\
+
+Supongamos que ya hemos computado las $i-1$ primeras filas de $U$, para una matriz A
+
+\begin{equation}
+\begin{array}{l l}
+  		A = 
+  		\begin{bmatrix}
+			A_{11} & A_{12} & A_{13} \\
+			A_{21} & A_{22} & A_{23} \\
+			A_{31} & A_{32} & A_{33}  		
+  		\end{bmatrix}
+  		\xrightarrow{\text{paso i}} &
+  		\bordermatrix{
+  				 	& i-b & b & n-b-i+1 \cr
+                	i-1     & A_{11}^{*} & A_{12}^{*} & A_{13}^{*}\\
+                	b       & A_{31}^{*} & A_{22}/A_{12} & A_{23} - A_{22}/A_{12}\cdot A_{13} \\
+                	n-b-i+1 & A_{31}^{*} & A_{32}/A_{22} & A_{33} - A_{32}/A_{22}\cdot A_{23}
+                }\\[1cm]
+	  \, & = 
+	  \begin{bmatrix}
+			L_{11} & 0 & 0 \\
+			L_{21} & I & 0 \\
+			L_{31} & 0 & I	  	
+	  \end{bmatrix}
+	  \begin{bmatrix}
+			U_{11} & U_{21} & U_{31} \\
+			0 & \widetilde{A}_{22} & \widetilde{A}_{23} \\
+			0 & \widetilde{A}_{31} & \widetilde{A}_{33}
+	  \end{bmatrix}\\
+\end{array}
+\end{equation}
+
+donde,
+
+\begin{multicols}{2}
+	\begin{itemize}
+		\item $A_{11}^{*} = L_{11}\cdot U_{11}$
+		\item $A_{12}^{*} = L_{11}\cdot U_{21}$
+		\item $A_{13}^{*} = L_{11}\cdot U_{31}$
+		\item $A_{21}^{*} = L_{21}\cdot U_{11}$
+		\item $A_{31}^{*} = L_{31}\cdot U_{11}$
+	\end{itemize}
+	\begin{itemize}
+		\item $\widetilde{A}_{22} = A_{22}/A_{12}$
+		\item $\widetilde{A}_{32} = A_{32}/A_{22}$
+		\item $\widetilde{A}_{23} = A_{23} - (A_{22}/A_{12})\cdot A_{13}$
+		\item $\widetilde{A}_{33} = A_{33} - (A_{32}/A_{22})\cdot A_{23}$
+	\end{itemize}
+\end{multicols}
+
+\bigskip
+
+Ahora, aplicamos el algoritmo de eliminaci\'on de Neville de nivel 2 a la submatriz $\bigl(\begin{smallmatrix}
+\widetilde{A}_{22}\\ \widetilde{A}_{32}
+\end{smallmatrix} \bigr)$,
+
+\begin{equation}
+	\begin{bmatrix}
+		\widetilde{A}_{22} \\
+		\widetilde{A}_{32}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		L_{22} \\
+		L_{32}
+	\end{bmatrix}
+	\cdot
+	U_{22}
+	=
+	\begin{bmatrix}
+		L_{22} U_{22} \\
+		L_{32} U_{22}
+	\end{bmatrix}
+\end{equation}
+
+que nos permite reescribir la submatriz de la siguiente forma,
+
+\begin{equation}
+\begin{array}{l l}
+	\begin{bmatrix}
+		\widetilde{A}_{22} & \widetilde{A}_{23} \\
+		\widetilde{A}_{32} & \widetilde{A}_{33}
+	\end{bmatrix}
+	& =
+	\begin{bmatrix}
+		L_{22} U_{22} & \widetilde{A}_{23} \\
+		L_{32} U_{22} & \widetilde{A}_{33}
+	\end{bmatrix}\\[.5cm]
+	\, & = 
+	\begin{bmatrix}
+		L_{22} & 0 \\
+		L_{32} & I
+	\end{bmatrix}
+	\cdot
+	\begin{bmatrix}
+		U_{22} & L_{22}^{-1} \widetilde{A}_{23} \\
+		0 & \widetilde{A}_{33} - L_{32}\cdot (L_{22}^{-1} \widetilde{A}_{23})
+	\end{bmatrix}\\[.5cm]
+	\, & = 
+	\begin{bmatrix}
+		L_{22} & 0 \\
+		L_{32} & I
+	\end{bmatrix}
+	\cdot
+	\begin{bmatrix}
+		U_{22} & U_{23} \\
+		0 & \widetilde{A}_{33} - L_{32}\cdot U_{23}
+	\end{bmatrix}\\[.5cm]
+	\, & = 
+	\begin{bmatrix}
+		L_{22} & 0 \\
+		L_{32} & I
+	\end{bmatrix}
+	\cdot
+		\begin{bmatrix}
+		U_{22} & U_{23} \\
+		0 & \widetilde{\widetilde{A}}_{33}
+	\end{bmatrix}\\[.5cm]
+\end{array}
+\end{equation}
+
+En conjunto, conseguimos una factorizaci\'on $LU$ tal que,
+
+\begin{equation}
+	\begin{bmatrix}
+		A_{11} & A_{12} & A_{13} \\
+		A_{21} & A_{22} & A_{23} \\
+		A_{31} & A_{32} & A_{33} 
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		L_{11} & 0 & 0 \\
+		L_{21} & L_{22} & 0 \\
+		L_{31} & L_{32} & I 
+	\end{bmatrix}
+	\cdot
+	\begin{bmatrix}
+		U_{11} & U_{21} & U_{31} \\
+		0 & U_{22} & U_{23} \\
+		0 & 0 & \widetilde{\widetilde{A}}_{33} 
+	\end{bmatrix}
+\end{equation}
+
+Esto define un algoritmo de la siguiente forma, 
+
+\begin{itemize}
+	\item Usar el algoritmo de nivel 2 de Neville para factorizar,
+	$$\begin{pmatrix} \widetilde{A}_{22}\\ \widetilde{A}_{32} 
+\end{pmatrix} = \begin{pmatrix} L_{22} \\ L_{32} \end{pmatrix} \cdot U_{22}$$
+	\item Asignar $U_{23} = L_{22}^{-1} \widetilde{A}_{23}$. Esto implica resolver un sistema triangular lineal utilizando una operaci\'on simple BLAS.
+	\item Asignar $\widetilde{\widetilde{A}}_{33} = \widetilde{A}_{33} - L_{32}\cdot U_{23}$, una multiplicaci\'on matriz por matriz.
+\end{itemize}
+
+\bigskip
+
+Formalmente,
+
+\begin{algorithmic}[1]\label{neville3}
+	\FOR{$k=1:b:n-1$ }
+		\FOR{$i=k:n$}
+			\FOR{$j=k:k+b-1$}
+				\STATE{Factorizar $A(i, j) = \bigl(\begin{smallmatrix} L_{22} \\ L_{32} \end{smallmatrix}\bigr) U_{22}$}
+			\ENDFOR		
+		\ENDFOR
+		\FOR{$i=n:k+b+1$}
+			\FOR{$j=k+b:n$}
+				\STATE{$A(i, j) = L_{22}^{-1}\cdot A(i, j)$}
+
+				\STATE{$ A(i, j) = A(i, j) - A(j, k+b)\cdot A(i-1, j)$}
+			\ENDFOR
+		\ENDFOR
+	\ENDFOR
+\end{algorithmic}
+
+%\begin{algorithmic}[1]\label{neville3}
+%	\FOR{$i=1:b:n-1$ }
+%		\STATE{Factorizar $A(i:n, i:i+b-1) = \bigl(\begin{smallmatrix} L_{22} \\ L_{32} \end{smallmatrix}\bigr) U_{22}$
+%		}
+%		\STATE{\begin{equation}	
+%					\begin{array}{l l}
+%						A(n:-1:i+b+1, i+b:n) = \\
+%						\, \, \, \, A(n-1:-1:i, i)^{-1}\cdot A(n:-1:i+b+1, i+b:n)
+%					\end{array}
+%				\end{equation}
+%			  }
+%		\STATE{\begin{equation} 
+%			 		\begin{array}{l l}
+%						A(n:-1:i+b+1, i+b:n) = \\
+%						\, \, \, \, A(n:-1:i+b+1, i+b:n) - \\ 
+%						\, \, \, \, A(i+b:n, i+b)\cdot A(n-1:-1:i+b, i+b:n)
+%			 		\end{array}
+%			   \end{equation}
+%			  }
+%	\ENDFOR
+%\end{algorithmic}
+
+\bigskip
+
+Como hemos comentado antes, se necesita asignar un valor al par\'ametro $b$ con el fin de maximizar la velocidad del algoritmo. Por un lado, se prefiere un $b$ grande porque se puede ver que la velocidad aumenta cuando se multiplican matrices de gran tama\~no. Por otro lado, se puede verificar que el n\'umero de operaciones de coma flotante realizadas en la l\'inea 1 de nuestro algoritmo es de $n^2 b/2$ por lo que no interesa que $b$ sea un n\'umero grande. \'Este valor suele tomarse seg\'un la m\'aquina en la que se realicen los c\'alculos y suele ser $b=32$ \'o $b=64$.
+
+	  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+
+%\section{\'Algebra Computacional}
+%
+%\begin{exercise}{1}
+%Determina usando t\'ecnicas de Groebner si los siguientes ideales son iguales:
+%
+%\begin{itemize}
+%	\item $< y^3 - z^2, xz - y^2, xy - z, x^2 -y >$
+%	\item $< xy - z^2, xz - y^2, xy - z, x^2 - y >$
+%	\item $< xz - y^2, x + y^2 - z - 1, xyz - 1>$
+%	\item $< y^2 -x^2y, z - xy, y - x^2 >$
+%\end{itemize}
+%
+%Puedes ayudarte del ordenador.
+%
+%\end{exercise}
+%
+%\begin{exercise}{2}
+%
+%Calcula, sin usar el ordenador, mediante el algoritmo de Buchberger una base reducida del ideal $I = <xy + z, x^2+y^2>$. Determina tambi\'en sin usar el ordenador si la clase $[x + 1]$ es invertible en $k[x,y,z]/I$
+%
+%\end{exercise}
+%
+%\begin{exercise}{3}
+%
+%Calcula el abanico de Groebner del ideal $<x^2 - y^3, x^3 - y^2 + x>$.
+%
+%\end{exercise}
+%
+%\begin{exercise}{4}
+%
+%¿Puede escribirse $4x^4y^2 + 4y^6 - 2x^4 - 4x^2y^2 - 6y^4 + 2x^2 + 4y^2 -1$ de la forma $h(x^2 + y^2 - 1, x^2 - y^2)$ para alg\'un polinomio $h\in \mathbb{Q}[x,y]$?
+%
+%\end{exercise}
+
+\end{document}

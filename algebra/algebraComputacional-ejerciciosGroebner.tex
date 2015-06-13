@@ -1,0 +1,990 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+    %%%%AUTHOR
+
+	\author{Pilar Barbero Iriarte}
+
+    %%%%%%%%%%%
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    
+
+
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % ansi colors
+    \definecolor{red}{rgb}{.6,0,0}
+    \definecolor{green}{rgb}{0,.65,0}
+    \definecolor{brown}{rgb}{0.6,0.6,0}
+    \definecolor{blue}{rgb}{0,.145,.698}
+    \definecolor{purple}{rgb}{.698,.145,.698}
+    \definecolor{cyan}{rgb}{0,.698,.698}
+    \definecolor{lightgray}{gray}{0.5}
+    
+    % bright ansi colors
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{algebraComputacional-ejerciciosGroebner}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\def\PY@tok@gd{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\def\PY@tok@gu{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\def\PY@tok@gt{\def\PY@tc##1{\textcolor[rgb]{0.00,0.25,0.82}{##1}}}
+\def\PY@tok@gs{\let\PY@bf=\textbf}
+\def\PY@tok@gr{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\def\PY@tok@cm{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@vg{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@m{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@mh{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@go{\def\PY@tc##1{\textcolor[rgb]{0.50,0.50,0.50}{##1}}}
+\def\PY@tok@ge{\let\PY@it=\textit}
+\def\PY@tok@vc{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@il{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@cs{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@cp{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\def\PY@tok@gi{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\def\PY@tok@gh{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\def\PY@tok@ni{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\def\PY@tok@nl{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\def\PY@tok@nn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\def\PY@tok@no{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\def\PY@tok@na{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\def\PY@tok@nb{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@nc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\def\PY@tok@nd{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\def\PY@tok@ne{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\def\PY@tok@nf{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\def\PY@tok@si{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\def\PY@tok@s2{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@vi{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@nt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@nv{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@s1{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@sh{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@sc{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@sx{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@bp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@c1{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@kc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@c{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@mf{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@err{\def\PY@bc##1{\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{##1}}}
+\def\PY@tok@kd{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@ss{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@sr{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\def\PY@tok@mo{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@kn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@mi{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@gp{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\def\PY@tok@o{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@kr{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@s{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@kp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@w{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\def\PY@tok@kt{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\def\PY@tok@ow{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\def\PY@tok@sb{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@k{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@se{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\def\PY@tok@sd{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    %\maketitle
+    
+    \begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+\textsc{Ejercicios \'Algebra Computacional}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Programaci\'on Cient\'ifica y \'Algebra Computacional \\[0.4cm] }
+
+\vfill
+
+
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\includegraphics[width=1.1\textwidth]{../images/logoUZ.png}~\\
+\emph{Autor:}\\
+Pilar Barbero Iriarte 
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[width=0.5\textwidth]{../images/logoUNIRIOJA.png}~\\
+%\includegraphics[width=0.5\textwidth]{../images/logoUNIRIOJA.png}~\\[1cm]
+
+\emph{Profesor:} \\
+%Pedro Alonso Vel\'azquez\\
+Jos\'e Mar\'ia Izquierdo
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+    
+    \section{Ejercicio 1}\label{ejercicio-1}
+
+Determina usando técnicas de bases de Groebner si los siguientes ideales
+son iguales:
+
+\begin{equation}
+    \begin{array}{l}
+        I : = < y^3 - z^2, xz - y^2, xy - z, x^2 -y > \\
+        J := < xy - z^2, xz - y^2, xy - z, x^2 - y >\\
+        K := < xz - y^2, x + y^2 -z - 1, xyz - 1 >\\
+        L:= < y^2 - x^2y, z -xy, y - x^2 >
+    \end{array}
+\end{equation}
+
+Puedes ayudarte del ordenador. ~ ~
+
+\bigskip
+
+    \textbf{Respuesta:} ~
+
+\smallskip
+
+    Por teoría, sabemos que dos ideales son iguales si y sólo si tienen la
+misma base de Groebner reducida. Calculemos la base asociada a cada
+ideal según el orden léxicográfico $y > x$, ~
+
+\bigskip
+
+    \textbf{I.} Inicializamos la base
+$G'_I:=\{ i_1:= y^3 - z^2, i_2:=xz - y^2, i_3:=xy - z, i_4:=x^2-y \}$ y
+calculamos sus $S-$polinomios,
+
+\begin{equation}
+    \begin{array}{l}
+    S(i_1, i_2) = xz^3 - y^5 \xrightarrow{z^2 i_2} y^5 + z^2y^2 \xrightarrow{y^2 i_1} 0\\
+    S(i_1, i_3) = -x^2z^2 + y^4 \xrightarrow{-xz i_2} y^4 - xy^2z \xrightarrow{y i_1} yz^2 - xy^2z \xrightarrow{-y^2 i_2} yz^2 - y^4 \xrightarrow{-y i_1} 0\\
+    S(i_1, i_4) = -x^2z^2 + y^4 \xrightarrow{-xz i_2} -xy^2z + y^4 \xrightarrow{-y^2 i_2} 0\\
+    S(i_2, i_3) = -y^3 + z^2 \xrightarrow{-i_1} 0\\
+    S(i_2, i_4) = -xy^2 + yz \xrightarrow{-y i_3} 0\\
+    S(i_3, i_4) = -xz + y^2 \xrightarrow{-i_2} 0
+    \end{array}
+\end{equation}
+
+\textbf{La base es
+$\boldsymbol{G_I = \{ i_1= y^3 - z^2, i_2=xz - y^2, i_3=xy - z, i_4=x^2-y \}}$}
+~
+
+\bigskip
+
+    \textbf{II.} Lo mismo con
+$G_J':=\{ j_1:=xy-z^2, j_2:=i_2, j_3:=i_3, j_4:=i_4\}$
+
+\begin{equation}
+    \begin{array}{l}
+        S(j_1, j_2) = y^3 - z^3 \\
+        S(j_1, j_3) = -z^2 + z \\
+        S(j_1, j_4) = -xz^2 + y^3 \xrightarrow{-z j_2} 0
+    \end{array}
+\end{equation}
+
+Previamente ya hemos calculado,
+
+\begin{equation}
+    \begin{array}{l}
+        S(j_2, j_3) = S(i_2, i_3) \rightarrow 0, \, \, \,
+        S(j_2, j_4) = S(i_2, i_4) \rightarrow 0, \, \, \,
+        S(j_3, j_4) = S(i_3, i_4) \rightarrow 0
+    \end{array}
+\end{equation}
+
+Añadimos $j_5:=y^3 - z^3$ y $j_6:=-z^2 + z$ y calculamos los nuevos
+$S-$polinomios que nos surgen,
+
+\begin{equation}
+    \begin{array}{l}
+        S(j_1, j_5) = xz^3 -y^2z^2 \xrightarrow{z^2 j_2} 0 \\
+        S(j_2, j_5) = xz^4 -y^5\xrightarrow{z^3 j_2} -y^5 + y^2z^3 \xrightarrow{-y_2 j_5} 0 \\
+        S(j_3, j_5) = xz^3 - y^2z \xrightarrow{z^2 j_2} -y^2z + z^2y^2 \xrightarrow{-y^2 j_6} 0 \\
+        S(j_4, j_5) = x^2z^3 - y^4 \xrightarrow{xz^2 j_2} xy^2z^2 - y^4 \xrightarrow{y^2 j_2} 0 
+    \end{array}
+\end{equation}
+
+\begin{equation}
+    \begin{array}{l}
+        S(j_1, j_6) = - xyz + z^4 \xrightarrow{-z j_1} z^4 - z^3 \xrightarrow{-z^2 j_6} 0 \\
+        S(j_2, j_6) = -xz + y^2z \xrightarrow{-j_2} zy^2 - y^2\\
+        S(j_3, j_6) = -xyz + z^3 \xrightarrow{-z j_1} 0\\
+        S(j_4, j_6) = -z^2z + yz \xrightarrow{-x j_2} -xy^2 + yz \xrightarrow{-y j_3} 0\\
+        S(j_5, j_6) = -zy^3 +z^5 \xrightarrow{-z j_5} z^5 - z^4 \xrightarrow{-z^3 j_6} 0 
+    \end{array}
+\end{equation}
+
+Añadimos $j_7:=zy^2 - y^2$ a la base y calculamos los $S-$polinomios que
+surgen,
+
+\begin{equation}
+    \begin{array}{l}
+        S(j_1,j_7) = xy^2 -z^3 \xrightarrow{z j_1} 0 \\
+        S(j_2,j_7) = xy^2 -y^4 \xrightarrow{y j_1} -y^4 + yz^2 \xrightarrow{-y i_5} yz^2 -yz^3 \xrightarrow{yz j_6} 0\\
+        S(j_3,j_7) = xy^2 - yz \xrightarrow{y j_3} 0\\
+        S(j_4,j_7) = x^2y^2 - y^3z \xrightarrow{xy j_3} xyz - y^3z \xrightarrow{z j_1} -y^3z+z^3 \xrightarrow{-z f_5}z^3 -z^3 \xrightarrow{z^2 j_6} 0\\
+        S(j_5,j_7) = y^3 + z^4 \xrightarrow{f_5} -z^4 + z^3 \xrightarrow{zf_6} 0\\
+        S(j_6,j_7) = y^2z - zy^2 = 0
+    \end{array}
+\end{equation}
+
+La base queda
+$G_J':=\{ xy-z^2, xz - y^2, xy -z, x^2-y, y^3 -z^3, -z^2 + z, zy^2-y^2\}$,
+podemos eliminar el polinomio $xy -z^2$ ya que su $LT(xy-z^2) = xy$ es
+divisible por el $LT(xy-z)=xy$, quedando,
+
+\bigskip
+
+\textbf{$\boldsymbol{G_j=\{ xz - y^2, xy -z, x^2-y, y^3 -z^3, -z^2 + z, zy^2-y^2 \}}$}
+~
+
+\bigskip
+
+    \textbf{III.} $G_K=\{k_1:=xz - y^2, k_2:=x + y^2 -z - 1, k_3:=xyz - 1\}$
+
+\begin{equation}
+    \begin{array}{l}
+        S(k_1, k_2) = -y^2z -y^2 +z^2 + z\\
+        S(k_1, k_3) = -y^3 + 1\\
+    \end{array}
+\end{equation}
+
+Añadimos $k_4:=-y^2z - y^2 + z^2 +z$ y $k_5:=-y^3 + 1$ a la base y
+continuamos.
+
+\begin{equation}
+    \begin{array}{l}
+        S(k_2, k_3) = y^3z - yz^2 -yz + 1 \xrightarrow{-zk_5} -yz^2 -yz + 1 + z
+    \end{array}
+\end{equation}
+
+Añadimos $k_6:=-yz^2 - yz + 1 + z$ a la base y continuamos,
+
+\begin{equation}
+    \begin{array}{l}
+        S(k_1, k_4) = y^4 +xy^2 -xz^2-xz \xrightarrow{y^2 k_2} -xz^2 -xz + y^2z +y^2 \xrightarrow{-zk_1} -xz +y^2 \xrightarrow{-k_1} 0 \\        
+        S(k_1, k_5) = -xz +y^5 \xrightarrow{-k_1} y^5 - y^2 \xrightarrow{-y^2k_5} 0\\        
+        S(k_1, k_6) = xyz - xz - x + y^3z \xrightarrow{k_3} -xz - x + y^3z + 1 \xrightarrow{-k_1} -x + y^3z + 1 -y^2 \xrightarrow{-k_2} y^3z - z \xrightarrow{-z k_5} 0 \\        
+        S(k_2, k_4) = xy^2 -xz^2 -xz -y^4z + y^2z^2 +y^2z \xrightarrow{y^2 k_2} -xz^2 -xz -y^4z +y^2z^2 + 2y^2z -y^4+y^2 \xrightarrow{-z k_1}\\
+        \, \, \, -xz - y^4z + y^2z^2 + y^2z - y^4+y^2 \xrightarrow{-k_1} -y^4z + y^2z^2 +y^2z - y^4 \xrightarrow{y^2 k_4} 0 \\        
+        S(k_2, k_5) = -x -y^5 + y^3z +y^3 \xrightarrow{-k_2} -y^5+y^3z+y^3+y^2-z-1 \xrightarrow{y^2 k_5} y^3z +y^3 -z -1 \xrightarrow{-zk_5} y^3 -z \xrightarrow{-k_5} 0 \\        
+        S(k_2, k_6) = xyz -xz - x -y^3z^2+yz^3+yz^2 \xrightarrow{k_3} -y^3z^2 + yz^3+yz^2-xz-x+1\xrightarrow{-k_1} \\ \, \, \, -y^3z^2+yz^3+yz^2-x+1-y^2\xrightarrow{-k_2} -y^3z^2+yz^3+yz^2-z\xrightarrow{z^2k_5} yz^3+yz^2-z-z^2\xrightarrow{-zk6} 0\\
+        S(k_3, k_4) = xy^2 -xz^2 - xz +y \xrightarrow{y^2 k_2} -xz^2 - xz + y -y^4+y^2z + y^2 \xrightarrow{-z k_1} -xz+y+y^4+y^2 \xrightarrow{-k_1} y-y^4 \xrightarrow{y k_5} 0 \\        
+        S(k_3, k_5) = -xz +y^2 \xrightarrow{-k_1} 0 \\        
+        S(k_3, k_6) = xyz -xz-x+z \xrightarrow{k_3} -xz-x+z+1 \xrightarrow{-k_1} -x+z+1-y^2 \xrightarrow{-k_2} 0\\        
+        S(k_4, k_5) = -y^3+yz^2+yz-z \xrightarrow{k_5} yz^2+yz-z-1 \xrightarrow{-k_6} 0 \\        
+        S(k_4, k_6) = -yz-y+z^3+z^2 \\        
+        S(k_5, k_6) = -y^2+z^2        
+    \end{array}
+\end{equation}
+
+Como se puede comprobar, deberíamos añadir los $S-$polinomios,
+$S(k_4,k_6)$ y $S(k_5, k_6)$ a la base y esa base no sería igual a
+ninguna de las bases de los demás ideales. ~
+
+\bigskip
+    \textbf{IV. $G_L=\{ l_1:=y^2 - x^2y, l_2:=z -xy, l_3:=y - x^2 \}$}
+\bigskip
+
+En primer lugar, vamos a eliminar $l_1$ de la base ya que es divisible
+por $l_3$, $G_L=\{ l_2:=z-xy, l_3:=y-x^2\}$
+
+\begin{equation}
+    \begin{array}{l}
+        S(l_2, l_3) = xz -y^2
+    \end{array}
+\end{equation}
+
+Añadimos $l_4:=xz-y^2$ a la base $G_L$,
+
+\begin{equation}
+    \begin{array}{l}
+        S(l_2, l_4) = z^2-y^3 \\
+        S(l_3, l_4) = -xy^2+zy\xrightarrow{yl_2} 0 \\
+    \end{array}
+\end{equation}
+
+Añadimos $l_5:=-y^3+z^2$ a la base $G_L$,
+
+\begin{equation}
+    \begin{array}{l}
+        S(l_2, l_5) = -xz^2+y^2z \xrightarrow{-zl_4} 0\\
+        S(l_3, l_5) = -x^2z^2+y^4\xrightarrow{z^2l_3} y^4-yz^2\xrightarrow{-yl_5} 0 \\
+        S(l_4, l_5) = -xz^3+y^5\xrightarrow{-z^2l_4} y^5-z^2y^2\xrightarrow{-y^2l_5} 0
+    \end{array}
+\end{equation}
+
+La base (reducida) queda
+$\boldsymbol{G_L=\{ xy-z, x^2-y, xz-y^2, y^3-z^2\}}$ que coincide con la
+de $G_I$ por lo que sus ideales son iguales. ~
+
+    Vamos a utilizar el paquete \emph{sympy} que nos proporcina un conjunto
+de órdenes útiles a la hora de calcular bases de Groeber.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{from} \PY{n+nn}{sympy} \PY{k+kn}{import} \PY{n}{groebner}
+        \PY{k+kn}{import} \PY{n+nn}{sympy} \PY{k+kn}{as} \PY{n+nn}{sp}
+        \PY{k+kn}{from} \PY{n+nn}{sympy.abc} \PY{k+kn}{import} \PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{,}\PY{n}{z}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{i1} \PY{o}{=} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3}  \PY{o}{-} \PY{n}{z}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+        \PY{n}{i2} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{z} \PY{o}{-} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+        \PY{n}{i3} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{y} \PY{o}{-} \PY{n}{z}
+        \PY{n}{i4} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{n}{y}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{j1} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{y} \PY{o}{-} \PY{n}{z}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+        \PY{n}{j2} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{z} \PY{o}{-} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+        \PY{n}{j3} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{y} \PY{o}{-} \PY{n}{z}
+        \PY{n}{j4} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{n}{y}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{k1} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{z} \PY{o}{-}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} 
+        \PY{n}{k2} \PY{o}{=} \PY{n}{x}\PY{o}{+}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{n}{z} \PY{o}{-} \PY{l+m+mi}{1}
+        \PY{n}{k3} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{n}{y}\PY{o}{*}\PY{n}{z} \PY{o}{-} \PY{l+m+mi}{1}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{l1} \PY{o}{=} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{p}{(}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{n}{y}
+        \PY{n}{l2} \PY{o}{=} \PY{n}{z}\PY{o}{-} \PY{n}{x}\PY{o}{*}\PY{n}{y}
+        \PY{n}{l3} \PY{o}{=} \PY{n}{y} \PY{o}{-} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}95}]:} \PY{n}{GI} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{i1}\PY{p}{,} \PY{n}{i2}\PY{p}{,} \PY{n}{i3}\PY{p}{,} \PY{n}{i4}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{GI}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Base de GI
+(x**2 - y,)
+(x*y - z,)
+(x*z - y**2,)
+(y**3 - z**2,)
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}96}]:} \PY{n}{GJ} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{j1}\PY{p}{,} \PY{n}{j2}\PY{p}{,} \PY{n}{j3}\PY{p}{,} \PY{n}{j4}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{GJ}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Base de GJ
+(x**2 - y,)
+(x*y - z,)
+(x*z - y**2,)
+(y**3 - z,)
+(y**2*z - y**2,)
+(z**2 - z,)
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}98}]:} \PY{n}{GK} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{k1}\PY{p}{,} \PY{n}{k2}\PY{p}{,} \PY{n}{k3}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{GK}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(x + y**2 - z - 1,)
+(y**3 - 1,)
+(y*z + y - z**3 - z**2,)
+(z**4 + z**3 - z - 1,)
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}97}]:} \PY{n}{GL} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{l1}\PY{p}{,} \PY{n}{l2}\PY{p}{,} \PY{n}{l3}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{GL}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(x**2 - y,)
+(x*y - z,)
+(x*z - y**2,)
+(y**3 - z**2,)
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}73}]:} \PY{n}{GI} \PY{o}{==} \PY{n}{GL}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}73}]:} True
+\end{Verbatim}
+        
+    Podemos comprobar que el ideal $I$ y el ideal $L$ poseen la misma base
+de Groebner reducida, por lo que son iguales.
+
+    \begin{center}\rule{3in}{0.4pt}\end{center}
+
+    \section{Ejercicio 2}\label{ejercicio-2}
+
+Calcula, sin usar el ordenador, mediante el algoritmo de Buchberger una
+base reducida del ideal $I = < xy + z, x^2 + y^2 >$. ~ ~
+
+\bigskip
+
+    \textbf{Respuesta:} ~
+
+\bigskip
+
+    Defininimos $f_1 := xy + z$ y $f_2 := x^2 + y^2$.
+
+Vamos a aplicar el algoritmo de Buchberger a partir de $\{f_1, f_2\}$.
+Fijamos el orden lex con $x > y > z$. Comenzamos con la base de Groebner
+$G':=\{f_1, f_2\}$ y comprobaremos si los $S-$polinomios son reducibles
+hasta 0.
+
+\begin{equation} 
+S(f_1, f_2) = x(xy + z) - y(x^2+y^2) = xz - y^3
+\end{equation}
+
+Este polinomio ya no es reducible por $G'$, así que lo añadimos a la
+base $G':=\{f_1, f_2, f_3:=xz - y^3\}$
+
+Ahora $S(f_1, f_2)$ sí que es reducible a 0, ya que hemos añadido
+$xz - y^3$ a la base, pero quedan otros $S-$polinomios que comprobar,
+
+\begin{equation} 
+S(f_1, xz - y^3) = z(xy + z) - y (xz - y^3) = y^4 + z^2
+\end{equation}
+
+Este polinomio no puede ser reducible por ninguno de los demás
+polinomios de la base ($LT(y^4 + z^2) = y^4$ no es divisibile por ningún
+$LT$ de la base $G'$), así que lo añadimos.
+
+\begin{equation} 
+S(f_2, xz - y^3) = z(x^2 + y^2) - x(xz - y^3) = zy^2 + xy^3 = y^2(xy + z) \xrightarrow{y^2f_1} 0
+\end{equation}
+
+Estamos en la situación de que
+$G'=\{xy + z, x^2 + y^2, f_3:=xz - y^3, f_4:=y^4 + z^2\}$ podría ser
+nuestra base de Groebner, pero al haber añadido el polinomio
+$f_4:=y^4 + z^2$, debemos comprobar los demás $S-$polinomios que nos
+surgen al hacer esta adición.
+
+\begin{equation}
+    \begin{array}{l}
+        S(f_1, f_4) = y^3(xy+z) - x(y^4+z^2) = -xz^2 + y^3z \xrightarrow{zf_3} 0  \\
+        S(f_2, f_4) = y^4(x^2+y^2) - x^2(y^4+z^2) = -x^2z^2 + y^6 \xrightarrow{-xz f_3} -xy^3z+y^6 \xrightarrow{-y^2zf_1} y^6+y^2z^2 \xrightarrow{y^2f_4} 0\\
+        S(f_3, f_4) = y^4(xz-y^3) - xz(y^4+z^2) = -xz^3-y^7 \xrightarrow{-z^2 f_3} -y^7 - z^2y^3 \xrightarrow{-y^3f_4} 0
+    \end{array}
+\end{equation}
+
+Podemos concluir que
+$G:=\{f_1:=xy + z, f_2:=x^2 + y^2, f_3:=xz - y^3, f_4:=y^4 + z^2\}$ es
+una base de Groebner.
+
+Es reducida, ya que $\forall g\in G$, $LC(g) = 1$ y además, $LT(g)$ no
+es dividido por ningún otro $LT(g')$ con $g' \in G \setminus \{g\}$ ~
+
+    Podemos comprobarlo gracias a la función \emph{groebner} que nos
+proporciona el paquete de funciones \emph{Sympy}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}75}]:} \PY{n}{f1}\PY{o}{=}\PY{n}{x}\PY{o}{*}\PY{n}{y} \PY{o}{+} \PY{n}{z}
+         \PY{n}{f2}\PY{o}{=}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         \PY{n}{G}\PY{o}{=}\PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{f1}\PY{p}{,}\PY{n}{f2}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)}
+         \PY{k}{print} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{args}\PY{p}{,} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{args}\PY{p}{,} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{args}\PY{p}{,} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(x**2 + y**2,) (x*y + z,) (x*z - y**3,) (y**4 + z**2,)
+    \end{Verbatim}
+
+    \begin{center}\rule{3in}{0.4pt}\end{center}
+
+    \textbf{Determina también sin usar el ordenador si la clase $[x + 1]$ es
+invertible en $k[x,y,z]/I$} ~ ~
+
+\bigskip
+
+    \textbf{Respuesta:} ~
+\bigskip
+
+    Observemos que si $[x+1]$ es invertible entonces
+$(x+1)f + (xy+z)g + (x^2 + y^2)h = 1$, así que vamos a calcular el ideal
+de \$ \textless{} x+1, xy +z, x\textsuperscript{2+y}2 \textgreater{} \$
+~
+
+    Definimos $f_1:= x+1, f_2:=xy + z, f_3:=x^2+y^2$, y calculamos su
+correspondiente base de Groebner. Volvemos a aplicar el algoritmo de
+Buchberger a esta base $G':=\{f_1, f_2, f_3\}$. Empezamos a calcular los
+$S-$polinomios, ~
+
+    \begin{equation}
+    S(f_1, f_2) = y - z 
+\end{equation}
+
+Como $LT(y - z)$ no es divisible por ningún $LT(g)$ para $g$ polinomio
+en nuestra base, añadimos $f_4:=y-z$ a la base de Groebner, quedándonos
+así $G'= \{f_1, f_2, f_3, f_4:=y-z\}$.
+
+Como hemos añadido $f_4$ a la nueva base, debemos comprobar los nuevos
+$S-$polinomios que genera.
+
+\begin{equation}
+    \begin{array}{l}
+        S(f_1, f_4) = xz + y \xrightarrow{z f_1} y - z \xrightarrow{f_4} 0\\    
+        S(f_2, f_4) = xz + z \xrightarrow{z f_1} 0 \\
+        S(f_3, f_4) = x^2z + y^3 \xrightarrow{z f_3} y^3 - y^2z \xrightarrow{y^2 f_4} 0 
+    \end{array}
+\end{equation}
+
+~
+
+    Continuamos el proceso con los $S-$polinomios anteriores,
+
+\begin{equation}
+    \begin{array}{l}
+        S(f_1, f_3) = x - y^2 \xrightarrow{f_1} -y^2 - 1 \xrightarrow{-y f_4} -yz - 1 \xrightarrow{-z f_4} -z^2-1 
+    \end{array}
+\end{equation}
+
+Como $LT(z^2) - 1$ no es divisible por ningún $LT(g)$ para $g$ polinomio
+en nuestra base, añadimos $f_5:=-z^2 - 1$ a la base
+$G':=\{f_1, f_2, f_3, f_4, f_5:=-z^2 - 1\}$. Al añadirlo, debemos
+comprobar los $S-$polinomios que se nos generan,
+
+\begin{equation}
+    \begin{array}{l}
+        S(f_1, f_5) = x-z^2 \xrightarrow{f_1} -z^2 - 1 \xrightarrow{f_ 5} 0 \\
+        S(f_2, f_5) =  xy-z^3 \xrightarrow{f_2} -z^3 - z \xrightarrow{z f_5} 0 \\
+        S(f_3, f_5) = x^2-y^2z^2 \xrightarrow{f_3} y^2(-z^2 - 1) \xrightarrow{f_5} 0\\
+        S(f_4, f_5) = y + z^3 \xrightarrow{f_4} z^3 + z \xrightarrow{f_5} 0
+    \end{array}
+\end{equation}
+
+~
+
+    Continuamos el proceso con la demás combinaciones que nos quedan con la
+base $G'=\{f_1, f_2, f_3, f_4, f_5\}$
+
+\begin{equation}
+    S(f_2, f_3) = S(xy+z, x^2+y^2) = \dots = xz - y^3 \xrightarrow{zf_1} -y^3 - z \xrightarrow{-y^2 f_4} -y^2z - z \xrightarrow{-yz f_4} -z^2y - z \xrightarrow{-z^2 f_4} -z^3 - z \xrightarrow{z f_5} 0
+\end{equation}
+
+La base de Groebner del ideal $< x+1, xy+z, x^2+y^2 >$ es,
+
+\[G=\{f_1=x+1, f_2=xy+z, f_3=x^2+y^2, f_4=y-z, f_5=-z^2-1\}\]
+
+Comprobamos las dos condiciones para que sea reducida,
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  $\forall g\in G, LC(g) = 1$ así que cambiamos el signo a $f_5$.
+\item
+  $LT(f_1)=LT(x+1) = x$ divide a $LT(f_2) = LT(xy+z) = xy$ y a
+  $LT(f_3) = LT(x^2+y^2) = x^2$, por lo que es posible expulsar a $f_2$
+  y $f_3$ de la base, y conseguimos la base reducida.
+\end{itemize}
+
+\[ G=\{f_1=x+1, f_4=y-z, f_5=z^2+1\}\]
+
+Comprobamos\ldots{}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}74}]:} \PY{n}{f1}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{l+m+mi}{1}
+         \PY{n}{f2}\PY{o}{=}\PY{n}{x}\PY{o}{*}\PY{n}{y} \PY{o}{+} \PY{n}{z}
+         \PY{n}{f3}\PY{o}{=}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         \PY{n}{G}\PY{o}{=}\PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{f1}\PY{p}{,}\PY{n}{f2}\PY{p}{,}\PY{n}{f3}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)}
+         \PY{k}{print} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{args}\PY{p}{,} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{args}\PY{p}{,} \PY{n}{G}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(x + 1,) (y - z,) (z**2 + 1,)
+    \end{Verbatim}
+
+    \begin{center}\rule{3in}{0.4pt}\end{center}
+
+    \section{Ejercicio 3}\label{ejercicio-3}
+
+Calcula el abanico de Groebner del ideal
+$< x^2 − y^3 , x^3 − y^2 + x >$. ~ ~
+
+\bigskip
+
+    \textbf{Respuesta:} ~
+    
+\bigskip
+    Calculamos primero las bases de groebner asociadas a este ideal, para
+cada orden distinto.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}93}]:} \PY{n}{g1} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3} 
+         \PY{n}{g2} \PY{o}{=} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3} \PY{o}{-} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}
+         
+         \PY{n}{G1} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{g1}\PY{p}{,}\PY{n}{g2}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)} \PY{c}{# Orden lex x > y}
+         \PY{k}{print} \PY{l+s}{"}\PY{l+s}{Base de G1}\PY{l+s}{"}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{G1}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+                 
+         \PY{n}{G2} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{g1}\PY{p}{,}\PY{n}{g2}\PY{p}{]}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)} \PY{c}{# Orden lex y > x}
+         \PY{k}{print} \PY{l+s}{"}\PY{l+s}{Base de G2}\PY{l+s}{"}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{G2}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+                 
+         \PY{n}{G3} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{g1}\PY{p}{,}\PY{n}{g2}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{grevlex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)} \PY{c}{# Orden grevlex x > y}
+         \PY{k}{print} \PY{l+s}{"}\PY{l+s}{Base de G3}\PY{l+s}{"}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{G3}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+                 
+         \PY{n}{G4} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{g1}\PY{p}{,}\PY{n}{g2}\PY{p}{]}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{grevlex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)} \PY{c}{# Orden grevlex y > x}
+         \PY{k}{print} \PY{l+s}{"}\PY{l+s}{Base de G4}\PY{l+s}{"}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{G4}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+                 
+         \PY{n}{G5} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{g1}\PY{p}{,}\PY{n}{g2}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{grlex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)} \PY{c}{# Orden grlex x > y}
+         \PY{k}{print} \PY{l+s}{"}\PY{l+s}{Base de G5}\PY{l+s}{"}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{G5}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+                 
+         \PY{n}{G6} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{g1}\PY{p}{,}\PY{n}{g2}\PY{p}{]}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{order}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{grlex}\PY{l+s}{'}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{buchberger}\PY{l+s}{'}\PY{p}{)} \PY{c}{# Orden grlex y > x}
+         \PY{k}{print} \PY{l+s}{"}\PY{l+s}{Base de G6}\PY{l+s}{"}
+         \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n}{G6}\PY{o}{.}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                 \PY{k}{print} \PY{n}{j}\PY{o}{.}\PY{n}{args}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Base de G1
+(x + y**7 + y**4 - y**2,)
+(y**9 + 2*y**6 - y**4 + y**3,)
+Base de G2
+(-x**3 - x + y**2,)
+(x**7 + 2*x**5 + x**3 - x**2 + x*y,)
+(x**8 + 3*x**6 + 3*x**4 - x**3 + x**2,)
+Base de G3
+(x**3 + x - y**2,)
+(-x**2 + y**3,)
+Base de G4
+(-x**2 + y**3,)
+(x**3 + x - y**2,)
+Base de G5
+(x**3 + x - y**2,)
+(-x**2 + y**3,)
+Base de G6
+(-x**2 + y**3,)
+(x**3 + x - y**2,)
+    \end{Verbatim}
+
+    Calculemos sus correspondientes conos:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  $C_{G_1} = \{(a,b)\in \mathbb{R}_{\geq 0}^2 | a\geq 7b \}$
+\item
+  $C_{G_2} = \{(a,b)\in \mathbb{R}_{\geq 0}^2 | b\geq 6a \} $
+\item
+  $C_{G_3} = \{(a,b)\in \mathbb{R}_{\geq 0}^2 | 3a\geq 2b, 3b\geq 2a\} $
+\item
+  $C_{G_4} = \{(a,b)\in \mathbb{R}_{\geq 0}^2 | 3b\geq 2a, 3a\geq 2b \} $
+\item
+  $C_{G_5} = \{(a,b)\in \mathbb{R}_{\geq 0}^2 | 3a\geq 2b, 3b\geq 2a\} $
+\item
+  $C_{G_6} = \{(a,b)\in \mathbb{R}_{\geq 0}^2 | 3b\geq 2a, 3a\geq 2b \} $
+  ~
+\end{itemize}
+
+    A simple vista podemos observar que los conos
+$C_{G_4}, C_{G_5}, C_{G_6}$ son iguales al cono $C_{G_3}$,
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{k+kn}{from} \PY{n+nn}{fillplots} \PY{k+kn}{import} \PY{n}{plot\PYZus{}regions}\PY{p}{,} \PY{n}{annotate\PYZus{}regions}
+         \PY{o}{%}\PY{k}{matplotlib} inline
+         \PY{n}{plotter} \PY{o}{=} \PY{n}{plot\PYZus{}regions}\PY{p}{(}\PY{p}{[}
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{x}\PY{o}{/}\PY{l+m+mi}{7}\PY{p}{,} \PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,}  \PY{p}{]}\PY{p}{,} \PY{c}{#CG\PYZus{}1}
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{6}\PY{o}{*}\PY{n}{x}\PY{p}{,} \PY{n+nb+bp}{False}\PY{p}{)}\PY{p}{,} \PY{p}{]}\PY{p}{,} \PY{c}{#CG\PYZus{}2}
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{3}\PY{o}{*}\PY{n}{x}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{,} \PY{n+nb+bp}{False}\PY{p}{)}\PY{p}{]}\PY{p}{,}
+         \PY{p}{]}\PY{p}{,}\PY{n}{xlim}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{ylim}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{plotter}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{algebraComputacional-ejerciciosGroebner_files/algebraComputacional-ejerciciosGroebner_41_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Nos quedan dos zonas sin cubrir, así que tomaremos vectores en ella y
+obtendremos los órdenes asociados a éstas,
+
+Tomaremos los vectores $\omega_0 = (4,1)$ y $\omega_1 = (1,4)$, y
+obtenemos las matrices
+$M_{w_0}=\begin{pmatrix} 4 & 1 \\ 1 & 1 \end{pmatrix}$ y
+$M_{w_0}=\begin{pmatrix} 1 & 4 \\ 1 & 1 \end{pmatrix}$. Los conos
+asociados a estos órdenes son,
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  $C_{G_7} = \{ (a,b)\in \mathbb{R}_{\geq 0}^2 | a\leq 7b, 3b\leq 2a \}$
+\item
+  $C_{G_8} = \{ (a,b)\in \mathbb{R}_{\geq 0}^2 | b\leq 6a, 3a\leq 2b \}$
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{plotter1} \PY{o}{=} \PY{n}{plot\PYZus{}regions}\PY{p}{(}\PY{p}{[}
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{x}\PY{o}{/}\PY{l+m+mi}{7}\PY{p}{,} \PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,}  \PY{p}{]}\PY{p}{,} 
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{6}\PY{o}{*}\PY{n}{x}\PY{p}{,} \PY{n+nb+bp}{False}\PY{p}{)}\PY{p}{,} \PY{p}{]}\PY{p}{,} 
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{3}\PY{o}{*}\PY{n}{x}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{,} \PY{n+nb+bp}{False}\PY{p}{)}\PY{p}{]}\PY{p}{,} 
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{3}\PY{o}{*}\PY{n}{x}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{n+nb+bp}{False}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{6}\PY{o}{*}\PY{n}{x}\PY{p}{,} \PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{]}\PY{p}{,} 
+             \PY{p}{[}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{,} \PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{x}\PY{o}{/}\PY{l+m+mi}{7}\PY{p}{,} \PY{n+nb+bp}{False}\PY{p}{)}\PY{p}{]}\PY{p}{,} 
+         \PY{p}{]}\PY{p}{,}\PY{n}{xlim}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{ylim}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{plotter}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{algebraComputacional-ejerciciosGroebner_files/algebraComputacional-ejerciciosGroebner_43_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}\rule{3in}{0.4pt}\end{center}
+
+    \section{Ejercicio 4}\label{ejercicio-4}
+
+¿Puede escribirse
+$4x^4y^2 + 4y^6 - 2x^4 - 4x^2y^2 - 6y^4 + 2x^2 + 4y^2 -1$ de la forma
+$h(x^2 + y^2 + 1, x^2 - y^2)$ para algún polinomio
+$h\in \mathbb{Q}[x,y]$? ~ ~
+
+\bigskip
+
+    \textbf{Respuesta:} ~
+    
+\bigskip
+
+    Podemos calcular la base de Groebner asociada al ideal
+$< x^2 + y^2 + 1, x^2-y^2 >$ y veremos si el polinomio
+$4x^4y^2 + 4y^6 - 2x^4 -4x^2y^2 - 6y^4 + 2x^2 + 4y^2 - 1$ es reducible
+por esta base. ~
+
+    $f_1:=x^2+y^2+1$, $f_2:=x^2-y^2$, inicializamos $G':=\{f_1, f_2\}$
+
+\begin{equation}
+    S(f_1,f_2) = \frac{x^2}{x^2} (x^2+y^2+1) - \frac{x^2}{x^2} (x^2-y^2) = 2y^2+1
+\end{equation}
+
+Añadimos a nuestra base $f_3:=2y^2 + 1$ ya que su $LT(f_3) = 2y^2$ no es
+divisible por ningún otro $LT(g)$ para $g\in G'$.
+
+Seguimos calculando $S-$polinomios de la nueva base
+$G'':=\{f_1, f_2, f_3\}$
+
+\begin{equation}
+    \begin{array}{l}
+        S(f_1, f_3) = \frac{2x^2y^2}{x^2} (x^2+y^2+1) - \frac{2x^2y^2}{2y^2} (2y^2+1) = -x^2 + 2y^4 + 2y^2 \xrightarrow{f_2} 2y^4 + y^2 \xrightarrow{y^2 f_3} 0 \\
+        S(f_2, f_3) = \frac{2x^2y^2}{x^2} (x^2-y^2) - \frac{2x^2y^2}{2y^2} (2y^2+1) = -x^2-2y^4 \xrightarrow{- f_2} -2y^4 - y^2 \xrightarrow{-y^2 f_3} 0
+    \end{array}
+\end{equation}
+
+La base nos queda $G'':=\{x^2+y^2+1, x^2-y^2, 2y^2+1\}$. La podemos
+reducir ya que $LT(f_1)$ divide a $LT(f_2)$, sumamos los dos polinomios,
+$f_1 + f_2 = x^2 + y^2 +1 + x^2 - y^2 = 2x^2 + 1$.
+
+Así $G:=\{2x^2 + 1, 2y^2 + 1\}$. ~
+
+    Comprobamos utilizando \emph{sympy}:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{k+kn}{from} \PY{n+nn}{sympy} \PY{k+kn}{import} \PY{n}{groebner}
+         \PY{k+kn}{import} \PY{n+nn}{sympy} \PY{k+kn}{as} \PY{n+nn}{sp}
+         \PY{k+kn}{from} \PY{n+nn}{sympy.abc} \PY{k+kn}{import} \PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{,}\PY{n}{z}
+         
+         \PY{n}{a1}\PY{o}{=}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{+}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{+}\PY{l+m+mi}{1}
+         \PY{n}{a2}\PY{o}{=}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         \PY{n}{f}\PY{o}{=}\PY{l+m+mi}{4}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}  \PY{o}{+} \PY{l+m+mi}{4}\PY{o}{*}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{6} \PY{o}{-} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4} \PY{o}{-} \PY{l+m+mi}{4}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{-} \PY{l+m+mi}{6}\PY{o}{*}\PY{p}{(}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mi}{4}\PY{o}{*}\PY{n}{y}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{-} \PY{l+m+mi}{1}
+         \PY{n}{G} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{groebner}\PY{p}{(}\PY{p}{[}\PY{n}{a1}\PY{p}{,}\PY{n}{a2}\PY{p}{]}\PY{p}{)}
+         \PY{n}{G}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}15}]:} GroebnerBasis([2*x**2 + 1, 2*y**2 + 1], x, y, domain='ZZ', order='lex')
+\end{Verbatim}
+        
+    Procedemos a reducir el polinomio a través de los polinomios de la base
+de Groebner, $f_1:=2x^2 + 1$, $f_2:=2y^2+1$,
+
+\begin{equation}
+    \begin{array}{l}
+        4x^4y^2 + 4y^6 - 2x^4 -4x^2y^2 - 6y^4 + 2x^2 + 4y^2 - 1 \xrightarrow{2x^2y^2 f_1} 4y^6 - 2x^4 -6x^2y^2 - 6y^4 + 2x^2 + 4y^2 - 1 \xrightarrow{2y^4 f_2} \\
+        -2x^4 - 6x^2y^2 - 8y^4 + 2x^2 + 4y^2-1 \xrightarrow{-x^2 f_1} -6x^2y^2 - 8y^4 + 3x^2 + 4y^2 - 1 \xrightarrow{-3 f_1} -8y^4 + 3x^2 + 7y^2 - 1 \xrightarrow{-4y^2 f_2} \\
+        3x^2 + 11y^2 - 1 \xrightarrow{3/2 f_1} 11y^2 - \frac{5}{2} \xrightarrow{11/2 f_2} -8 
+    \end{array}
+\end{equation}
+
+~
+
+    O, utilizando la orden de \emph{sympy} de \emph{reduce} obtenemos el
+mismo resto: ~
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{G}\PY{o}{.}\PY{n}{reduce}\PY{p}{(}\PY{n}{f}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}16}]:} ([2*x**2*y**2 - x**2 - 3*y**2 + 3/2, 2*y**4 - 4*y**2 + 11/2], -8)
+\end{Verbatim}
+        
+    Por lo que concluimos que no es reducible, así que \textbf{no} existe un
+$h\in \mathbb{Q}[x,y]$ que cumpla nuestra condición.
+
+    \begin{center}\rule{3in}{0.4pt}\end{center}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
