@@ -1,0 +1,761 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    
+
+    
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % ansi colors
+    \definecolor{red}{rgb}{.6,0,0}
+    \definecolor{green}{rgb}{0,.65,0}
+    \definecolor{brown}{rgb}{0.6,0.6,0}
+    \definecolor{blue}{rgb}{0,.145,.698}
+    \definecolor{purple}{rgb}{.698,.145,.698}
+    \definecolor{cyan}{rgb}{0,.698,.698}
+    \definecolor{lightgray}{gray}{0.5}
+    
+    % bright ansi colors
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{BARBERO-tema7}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{BARBERO IRIARTE, PILAR - EJERCICIOS TEMA
+7}\label{barbero-iriarte-pilar---ejercicios-tema-7}
+
+    \section{Ejercicio 1.1}\label{ejercicio-1.1}
+
+    Escribir una función cuya entrada (input) sea,
+
+\begin{itemize}
+\item
+  una imagen de cualquier tipo,
+\item
+  unos rangos para sus píxeles, por ejemplo $23 \leq i \leq 53$ y
+  $12 \leq j \leq 65$,
+\end{itemize}
+
+y cuya salida (output) sea la submatriz (tipo double) que corresponda a
+los índices dados y una figura que contenga la imagen. Usar la función
+para seleccionar la cabeza del cameraman en \emph{cameraman\_512.tif}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{\PYZus{}\PYZus{}future\PYZus{}\PYZus{}} \PY{k+kn}{import} \PY{n}{division}
+        \PY{k+kn}{import} \PY{n+nn}{Image}
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
+        \PY{o}{\PYZpc{}}\PY{k}{matplotlib} \PY{n}{inline}
+        \PY{o}{\PYZpc{}}\PY{k}{pylab} \PY{n}{inline}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Populating the interactive namespace from numpy and matplotlib
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k}{def} \PY{n+nf}{function}\PY{p}{(}\PY{n}{INPUT}\PY{p}{,} \PY{n}{down\PYZus{}i}\PY{p}{,} \PY{n}{up\PYZus{}i}\PY{p}{,} \PY{n}{down\PYZus{}j}\PY{p}{,} \PY{n}{up\PYZus{}j}\PY{p}{)}\PY{p}{:}
+                \PY{n}{J}\PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{n}{INPUT}\PY{p}{)}
+                \PY{n}{a}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{J}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+        
+                \PY{n}{cabeza} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{n}{down\PYZus{}i}\PY{p}{:}\PY{n}{up\PYZus{}i}\PY{p}{,} \PY{n}{down\PYZus{}j}\PY{p}{:}\PY{n}{up\PYZus{}j}\PY{p}{]}
+                \PY{n}{image} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{fromarray}\PY{p}{(}\PY{n}{cabeza}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{uint8}\PY{p}{)}\PY{p}{)}
+        
+                \PY{k}{return} \PY{p}{[}\PY{n}{a}\PY{p}{,} \PY{n}{image}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{IMAGE}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{cameraman\PYZus{}512.tif}\PY{l+s}{\PYZdq{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{output} \PY{o}{=} \PY{n}{function}\PY{p}{(}\PY{n}{IMAGE}\PY{p}{,} \PY{l+m+mi}{70}\PY{p}{,} \PY{l+m+mi}{170}\PY{p}{,} \PY{l+m+mi}{180}\PY{p}{,} \PY{l+m+mi}{280}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{I}\PY{o}{=}\PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{cameraman\PYZus{}512.tif}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{I1}\PY{o}{=}\PY{n}{I}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{L}\PY{l+s}{\PYZsq{}}\PY{p}{)} 
+        \PY{n}{a}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{I1}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+        \PY{k}{print} \PY{n}{output}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c}{\PYZsh{} matrix}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{121}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{122}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{output}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;} \PY{c}{\PYZsh{}image}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 156.  157.  160. \ldots,  152.  152.  152.]
+ [ 156.  157.  159. \ldots,  152.  152.  152.]
+ [ 158.  157.  156. \ldots,  152.  152.  152.]
+ \ldots, 
+ [ 121.  123.  126. \ldots,  121.  113.  111.]
+ [ 121.  123.  126. \ldots,  121.  113.  111.]
+ [ 121.  123.  126. \ldots,  121.  113.  111.]]
+    \end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}5}]:} <matplotlib.image.AxesImage at 0x7fac06251250>
+\end{Verbatim}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_7_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \section{Ejercicio 1.2}\label{ejercicio-1.2}
+
+    Las máscaras son filtros geométricos de una imagen. Por ejemplo, si
+queremos seleccionar una región de una imagen, podemos hacerlo
+multiplicando la matriz de la imagen original por una matriz de igual
+tamaño que contenga unos en la región que queremos conservar y cero en
+el resto. En este ejercicio seleccionaremos una región circular de la
+imagen Lena de radio $150$. Estos son los pasos:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Leer la imagen y convertirla a escala de grises y doble precisión.
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{I}\PY{o}{=}\PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{lena.jpg}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{I1}\PY{o}{=}\PY{n}{I}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{L}\PY{l+s}{\PYZsq{}}\PY{p}{)} 
+        \PY{n}{a}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{I1}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{itemize}
+\item
+  Crear una matriz de las mismas dimensiones rellena de ceros.
+\item
+  Modificar esta matriz de forma que contenga unos en un círculo de
+  radio $150$, es decir, si $(i-c_x)^2 + (j-c_y)^2 < 150^2$ donde
+  $(c_x, c_y) = (m/2,n/2)$ es el centro de la imagen
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{b} \PY{o}{=} \PY{n}{numpy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{512}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}\PY{p}{)}
+        \PY{p}{[}\PY{n}{c\PYZus{}x}\PY{p}{,} \PY{n}{c\PYZus{}y}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{512}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{512}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{]}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}\PY{p}{:}
+            \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}\PY{p}{:}
+                \PY{n}{b}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{n}{c\PYZus{}x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{+}\PY{p}{(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{n}{c\PYZus{}y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZlt{}} \PY{l+m+mi}{150}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+\end{Verbatim}
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Multiplicar la imagen por la máscara (recordar que son matrices).
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{result} \PY{o}{=} \PY{n}{a}\PY{o}{*}\PY{p}{(}\PY{n}{b}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Mostrar el resultado.
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{121}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{result}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{122}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_16_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Cuando se multiplica por cero, se convierten a negro los píxeles de
+fuera del círculo. Modifica el programa para hacer visible esos píxeles
+con la mitad de su intensidad.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{mu}\PY{o}{=}\PY{l+m+mf}{0.5}
+         \PY{n}{b\PYZus{}m} \PY{o}{=} \PY{n}{numpy}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{512}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}\PY{p}{)}
+         \PY{p}{[}\PY{n}{c\PYZus{}x}\PY{p}{,} \PY{n}{c\PYZus{}y}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{512}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{512}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{]}
+         \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}\PY{p}{:}
+             \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}\PY{p}{:}
+                 \PY{k}{if} \PY{p}{(}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{n}{c\PYZus{}x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{+}\PY{p}{(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{n}{c\PYZus{}y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZlt{}} \PY{l+m+mi}{150}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{:}
+                     \PY{n}{b\PYZus{}m}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{1}
+                 \PY{k}{else}\PY{p}{:}
+                     \PY{n}{b\PYZus{}m}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{n}{mu}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{result\PYZus{}m} \PY{o}{=} \PY{n}{a}\PY{o}{*}\PY{p}{(}\PY{n}{b\PYZus{}m}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{121}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{result\PYZus{}m}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{122}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \section{Ejercicio 1.3}\label{ejercicio-1.3}
+
+    El degradado lineal es un efecto en el que se oscurece una imagen
+vertical u horizontalmente. Podemos hacer esto con una máscara que sea
+constante por columnas pero que tome un valor decreciente por filas,
+desde uno en la primera fila hasta cero enla última. Construir dicha
+matriz y aplicarla a la imagen Lena.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{I}\PY{o}{=}\PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{lena.jpg}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{I1}\PY{o}{=}\PY{n}{I}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{L}\PY{l+s}{\PYZsq{}}\PY{p}{)} 
+         \PY{n}{a}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{I1}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+         \PY{n}{x}\PY{o}{=}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{512}\PY{p}{)}
+         \PY{n}{mask} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{tile}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{512}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}
+         \PY{n}{result} \PY{o}{=} \PY{n}{a}\PY{o}{*}\PY{n}{mask}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{121}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{result}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{122}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_24_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \section{Ejercicio 2.1}\label{ejercicio-2.1}
+
+    Siguiendo el esquema visto para el caso del laplaciano, escribir un
+código que ejecute la minimización de la variación total. Aplicarlo a la
+imagen \emph{boat\_256.png} corrompida con ruido gaussiano del $5\%$,
+usando los valores de los parámetros:
+
+$\lambda = 0.1$, $\tau = 0.75$, $\epsilon = 1 e^{-6}$, num\_iter \$
+=20$, si la escala es $I\_\{255\}\$,
+
+Mostrar el resultado en una figura.
+
+    \textbf{Solución:}
+
+    Aplicamos un ruido gaussiano del $5\%$ a la imagen,
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{I} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{boat\PYZus{}256.png}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{uc}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{I}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{k}{def} \PY{n+nf}{aplicar\PYZus{}ruido}\PY{p}{(}\PY{n}{uc}\PY{p}{)}\PY{p}{:}
+             \PY{n}{u0}\PY{o}{=}\PY{n}{uc}\PY{o}{+}\PY{l+m+mf}{12.}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{standard\PYZus{}normal}\PY{p}{(}\PY{n}{uc}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{c}{\PYZsh{} 0.04705882352 error}
+             \PY{n}{u0}\PY{o}{=}\PY{n}{u0}\PY{o}{.}\PY{n}{clip}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{255}\PY{p}{)}
+             \PY{k}{return} \PY{n}{u0}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{n}{u0}\PY{o}{=}\PY{n}{aplicar\PYZus{}ruido}\PY{p}{(}\PY{n}{uc}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{121}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{uc}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Boat}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{122}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{u0}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Boat con 5}\PY{l+s+si}{\PYZpc{} r}\PY{l+s}{uido}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_31_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Definimos la función que aplica la minimización de la variación total,
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{k}{def} \PY{n+nf}{variacion\PYZus{}total}\PY{p}{(}\PY{n}{u0}\PY{p}{,} \PY{n}{lbda}\PY{p}{,} \PY{n}{tau}\PY{p}{,} \PY{n}{eps}\PY{p}{)}\PY{p}{:}
+             \PY{n}{u}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{u0}\PY{p}{)}
+             \PY{c}{\PYZsh{}u=u0}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{:}
+                 \PY{n}{GradU}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{u}\PY{p}{)}
+                 \PY{n}{pupx}\PY{o}{=}\PY{n}{GradU}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+                 \PY{n}{pupy}\PY{o}{=}\PY{n}{GradU}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+                 \PY{n}{coefx} \PY{o}{=} \PY{n}{pupx} \PY{o}{/} \PY{n}{sqrt}\PY{p}{(}\PY{n}{eps}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{pupx}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{pupy}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+                 \PY{n}{coefy} \PY{o}{=} \PY{n}{pupy} \PY{o}{/} \PY{n}{sqrt}\PY{p}{(}\PY{n}{eps}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{pupx}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{pupy}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+                 \PY{n}{lap} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{coefx}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{coefy}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}        
+                 \PY{n}{u} \PY{o}{=} \PY{n}{u}\PY{o}{+}\PY{n}{tau}\PY{o}{*}\PY{p}{(}\PY{n}{lap}\PY{o}{+}\PY{n}{lbda}\PY{o}{*}\PY{p}{(}\PY{n}{u0}\PY{o}{\PYZhy{}}\PY{n}{u}\PY{p}{)}\PY{p}{)}
+         
+             \PY{n}{u}\PY{o}{=}\PY{l+m+mi}{255}\PY{o}{*}\PY{p}{(}\PY{n}{u}\PY{o}{\PYZhy{}}\PY{n}{u}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{u}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{u}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{)}    
+             \PY{k}{return} \PY{n}{u}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{u1}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{u0}\PY{p}{)}
+         \PY{n}{restaurada} \PY{o}{=} \PY{n}{variacion\PYZus{}total}\PY{p}{(}\PY{n}{u1}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.75}\PY{p}{,} \PY{l+m+mi}{10}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{131}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{uc}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Imagen original}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{132}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{u0}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Imagen con ruido}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{133}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{restaurada}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Restaurada con valores 0.1, 0.75, 1.e\PYZhy{}6}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_35_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \section{Ejercicio 2.2}\label{ejercicio-2.2}
+
+    Calcular la derivada bidireccional del funcional de variación total,
+
+\[ J(v) = \int_{\Omega} |\nabla v(x) | \text{d}x\]
+
+\emph{Indicación:} Usar que $|s| = \sqrt{|s|^2}$.
+
+    \textbf{Respuesta:}
+
+    Una primera manera, aplicando la definición de derivada direccinal y
+aplicando $|a| = \frac{|a|^2}{|a|}$,
+
+\[
+< J'(v), \varphi > = \lim\limits_{h\rightarrow 0} \frac{J(v+h\varphi) - J(v)}{h} 
+\]
+
+\[
+= \lim\limits_{h\rightarrow 0} \frac{1}{h} \Big[\int_{\Omega} |\nabla(v(x) + h\varphi(x))|\text{d}x - \int_{\Omega} |\nabla v(x)|\text{d}x \Big] 
+\]
+
+\[
+= \lim\limits_{h\rightarrow 0} \int_{\Omega}\frac{1}{h} (|\nabla v(x) + h\nabla \varphi(x)| - |\nabla v(x)|) \text{d}x
+\]
+
+\[
+= \lim\limits_{h\rightarrow 0} \int_{\Omega}\frac{1}{h} (\frac{|\nabla v(x) + h\nabla \varphi(x)|^2}{|\nabla v(x) + h\nabla \varphi(x)|} - \frac{|\nabla v(x)|^2}{|\nabla v(x)|} ) \text{d}x
+\]
+
+\[
+= \lim\limits_{h\rightarrow 0} \int_{\Omega}\frac{1}{h} \frac{|\nabla v| |\nabla v + h\nabla\varphi|^2 - |\nabla v + h \nabla \varphi| |\nabla v|^2}{|\nabla v| |\nabla v + h \nabla \varphi|} \text{d}x 
+\]
+
+\[
+= \lim\limits_{h\rightarrow 0} \int_{\Omega}\frac{1}{h} \frac{|\nabla v| (|\nabla v|^2 + 2h\nabla v\nabla \varphi + h^2 |\nabla \varphi|^2) - |\nabla v|^3 - h |\nabla v|^2|\nabla \varphi|}{|\nabla v|^2 + h |\nabla v| |\nabla \varphi|} \text{d}x \]
+
+\[
+= \lim\limits_{h\rightarrow 0} \int_{\Omega}\frac{1}{h} \frac{h \nabla v |\nabla v| \nabla \varphi + h^2 |\nabla v| |\nabla \varphi|^2}{|\nabla v|^2 + h |\nabla v| |\nabla \varphi|} \text{d}x
+\]
+
+\[
+= \int_{\Omega} |\nabla \varphi| \frac{\nabla v}{|\nabla v|}\text{d}x
+\]
+
+    Otra forma es multiplicando y diviendo por el conjugado:
+
+    Tratamos las equivalencias,
+
+\[
+|\nabla v + h\nabla \varphi| - |\nabla v| \sim \frac{|\nabla v + h\nabla \varphi|^2 - |\nabla v|^2 }{|\nabla v + h\nabla \varphi| + |\nabla v|}
+\sim \frac{|\nabla v|^2 + 2 \nabla v \nabla \varphi + h^2|\nabla \varphi|^2 - |\nabla v|^2}{|\nabla v + h\nabla \varphi| + |\nabla v|} 
+\]
+
+\[
+\sim \frac{2 \nabla v \cdot \nabla \varphi + h^2 |\nabla \varphi|^2 }{|\nabla v + h\nabla \varphi| + |\nabla v|} 
+\sim h |\nabla \varphi| \frac{2\nabla v + h|\nabla \varphi|}{|\nabla v + h\nabla \varphi| + |\nabla v|} \xrightarrow{h\rightarrow 0} \nabla \varphi \frac{\nabla v}{|\nabla v|}
+\]
+
+    Concluyendo,
+
+\[ < J'(v), \varphi > = \int_{\Omega} \nabla \varphi \frac{\nabla v}{|\nabla v|}\]
+
+    \section{Ejercicio 3}\label{ejercicio-3}
+
+    En el \textbf{Ejercicio 2.1} hemos realizado un código para la
+eliminación de ruido mediante la minimización de la variación total. En
+este, comenzaremos por escribir un código que implemente el filtro de
+Yaroslavsky. Una vez compuestos los dos códigos, vamos a comparar los
+resultados aplicados a la imagen \emph{boat\_256.png}, siguiendo lo
+visto en el Laboratorio 3. Haremos lo siguiente:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Leer la imagen \emph{boat\_256.png} y transformarla a doble precisión,
+  escala de grises.
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{n}{I}\PY{o}{=}\PY{n}{Image}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{boat\PYZus{}256.png}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{I1}\PY{o}{=}\PY{n}{I}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{L}\PY{l+s}{\PYZsq{}}\PY{p}{)} 
+         \PY{n}{a}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{I1}\PY{p}{,}\PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float32}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Crear una nueva imagen añadiendo a la anterior un ruido gaussiano del
+  $5\%$.
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{a0}\PY{o}{=}\PY{n}{aplicar\PYZus{}ruido}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+         \PY{n}{a1}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{a0}\PY{p}{)}
+         \PY{n}{a2}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{a0}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{121}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Imagen original}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{122}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a0}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Imagen con ruido}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_47_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Usar el código de variación total con los parámetros
+\end{itemize}
+
+$\lambda = 0.1$, $\tau = 0.75$, $\epsilon = 1 e^{-6}$, num\_iter\$
+=20$, si la escala es $I\_\{255\}\$,
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{a\PYZus{}v} \PY{o}{=} \PY{n}{variacion\PYZus{}total}\PY{p}{(}\PY{n}{a1}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.75}\PY{p}{,} \PY{l+m+mi}{10}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Usar el filtro Yaroslavsky con los parámetros $h = \rho = 30$, si la
+  escala es $I_{255}$
+\end{itemize}
+
+    \emph{Indicación:} Para la integración del filtro de Yaroslavsky
+utilizamos la aproximación siguiente,
+
+\[ \int_{B(x,\rho)} f(x)\text{d}x = \sum_{x\in B(x,\rho)} f(x) \]
+
+\emph{Nota:} El filtro de Yaroslavsky es algo más sencillo de programar
+que el bilateral, dado que la integración se limita directamente al
+cuadrado $B(x,\rho)$. En el filtro bilateral, en principio, la
+integración ha de realizarse sobre toda la imagen. Sin embargo, puesto
+que la función gaussiana decae a cero muy rápidamente, normalmente se
+limita el recinto de integración a un cuadrado de radio $2\rho$.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}24}]:} \PY{k}{def} \PY{n+nf}{yaroslavsky}\PY{p}{(}\PY{n}{b0}\PY{p}{,} \PY{n}{h}\PY{p}{,} \PY{n}{rho}\PY{p}{)}\PY{p}{:}
+             \PY{n}{b}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{b0}\PY{p}{)}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{256}\PY{p}{)}\PY{p}{:}
+                 \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{256}\PY{p}{)}\PY{p}{:}
+                     \PY{n}{iMin}\PY{o}{=}\PY{n+nb}{max}\PY{p}{(}\PY{n}{i} \PY{o}{\PYZhy{}} \PY{n}{rho}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+                     \PY{n}{iMax}\PY{o}{=}\PY{n+nb}{min}\PY{p}{(}\PY{n}{i} \PY{o}{+} \PY{n}{rho}\PY{p}{,} \PY{l+m+mi}{256}\PY{p}{)}
+                     \PY{n}{jMin}\PY{o}{=}\PY{n+nb}{max}\PY{p}{(}\PY{n}{j} \PY{o}{\PYZhy{}} \PY{n}{rho}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+                     \PY{n}{jMax}\PY{o}{=}\PY{n+nb}{min}\PY{p}{(}\PY{n}{j} \PY{o}{+} \PY{n}{rho}\PY{p}{,} \PY{l+m+mi}{256}\PY{p}{)}
+                     \PY{n}{I}\PY{o}{=}\PY{n}{b0}\PY{p}{[}\PY{n}{iMin}\PY{p}{:}\PY{n}{iMax}\PY{p}{,}\PY{n}{jMin}\PY{p}{:}\PY{n}{jMax}\PY{p}{]}
+                     \PY{n}{H}\PY{o}{=}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{I}\PY{o}{\PYZhy{}}\PY{n}{b0}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{h}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+                     \PY{n}{b}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{H}\PY{o}{*}\PY{n}{I}\PY{p}{)}\PY{o}{/}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{H}\PY{p}{)}
+             \PY{k}{return} \PY{n}{b}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}25}]:} \PY{n}{a\PYZus{}y} \PY{o}{=} \PY{n}{yaroslavsky}\PY{p}{(}\PY{n}{a2}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{)}
+\end{Verbatim}
+
+    De este modo, el cuadrado en el que se realiza la integración es de
+tamaño $61×61$.
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Visualizar las imágenes resultantes y sus curvas de nivel.
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{221}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a\PYZus{}v}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Restaurada variacion total: 0.1, 0.75, 1.e\PYZhy{}6}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{222}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{a\PYZus{}y}\PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{gray}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{nearest}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Restaurada Yaroslavsky 30, 30}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{223}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{contour}\PY{p}{(}\PY{n}{a\PYZus{}v}\PY{p}{,}\PY{n}{origin}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{upper}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{image}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{plt}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{off}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Curva de nivel: restaurada con VT}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{224}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{contour}\PY{p}{(}\PY{n}{a\PYZus{}y}\PY{p}{,}\PY{n}{origin}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{upper}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{image}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{plt}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{off}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Curva de nivel: restaurada con Yaroslavsky}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{BARBERO-tema7_files/BARBERO-tema7_56_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Calcular los PSNR's de las imágenes restauradas respecto la imagen
+original sin ruido. Obsérvese que PSNR no es una función predefinida,
+hay que escribirla.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}27}]:} \PY{k}{def} \PY{n+nf}{PSNR}\PY{p}{(}\PY{n}{u0}\PY{p}{,} \PY{n}{u}\PY{p}{)}\PY{p}{:}
+             \PY{n}{MSE} \PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{u0} \PY{o}{\PYZhy{}} \PY{n}{u}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{n+nb+bp}{None}\PY{p}{)}
+             \PY{k}{return} \PY{l+m+mi}{20}\PY{o}{*}\PY{n}{log10}\PY{p}{(}\PY{n}{u}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{n}{MSE}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  PSNR de la imagen restaurada por variación total,
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}28}]:} \PY{k}{print} \PY{n}{PSNR}\PY{p}{(}\PY{n}{a}\PY{p}{,} \PY{n}{a\PYZus{}v}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+27.3990420599
+    \end{Verbatim}
+
+    \begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  PSNR de la imagen restaurada por yaroslavsky,
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}29}]:} \PY{k}{print} \PY{n}{PSNR}\PY{p}{(}\PY{n}{a}\PY{p}{,} \PY{n}{a\PYZus{}y}\PY{p}{)} 
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+26.8804136806
+    \end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

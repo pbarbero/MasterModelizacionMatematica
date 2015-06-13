@@ -1,0 +1,6 @@
+Comentario acerca del ejercicio 2:
+==================================
+En el apartado b en el cual se nos pide hallar la expresión del polinomio, he tenido algunos problemas.
+Había pensado utilizar el paquete sympy para manejar expresiones simbólicas y dejarlo indicado, pero al importarlo, 
+el paquete que gestiona las órdenes plot y subplot se "rompe" y nos genera un error al utilizarlas. He dejado las 
+órdenes correspondientes comentadas, y es posible ejecutarlas una vez que todas las gráficas se hayan ejecutado.
