@@ -1,0 +1,16 @@
+{
+    "contents" : "\n# This is the user-interface definition of a Shiny web application.\n# You can find out more about building applications with Shiny here:\n# \n# http://www.rstudio.com/shiny/\n#\n\nlibrary(shiny)\n\nshinyUI(pageWithSidebar(\n  \n  # Application title\n  headerPanel(\"Suavizado Tipo Núcleo\"),\n  \n  # Sidebar with a slider input for number of bins\n  sidebarPanel(\n    numericInput(label = \"sample size\",inputId = \"ssize\", \n                 value = 150,min = 10, max=500),\n    sliderInput(\"bw\",\n                \"Select the bandwidth:\",\n                min = 0,\n                max = 1,\n                value = 0.5),\n  \n    selectInput(\"kernel\", label=\"Select Kernel\", \n                choices=c(\"Uniforme\"=\"box\", \"Normal\"=\"normal\")),\n    checkboxInput(\"scatter\",label = \"Show a scatterplot\", value=TRUE),\n    checkboxInput(\"truereg\", label=\"Show the true regression function\", value=FALSE)\n  ),\n\n  # Show a plot of the generated distribution\n  mainPanel(\n        plotOutput(\"ksPlot\")\n  )\n))\n",
+    "created" : 1423225080662.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3438192794",
+    "id" : "F8B85D0E",
+    "lastKnownWriteTime" : 1423137396,
+    "path" : "~/Master/mineria/p1/ksuave/ui.r",
+    "project_path" : "ui.r",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

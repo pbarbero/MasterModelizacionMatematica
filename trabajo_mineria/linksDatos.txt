@@ -1,0 +1,11 @@
+Principal
+=========
+https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Prognostic%29
+
+Datos
+=====
+https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/
+
+Descripcion
+===========
+https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wpbc.names
