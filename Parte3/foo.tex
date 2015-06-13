@@ -1,0 +1,380 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath, amssymb}
+
+\usepackage[utf8]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{exercise}
+\usepackage{hyperref}
+
+\author{Pilar Barbero Iriarte}
+
+\newenvironment{exercise}[1]% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{Ejercicio (#1)}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+
+	
+
+\renewcommand{\abstractname}{\vspace{-\baselineskip}}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{\LARGE M\'aster en Modelizaci\'on \\e Investigaci\'on Matem\'atica,\\ Estad\'istica y Computaci\'on }\\[1.5cm]
+{\large \today}
+
+\textsc{Ejercicios Tercera Parte}\\[0.5cm]
+
+% Title
+\vfill
+
+{ \huge \bfseries Modelos de Log\'istica \\[0.4cm] }
+
+\vfill
+
+
+\includegraphics[width=0.5\textwidth]{../logoUZ.png}~\\[1cm]
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autor:}\\
+Pilar Barbero Iriarte 
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Profesor:} \\
+Javier L\'opez Lorente
+\end{flushright}
+\end{minipage}
+
+% Bottom of the page
+\end{center}
+
+
+\end{titlepage}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\section{Ejercicio}
+
+\begin{abstract}
+
+Tenemos que gestionar el aprovisionamiento de un producto para el que tenemos un sistema de revisión continuo. La demanda del producto es continua (es decir, no llegan grandes pedidos de una vez) y estacionaria a lo largo del tiempo; disponemos de datos de las últimas 40 semanas que se adjuntan en el fichero demanda1.xls. El lead-time no es fijo, pero disponemos de datos de los tiempos de entrega, en días, de los últimos 30 pedidos (se adjuntan en el fichero). Los costes del proceso son: coste por hacer un pedido 400 euros; coste por unidad 10 euros, coste por almacenamiento 1.5 euros por unidad y semana.\\
+
+En caso de ruptura del stock, las unidades retrasadas se dejan sin entregar y se estima un coste de 1000 euros cada vez que se rompe el stock. Se trabaja 6 días a la semana todas las semanas del año y en el lead-time no se tienen en cuenta los domingos (es decir, el lunes es el primer día después del sábado).\\
+
+\begin{itemize}
+
+\item[A.] Se quiere que no más del 2\% de las unidades se entreguen con retraso. Calcular la política de aprovisionamiento óptima (es decir, de menor costo) sujeta a la restricción de unidades no entregadas. ¿Cuál es el valor del stock de seguridad? ¿Cuál es la probabilidad de ruptura del stock en cada ciclo? Determina los costes anuales de almacenamiento, de pedido y de material. 
+
+\item[B.] Si quitamos la restricción del apartado (A) de que no más del 2\% de las unidades se entreguen con retraso, calcula la política de aprovisionamiento óptima (es decir, de menor costo) ¿Cuál es el valor del stock de seguridad? ¿Cuál es la probabilidad de ruptura del stock en cada ciclo? Determina los costes anuales de almacenamiento, de pedido y de material.
+
+\item[C.] Supongamos ahora que el precio de las unidades tiene un descuento, de manera que las primeras 300 unidades se pagan a 10 euros, las siguientes hasta 500 se pagan a 9 euros y las siguientes a partir de 500 a 8 euros. Responde a las preguntas del apartado (A) en esta nueva situación.
+\end{itemize}
+
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+
+\pagebreak
+
+\subsection{Apartado A}\label{apartadoA}
+
+\begin{itemize}
+\item[] \textbf{Coste por pedido:} $a = 400$ euros.
+\item[] \textbf{Coste por unidad:} $c = 10$ euros.
+\item[] \textbf{Coste de almacenamiento por unidad y semana:} $h = 1.5$ euros.
+\item[] \textbf{Cantidad perdida por unidad en caso de ruptura del stock:} $c_s = 0$ euros.
+\item[] \textbf{Cantidad estimada en caso de ruptura del stock:} $1000$ euros.
+\end{itemize}
+
+Para analizar nuestro caso, hemos elegido un modelo de m\'ultiples pedido y revisi\'on continua $(r,q)$ 
+Vamos a definir nuestra demanda como una variable aleatoria $D$ cuya esperanza y desviaci\'on t\'ipica se define a partir de los datos suministrados.
+
+%\begin{itemize}
+%\item[] \textbf{$\mu_D$} $= 97.6$
+%\item[] \textbf{$\sigma_D^2$} $= 227.24$
+%\item[] \textbf{$\sigma_D$} $= 15.07$
+%\end{itemize}
+
+	\begin{equation*}
+	D:  \left\lbrace \begin{array}{l}
+		\mu_D = 97.6\\
+		\sigma_D^2 = 227.24\\
+		\sigma_D = 15.07
+	\end{array}
+	\right. 
+	\end{equation*}
+
+En nuestro caso, el lead-time tambi\'en es aleatorio, pero contamos con algunos datos anteriores, as\'i que tambi\'en podemos calcular su media y su varianza, y posteriormente dividir para 6 porque nuestra unidad de tiempo ser\'a en semanas (6 d\'ias laborables por semana)
+
+%\begin{itemize}
+%\item[] \textbf{$\mu_L$} $= 1.12$
+%\item[] \textbf{$\sigma_L^2$} $= 0.33$
+%\item[] \textbf{$\sigma_L$} $= $
+%\end{itemize}
+
+	\begin{equation*}
+	L:  \left\lbrace \begin{array}{l}
+		\mu_L = 6.73 / 6 = 1.12\\
+		\sigma_L^2 = 1.93 / 6 = 0.33\\
+		\sigma_L = 0.56
+	\end{array}
+	\right. 
+	\end{equation*}
+
+Queremos estudiar la demanda de $X$ que vamos a tener para $L$ unidades de tiempo marcadas por el lead-time, por lo que,
+
+$$\mu_X = \mu_L \mu_D \text{ y } \sigma_X^2 = \mu_L \sigma_D^2 + \sigma_L^2 \mu_D^2$$
+
+As\'i la demanda por unidades de tiempo queda de la siguiente manera,
+
+
+	\begin{equation*}
+	X:  \left\lbrace \begin{array}{l}
+		\mu_X = \mu_L \mu_D = 109.31\\
+		\sigma_X^2 = \mu_L \sigma_D^2 + \sigma_L^2 \mu_D^2 = 438.36\\
+		\sigma_X = 20.94
+	\end{array}
+	\right. 
+	\end{equation*}
+
+Vamos a modelizar nuestro problema utilizando un modelo de revisi\'on continua, dado que podemos controlar el stock y realizar los pedidos cuando queramos. La pol\'itica con la que trabajaremos es $(r, q)$. Se fija un punto $r$ punto de pedido y cuando el inventario llegue a ese punto, se pide una cantidad fija $q$. \\
+
+El \'unico momento en el que se puede producir la posibilidad de ruptura del stock es durante el lead-time. Cuando veamos que el stock baja de una cantidad $r$, haremos el siguiente pedido, pero puede ser que la demanda durante el lead-time sea mayor que $r$, en cuyo caso no podremos satisfacerla. Por esta raz\'on, contamos con nuestra variable $X$, demanda durante el lead-time. Estimaremos que nuestra variable $X$ se comporta como una variable normal de media y desviaci\'on t\'ipica conocidas gracias a los c\'alculos anteriores.\\
+
+El stock de seguridad es $r - \mu_X$, y suele ser habitual ponerlo en funci\'on de la desviaci\'on t\'ipica, es decir, $r - \mu_X = k\sigma_X = 20.94k$
+
+Vamos a minimizar el coste de todos los gastos (gastos fijos, gastos en material, gastos de almacenamiento, gastos según la probabilidad de pérdidas), as\'i que plantearemos nuestra funci\'on objetivo,
+
+\begin{itemize}
+\item[] Coste fijo por pedido: $a = 400$ euros.
+\item[] Coste por material: $cq = 10q$ euros.
+\item[] Coste por almacenamiento: cada pedido lo hacemos llegado el punto de $r$ unidades en stock, la demanda esperada en ese momento es de $\mu_X$ por lo que el valor m\'inimo del stock es $r - \mu_X$, el m \'aximo es $r - \mu_X + q$ por lo que el valor medio ser\'a $r - \mu_X + q/2$. La longitud del ciclo es $q/\mu_D$, as\'i el coste de almacenamiento ser\'a todo esto multiplicado por $h = 1.5$ euros por unidad y por semana.
+$$ (k\sigma_X + \dfrac{q}{2})\dfrac{q}{\mu_D} h = (20.94k + \dfrac{q}{2})\dfrac{q}{97.6} 1.5$$
+\end{itemize}
+
+Con respecto a la probabilidad de ruptura del stock, nuestra variable $X$ tiene una distribuci\'n $ X\sim N(657.173, 20.94)$,
+
+\begin{equation*}
+\begin{array}{l l}
+ P(\text{ruptura del stock}) & =  P(X > r) = P\left(\dfrac{X - \mu_X}{\sigma_X} > \dfrac{r-\mu_X}{\sigma_X}\right) \\[0.5cm]
+ \, &   = P\left(\dfrac{X - 657.173}{20.94} > k\right) = P\left(\dfrac{X - 657.173}{20.94} > k\right) \\[0.5cm]
+ \, &   = P(Z > k)
+\end{array}
+\end{equation*}
+
+Para nuestro problema en concreto se pide que no m\'as del 2\% de unidades se entreguen con retraso, es decir, que nuestra probabilidad de ruptura del stock sea un 2\%. Si tomamos $k = 2$, la probabilidad de ruptura del stock ser\'a algo mayor que el 2\%, as\'i nuestro stock de seguridad ser\'a $20.94 \cdot 2 = \textbf{82.9}$
+
+Se calcula \textbf{$r$} a trav\'es de la $k$ que hemos utilizado, sustituyendo en el factor de seguridad,
+
+$$ r - \mu_X = k\sigma_X \Rightarrow r = k\sigma_X + \mu_X = 2\cdot 20.94 + 657.173 = 740.073$$
+
+%La cantidad, $$ \sigma_X G(k)$$ es el n\'umero de unidades no satisfechas a tiempo. Por lo que $c_s\sigma_X G(k)$ ser\'a la cantidad de unidades monetarias estimada que perderemos en caso de ruptura del stock, es decir, $1000$ euros.\\
+
+Calculamos tambi\'en $q$ utilizando la f\'ormula obtenida al final de la teor\'ia,
+
+$q$ vendr\'a dado por,
+
+\begin{equation*}
+\begin{array}{l l}
+q & =  \sqrt{\dfrac{2\mu_D (a + c_s \sigma_X G(k))}{h}} \\[.3cm]
+%\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 1000)}{1.5}} = 426.83\text{ unidades.}
+\, & = \sqrt{\dfrac{2\cdot 97.6(400 + 0)}{1.5}} = 228.15\text{ unidades.}
+\end{array}
+\end{equation*}
+
+Con respecto a la \textbf{probabilidad de ruptura del stock en cada ciclo}, vamos a estudiar el nivel de servicio, lo que implica estudiar el n\'umero medio de ciclos por unidad de tiempo en los que hay ruptura del stock. Si los pedidos son de tama\~no $q$ y la demanda media es $\mu_D$, en una unidad de tiempo habr\'a un promedio de $\dfrac{\mu_D}{q}$ ciclos, y por tanto, el n\'umero medio de ciclos con ruptura del stock ser\'a,
+
+\begin{equation*}
+\begin{array}{l l}
+\text{prob} & = \dfrac{\mu_D P(Z > 2)}{q} = \dfrac{97.6\cdot P(Z > 2)}{q}\\[.5cm]
+%\, & = \dfrac{97.6\cdot 0.02}{426.83} = 0.0045 \sim 0.45\%
+\, & = \dfrac{97.6\cdot 0.02}{228.15} = 0.0085 \sim 0.45\%
+\end{array}
+\end{equation*}
+
+\smallskip
+
+Realizamos ahora el \textbf{an\'alisis del coste}. 
+
+%\begin{itemize}
+%\item[] \textbf{Coste por pedido:} $a = 400$ euros.
+%\item[] \textbf{Coste por unidad:} $c = 10$ euros.
+%\item[] \textbf{Coste de almacenamiento por unidad y semana:} $h = 1.5$ euros.
+
+%\item[] \textbf{Cantidad estimada en caso de ruptura del stock:} \\$c_s \sigma_X G(k) = 1000$ euros.
+%\end{itemize}
+
+El \textbf{coste de almacenamiento} por unidad de tiempo (semana) ser\'a, en media, $k\sigma_X + \dfrac{q}{2}$, multiplicado por el coste de almacenamiento $h$,
+
+%$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[2\cdot 20.94 + \dfrac{426.83}{2} \right]\cdot 1.5 = 444.47\text{ euros.}$$
+$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[2\cdot 20.94 + \dfrac{228.15}{2} \right]\cdot 1.5 = 295.46\text{ euros.}$$
+
+El \textbf{coste del material} por unidad de tiempo (semana) es, en promedio,
+
+$$ \mu_D c = 97.6\cdot 10 = 976 \text{ euros.}$$
+
+El \textbf{coste del pedido} ser\'a por unidad de tiempo (semana) es, en promedio,
+
+$$ a + \mu_D c = 400 + 976 = 1376 \text{ euros.}$$
+
+Nuestras unidades est\'an expuestas en semanas, as\'i que para obtener los datos anuales, multiplicamos por $52$,\\
+
+Anualmente,\\
+
+
+\textbf{Almacenamiento:} $444.47\cdot 52 =  23112.44 \text{ euros.}$\\
+\textbf{Material:} $976\cdot 52 = 50752\text{ euros.}$\\
+\textbf{Pedido:} $1376\cdot 52 = 71552\text{ euros.}$\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+
+\subsection{Apartado B}
+
+Si quitamos la resricci\'on del 2\% de unidades entregadas con retraso, podemos abordar este problema en dos direcciones.
+
+
+\subsubsection{Soluci\'on 1}
+Desde el enunciado nos dicen, que no se las unidades retrasadas se dejan sin entregar, as\'i que podemos abordar el problema imponiendo la imposibilidad en la ruptura del stock. Al no haber ruptura del stock, la cantidad de $1000$ euros cada vez que se rompe ya no nos interesa. Apoy\'andonos en el punto 2.1 de la teor\'ia y modific\'andolo para adaptarnos a nuestro modelo aleatorio, se deduce que vamos a realizar el pedido de nuevas unidades cuando el stock alcance un punto $Ld$. No conocemos el lead-time, pero s\'i podemos obtener su media, lo mismo con $d$, utilizaremos nuestra variable $D$ y su esperanza $\mu_D$,
+
+$$ r = Ld = \mu_L \mu_D = 1.12 \cdot 97.6 = 656.85$$
+
+La cantidad que pediremos alcanzado este punto ser\'a $q = \sqrt{\dfrac{2ad}{h}}$. Nuevamente, utilizamos la esperanza de $D$,
+
+$$ q = \sqrt{\dfrac{2a\mu_D}{h}} = \sqrt{\dfrac{2\cdot 400\cdot 97.6}{1.5}} = 228.15$$
+
+\subsubsection{Soluci\'on 2}
+Por otro lado, el enunciado del apartado B no obliga impl\'icitamente a imposibilitar la ruptura del stock, esto es, nos da igual el valor de la probabilidad de ruptura del stock, siempre y cuando el beneficio sea \'optimo. Podemos utilizar las mismas f\'ormulas que en el apartado A [ver \ref{apartadoA}], hallando los valores de $r$ y $q$ en funci\'on de una variable $k$. Esta variable $k$ corresponde a,
+
+$$ P(Z > k) = P(\text{ruptura del stock})$$
+
+Los valores de $q$ y $r$ ser\'an,
+
+$$ q = \sqrt{\dfrac{2\mu_D(a + 0)}{1.5}} = \sqrt{\dfrac{2\cdot 97.6\cdot 400}{1.5}} = 228.15 \text{ unidades.}$$
+$$ r = k\sigma_X + \mu_X = 20.94k + 656.85 \text{ unidades.}$$
+
+El stock de seguridad ser\'a $r - \mu_X = k\sigma_X = 20.94k$
+
+%La probabilidad de ruptura del stock por ciclo ser\'a $$ \dfrac{\mu_D P(Z > k)}{q} = \dfrac{97.6 P(Z > k)}{426.83}$$
+La probabilidad de ruptura del stock por ciclo ser\'a $$ \dfrac{\mu_D P(Z > k)}{q} = \dfrac{97.6 P(Z > k)}{228.15}$$
+
+El \textbf{coste de almacenamiento} por unidad de tiempo (semana) ser\'a, en media, 
+
+$$ \left[k\sigma_X + \dfrac{q}{2}\right] h = \left[20.94k + \dfrac{228.15}{2} \right]\cdot 1.5 = 62.175k + 171.11 \text{ euros.}$$
+
+El \textbf{coste del material} por unidad de tiempo (semana) es, en promedio,
+
+$$ \mu_D c = 97.6\cdot 10 = 976 \text{ euros.}$$
+
+El \textbf{coste del pedido} ser\'a por unidad de tiempo (semana) es, en promedio,
+
+$$ a + \mu_D c = 400 + 976 = 1376 \text{ euros.}$$
+
+El coste total ser\'a la suma del coste de almacenamiento m\'as el coste del pedido,
+
+%$$ 62.175k + 213.415 + 1376 = 62.175k + 1589.415$$
+$$ 62.175k + 117.11 + 1376 = 62.175k + 1493.1125$$
+
+Si queremos minimizar el coste total, basta con tomar $k = 0 $, y el coste total es de $1493.1125 \text{ euros.}$
+
+\pagebreak
+
+\subsection{Apartado C}
+
+En este caso, observamos una disminuci\'on del precio de las unidades en funci\'on de la cantidad demandada. Tenemos unos l\'imites conocidos de precios,
+     
+	\begin{equation*}
+	\text{coste por unidad}  \left\lbrace \begin{array}{ll}	  
+		10\text{ euros} & \text{ las primeras 300}\\
+		9\text{ euros}  & \text{ entre 300 y 500 unidades}\\
+		8\text{ euros}  & \text{ a partir de 500}
+	\end{array}
+	\right. 
+	\end{equation*}
+	
+As\'i, podemos definir $0 = q_0 \leq q_1 \leq q_2$ con $q_1 = 300$, $q_2 = 500$. El coste $c_1 = 10$ corresponder\'a al coste por unidad cuando se piden menos de $300$ unidades, el coste $c_2 = 9$ corresponde al coste por unidad entre $300$ y $500$ unidades y $c_3 = 8$ si es a partir de $500$ unidades.\\
+
+El \textbf{coste de material},
+
+\begin{equation*}
+\text{coste material} \left\lbrace \begin{array}{ll}
+	10d & 0 < d \leq 300\\
+	9d  & 300 < d \leq 500 \\
+	8d  & 500 < d
+\end{array}
+	\right.
+\end{equation*}
+
+El coste del material en promedio ser\'a, por unidad de tiempo, 
+
+$$ \mu_D c = 97.6 \cdot 10 = 976\text{ euros.}$$ 
+
+El \textbf{coste del pedido},
+
+\begin{equation*}
+\text{material} \left\lbrace \begin{array}{ll}
+	400 + 10d & \text{ si } 0 < d \leq 300\\
+	400 + 9d  & \text{ si } 300 < d \leq 500 \\
+	00 + 8d   & \text{ si } 500 < d
+\end{array}
+	\right.
+\end{equation*}
+
+El coste del pedido en promedio ser\'a, por unidad de tiempo,
+
+%$$ \dfrac{a + \mu_D}{q} + \mu_D 10 = \dfrac{400 + 97.6}{426.83} + 97.6\cdot 10 = 977.16 \text{ euros.} $$
+$$ \dfrac{a + \mu_D}{q} + \mu_D 10 = \dfrac{400 + 97.6}{228.15} + 97.6\cdot 10 = 978.18 \text{ euros.} $$
+
+\smallskip
+
+El \textbf{coste del almacenamiento} ser\'a el mismo que en el apartado A [ver \ref{apartadoA}], ya que s\'olo ha cambiado el coste por unidad, y no el coste de almacenamiento. \\
+
+Con respecto al \textbf{stock de seguridad}, es un factor que no depende del coste por unidad del producto, as\'i que podemos utilizar la misma f\'ormula que antes, en las mismas condiciones que antes, es decir, $k=2$,
+
+$$ \text{factor de seguridad} = k\sigma_X = 20.94k = 82.9$$
+
+\smallskip
+
+La \textbf{probabilidad de ruptura del stock en cada ciclo} ser\'a tambi\'en, como hemos calculado anteriormente,
+
+%$$\dfrac{\mu_D P(Z > 2)}{q} = \dfrac{97.6\cdot 0.02}{426.83} = 0.0045$$
+$$\dfrac{\mu_D P(Z > 2)}{q} = \dfrac{97.6\cdot 0.02}{228.15} = 0.0085$$ 
+	
+
+\end{document}
